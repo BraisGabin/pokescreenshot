@@ -87,4 +87,19 @@ public class CP {
   public static float CPM(float lvl) {
     return CPM[Math.round(lvl * 2) - 2];
   }
+
+  public static float CPM2Lvl(float cpm) {
+    float delta = Float.MAX_VALUE;
+    int index = 0;
+    for (int i = 0; i < CPM.length; i++) {
+      float d = Math.abs(cpm - CPM[i]);
+      if (d < delta) {
+        delta = d;
+        index = i;
+      } else {
+        break;
+      }
+    }
+    return (index + 2) / 2f;
+  }
 }

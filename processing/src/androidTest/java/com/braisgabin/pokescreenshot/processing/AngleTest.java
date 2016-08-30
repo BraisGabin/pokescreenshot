@@ -1,20 +1,28 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.support.test.InstrumentationRegistry;
 
-import com.google.auto.value.AutoValue;
+import net.sf.jsefa.common.lowlevel.filter.HeaderAndFooterFilter;
+import net.sf.jsefa.csv.CsvDeserializer;
+import net.sf.jsefa.csv.CsvIOFactory;
+import net.sf.jsefa.csv.config.CsvConfiguration;
 
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.lang.Math.PI;
 import static org.hamcrest.CoreMatchers.both;
@@ -26,11 +34,23 @@ import static org.hamcrest.Matchers.lessThan;
 @RunWith(value = Parameterized.class)
 public class AngleTest {
   @Parameterized.Parameters
-  public static Collection<Screenshot> data() {
-    return Arrays.asList(
-        Screenshot.create("140_kabuto.png", 174, 854, 128.4),
-        Screenshot.create("136_flareon.png", 174, 854, 23.3)
-    );
+  public static Collection<Screenshot> data() throws IOException {
+    final CsvConfiguration config = new CsvConfiguration();
+    config.setLineFilter(new HeaderAndFooterFilter(1, false, true));
+
+    final Context context = InstrumentationRegistry.getContext();
+    final CsvDeserializer deserializer = CsvIOFactory.createFactory(config, Screenshot.class).createDeserializer();
+    final Reader reader = new InputStreamReader(context.getAssets().open("screenshots.csv"));
+    deserializer.open(reader);
+
+    final List<Screenshot> screenshots = new ArrayList<>();
+    while (deserializer.hasNext()) {
+      screenshots.add((Screenshot) deserializer.next());
+    }
+
+    reader.close();
+
+    return screenshots;
   }
 
   private final Screenshot screenshot;
@@ -70,18 +90,5 @@ public class AngleTest {
   private Matcher<? super Double> moreLess(double radian) {
     final double error = .25 * PI / 180;
     return is(both(greaterThan(radian - error)).and(lessThan(radian + error)));
-  }
-
-  @AutoValue
-  static abstract class Screenshot {
-    static Screenshot create(String file, int x, int y, double degree) {
-      return new AutoValue_AngleTest_Screenshot(file, new Point(x, y), degree * PI / 180.);
-    }
-
-    abstract String file();
-
-    abstract Point initialPoint();
-
-    abstract double radian();
   }
 }

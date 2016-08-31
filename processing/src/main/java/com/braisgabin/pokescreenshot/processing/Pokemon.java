@@ -11,4 +11,39 @@ public class Pokemon {
     final float cpm = degree * CPM(trainerLvl) / 202.04f + CPM(1);
     return CPM2Lvl(cpm);
   }
+
+  private int pc;
+  private int ps;
+  private int stardustToPowerUp;
+  private String candyName;
+  private String name;
+
+
+  public Pokemon(int pc, int ps, int stardust, String candy, String name) {
+    this.pc = pc;
+    this.ps = ps;
+    this.stardustToPowerUp = stardust;
+    this.candyName = candy;
+    this.name = name;
+  }
+
+  public int getPc() {
+    return pc;
+  }
+
+  public int getPs() {
+    return ps;
+  }
+
+  public int getStardust() {
+    return stardustToPowerUp;
+  }
+
+  public String getCandyName() {
+    return candyName;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

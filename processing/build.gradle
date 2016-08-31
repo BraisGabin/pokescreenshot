@@ -30,4 +30,6 @@ dependencies {
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 
     androidTestCompile 'net.sf.jsefa:jsefa:1.1.1.RELEASE'
+
+    compile 'com.rmtheis:tess-two:6.0.4'
 }

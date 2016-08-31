@@ -54,17 +54,18 @@ public class AngleTest {
   }
 
   private final Screenshot screenshot;
-  private final Bitmap bitmap;
+  private final Angle angle;
 
   public AngleTest(Screenshot screenshot) throws Exception {
     this.screenshot = screenshot;
     final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
-    this.bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()));
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()));
+    this.angle = new Angle(bitmap, screenshot.density());
   }
 
   @Test
   public void testInitialTest() {
-    Point point = Angle.initialPoint(bitmap);
+    Point point = angle.initialPoint();
     assertThat(point, is(screenshot.initialPoint()));
   }
 
@@ -83,7 +84,7 @@ public class AngleTest {
 
   @Test
   public void testRadian() {
-    final double radian = Angle.radian(new Point(720, 854), 545, bitmap);
+    final double radian = angle.radian(new Point(720, 854), 545);
     assertThat(radian, moreLess(screenshot.radian()));
   }
 

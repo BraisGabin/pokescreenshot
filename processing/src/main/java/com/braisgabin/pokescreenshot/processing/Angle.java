@@ -4,54 +4,62 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RectF;
 
-public abstract class Angle {
+public class Angle {
+  private final Bitmap bitmap;
+  private final float d;
 
-  public static double radian(Bitmap bitmap) {
-    return radian(bitmap, false);
+  public Angle(Bitmap bitmap, float density) {
+    this.bitmap = bitmap;
+    this.d = density;
   }
 
-  public static double radian(Bitmap bitmap, boolean debug) {
-    final Point initialPoint = initialPoint(bitmap);
+  public double radian() {
+    return radian(null);
+  }
+
+  public double radian(Canvas canvas) {
+    final Point initialPoint = initialPoint();
     final Point center = center(initialPoint, bitmap.getWidth());
     final int radius = radius(initialPoint, center);
-    final double radian = radian(center, radius, bitmap);
-    if (debug) {
-      debug(initialPoint, center, radius, radian, new Canvas(bitmap));
+    final double radian = radian(center, radius);
+    if (canvas != null) {
+      debug(initialPoint, center, radius, radian, canvas);
     }
     return radian;
   }
 
-  private static void debug(Point initialPoint, Point center, int radius, double radian, Canvas canvas) {
+  private void debug(Point initialPoint, Point center, int radius, double radian, Canvas canvas) {
     final Paint paint = new Paint();
     paint.setAntiAlias(true);
-    paint.setStrokeWidth(9);
+    paint.setStrokeWidth(3 * d);
     paint.setStyle(Paint.Style.STROKE);
     paint.setColor(0xb0ff0000);
 
     // Initial Point
-    canvas.drawLine(initialPoint.x - 10, initialPoint.y, initialPoint.x + 10, initialPoint.y, paint);
+    canvas.drawLine(initialPoint.x - 4 * d, initialPoint.y, initialPoint.x + 4 * d, initialPoint.y, paint);
 
     // Center
-    canvas.drawLine(center.x - 10, center.y, center.x + 10, center.y, paint);
-    canvas.drawLine(center.x, center.y - 10, center.x, center.y + 10, paint);
+    canvas.drawLine(center.x - 4 * d, center.y, center.x + 4 * d, center.y, paint);
+    canvas.drawLine(center.x, center.y - 4 * d, center.x, center.y + 4 * d, paint);
 
     // Radius
-    canvas.drawCircle(center.x, center.y, radius, paint);
+    canvas.drawArc(new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius), 180, 180, false, paint);
 
     // Radian
     final int x = (int) Math.round(Math.cos(radian) * radius);
     final int y = (int) Math.round(Math.sin(radian) * radius);
-    canvas.drawCircle(center.x + x, center.y - y, 15, paint);
+    canvas.drawCircle(center.x + x, center.y - y, 5 * d, paint);
   }
 
-  static Point initialPoint(Bitmap bitmap) {
+  Point initialPoint() {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
     for (int y = 4 * height / 10; y >= 0; y--) {
       for (int x = width / 10, count = 2 * width / 10; x < count; x++) {
         if (bitmap.getPixel(x, y) == -1) {
-          return new Point(x + 4, y + 7);
+          return new Point(x + Math.round(d), y + Math.round(2 * d));
         }
       }
     }
@@ -66,7 +74,7 @@ public abstract class Angle {
     return center.x - initialPoint.x;
   }
 
-  static double radian(Point center, int radius, Bitmap bitmap) {
+  double radian(Point center, int radius) {
     for (int i = 0; i <= 360; i++) {
       final double radians = i * Math.PI / 360;
       final int x = (int) Math.round(Math.cos(radians) * radius);

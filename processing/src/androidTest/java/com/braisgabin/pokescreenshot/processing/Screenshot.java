@@ -22,21 +22,24 @@ class Screenshot {
   private int initPointY;
 
   @CsvField(pos = 5)
-  private BigDecimal degree;
+  private int trainerLvl;
 
   @CsvField(pos = 6)
-  private int pc;
+  private BigDecimal lvl;
 
   @CsvField(pos = 7)
-  private int ps;
+  private int pc;
 
   @CsvField(pos = 8)
-  private int stardus;
+  private int ps;
 
   @CsvField(pos = 9)
-  private String candyType;
+  private int stardus;
 
   @CsvField(pos = 10)
+  private String candyType;
+
+  @CsvField(pos = 11)
   private String name;
 
   public String file() {
@@ -52,7 +55,7 @@ class Screenshot {
   }
 
   public double radian() {
-    return Math.toRadians(degree.doubleValue());
+    return Pokemon.radian(trainerLvl, lvl.floatValue());
   }
 
   public int getPc() {

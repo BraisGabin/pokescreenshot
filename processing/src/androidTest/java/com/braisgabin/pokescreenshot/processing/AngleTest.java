@@ -12,7 +12,6 @@ import net.sf.jsefa.csv.CsvDeserializer;
 import net.sf.jsefa.csv.CsvIOFactory;
 import net.sf.jsefa.csv.config.CsvConfiguration;
 
-import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,12 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.lang.Math.PI;
-import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.closeTo;
 
 @RunWith(value = Parameterized.class)
 public class AngleTest {
@@ -55,12 +51,14 @@ public class AngleTest {
 
   private final Screenshot screenshot;
   private final Angle angle;
+  private final int width;
 
   public AngleTest(Screenshot screenshot) throws Exception {
     this.screenshot = screenshot;
     final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()));
     this.angle = new Angle(bitmap, screenshot.density());
+    this.width = bitmap.getWidth();
   }
 
   @Test
@@ -84,12 +82,10 @@ public class AngleTest {
 
   @Test
   public void testRadian() {
-    final double radian = angle.radian(new Point(720, 854), 545);
-    assertThat(radian, moreLess(screenshot.radian()));
-  }
-
-  private Matcher<? super Double> moreLess(double radian) {
-    final double error = .25 * PI / 180;
-    return is(both(greaterThan(radian - error)).and(lessThan(radian + error)));
+    final Point initialPoint = screenshot.initialPoint();
+    final Point center = Angle.center(screenshot.initialPoint(), width);
+    final int radius = Angle.radius(initialPoint, center);
+    final double radian = angle.radian(center, radius);
+    assertThat(radian, is(closeTo(screenshot.radian(), Math.toRadians(1))));
   }
 }

@@ -2,17 +2,23 @@ package com.braisgabin.pokescreenshot.processing;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 
+import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
+import static java.lang.Math.PI;
+
 public class Angle {
   private final Bitmap bitmap;
   private final float d;
+  private final float p;
 
   public Angle(Bitmap bitmap, float density) {
     this.bitmap = bitmap;
     this.d = density;
+    this.p = (bitmap.getWidth() - navBarHeight(bitmap)) / (float) (480 - 56);
   }
 
   public double radian() {
@@ -44,13 +50,13 @@ public class Angle {
     canvas.drawLine(center.x - 4 * d, center.y, center.x + 4 * d, center.y, paint);
     canvas.drawLine(center.x, center.y - 4 * d, center.x, center.y + 4 * d, paint);
 
-    // Radius
+    // Arc
     canvas.drawArc(new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius), 180, 180, false, paint);
 
     // Radian
     final int x = (int) Math.round(Math.cos(radian) * radius);
     final int y = (int) Math.round(Math.sin(radian) * radius);
-    canvas.drawCircle(center.x + x, center.y - y, 5 * d, paint);
+    canvas.drawCircle(center.x + x, center.y - y, 6 * d, paint);
   }
 
   Point initialPoint() {
@@ -75,15 +81,27 @@ public class Angle {
   }
 
   double radian(Point center, int radius) {
-    for (int i = 0; i <= 360; i++) {
-      final double radians = i * Math.PI / 360;
+    final double max = radius * PI;
+    for (int i = 0; i <= max; i++) {
+      final double radians = i * PI / max;
       final int x = (int) Math.round(Math.cos(radians) * radius);
       final int y = (int) Math.round(Math.sin(radians) * radius);
-      if (bitmap.getPixel(center.x + x, center.y - y) == -1) {
-        System.out.println(i / 2 + "º");
-        return radians + Math.PI / 120.;
+      if (isCircle(center.x + x, center.y - y, Math.round(3.2f * p))) {
+        return radians;
       }
     }
     throw new RuntimeException();
+  }
+
+  private boolean isCircle(int x, int y, int range) {
+    for (int i = 0; i <= range; i++) {
+      if (bitmap.getPixel(x + i, y) != Color.WHITE ||
+          bitmap.getPixel(x - i, y) != Color.WHITE ||
+          bitmap.getPixel(x, y + i) != Color.WHITE ||
+          bitmap.getPixel(x, y - i) != Color.WHITE) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -1,11 +1,15 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GuesserUnitTest {
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testCalculateCp() {
@@ -20,6 +24,18 @@ public class GuesserUnitTest {
   }
 
   @Test
+  public void testCalculateHP() {
+    Pokemon pokemon = Pokemon.create(77, "Ponyta", 168, 138, 100, "PONYTA");
+    assertThat(Guesser.calculateHp(pokemon, 17, 15), is(63));
+  }
+
+  @Test
+  public void testCalculateHP_min10() {
+    Pokemon pokemon = Pokemon.create(1, "", 100, 100, 100, "");
+    assertThat(Guesser.calculateHp(pokemon, 1, 0), is(10));
+  }
+
+  @Test
   public void testGetPokemon_eevee() {
     Pokemon[] pokemon = {
         Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE"),
@@ -27,7 +43,7 @@ public class GuesserUnitTest {
         Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
         Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
     };
-    assertThat(Guesser.getPokemon(pokemon, 482, 17), is(new Pokemon[]{pokemon[0]}));
+    assertThat(Guesser.getPokemon(pokemon, 482, 63, 17), is(pokemon[0]));
   }
 
   @Test
@@ -38,7 +54,7 @@ public class GuesserUnitTest {
         Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
         Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
     };
-    assertThat(Guesser.getPokemon(pokemon, 1173, 15), is(new Pokemon[]{pokemon[1]}));
+    assertThat(Guesser.getPokemon(pokemon, 1173, 142, 15), is(pokemon[1]));
   }
 
   @Test
@@ -49,7 +65,7 @@ public class GuesserUnitTest {
         Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
         Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
     };
-    assertThat(Guesser.getPokemon(pokemon, 736, 13), is(new Pokemon[]{pokemon[2]}));
+    assertThat(Guesser.getPokemon(pokemon, 736, 64, 13), is(pokemon[2]));
   }
 
   @Test
@@ -60,7 +76,7 @@ public class GuesserUnitTest {
         Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
         Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
     };
-    assertThat(Guesser.getPokemon(pokemon, 1415, 19), is(new Pokemon[]{pokemon[1], pokemon[3]}));
+    assertThat(Guesser.getPokemon(pokemon, 1415, 82, 19), is(pokemon[3]));
   }
 
   @Test
@@ -71,6 +87,19 @@ public class GuesserUnitTest {
         Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
         Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
     };
-    assertThat(Guesser.getPokemon(pokemon, 50, 19), is(new Pokemon[]{}));
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("Unknown pokémon.");
+    Guesser.getPokemon(pokemon, 50, 82, 19);
+  }
+
+  @Test
+  public void testGetPokemon_tooMuch() {
+    Pokemon[] pokemon = {
+        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    };
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("Multiple Pokémon.");
+    Guesser.getPokemon(pokemon, 1415, 82, 19);
   }
 }

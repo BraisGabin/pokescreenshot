@@ -1,8 +1,5 @@
 package com.braisgabin.pokescreenshot.processing;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.braisgabin.pokescreenshot.processing.CP.CPM;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
@@ -19,15 +16,28 @@ public class Guesser {
     return max(10, (int) round(floor(((atk) * sqrt(def) * sqrt(stam) * CPM * CPM) / 10)));
   }
 
-  static Pokemon[] getPokemon(Pokemon[] pokemonList, int cp, float lvl) {
-    List<Pokemon> pokemon = new ArrayList<>();
+  static int calculateHp(Pokemon pokemon, float lvl, int stam) {
+    return max(10, (int) floor(CPM(lvl) * (pokemon.stam() + stam)));
+  }
+
+  static Pokemon getPokemon(Pokemon[] pokemonList, int cp, int hp, float lvl) {
+    Pokemon pokemon = null;
     for (Pokemon p : pokemonList) {
       final int minCp = calculateCp(p, lvl, 0, 0, 0);
       final int maxCp = calculateCp(p, lvl, 15, 15, 15);
-      if (minCp <= cp && maxCp >= cp) {
-        pokemon.add(p);
+      final int minHp = calculateHp(p, lvl, 0);
+      final int maxHp = calculateHp(p, lvl, 15);
+      if (minCp <= cp && maxCp >= cp && minHp <= hp && maxHp >= hp) {
+        if (pokemon == null) {
+          pokemon = p;
+        } else {
+          throw new RuntimeException("Multiple Pokémon.");
+        }
       }
     }
-    return pokemon.toArray(new Pokemon[pokemon.size()]);
+    if (pokemon == null) {
+      throw new RuntimeException("Unknown pokémon.");
+    }
+    return pokemon;
   }
 }

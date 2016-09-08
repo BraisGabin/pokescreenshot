@@ -62,8 +62,8 @@ public class Angle {
   Point initialPoint() {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
-    for (int y = 4 * height / 10; y >= 0; y--) {
-      for (int x = width / 10, count = 2 * width / 10; x < count; x++) {
+    for (int y = (34 * height) / 100; y >= 0; y--) {
+      for (int x = width / 10, count = (14 * width) / 100; x < count; x++) {
         if (bitmap.getPixel(x, y) == -1) {
           return new Point(x + Math.round(d), y + Math.round(2 * d));
         }

@@ -102,4 +102,33 @@ public class GuesserUnitTest {
     thrown.expectMessage("Multiple Pokémon.");
     Guesser.getPokemon(pokemon, 1415, 82, 19);
   }
+
+  @Test
+  public void testIv_eevee() {
+    final Pokemon pokemon = Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE");
+    assertThat(Guesser.iv(pokemon, 482, 63, 17), is(new int[][]{
+        {10, 15, 5},
+        {11, 13, 5},
+        {14, 6, 5},
+        {15, 4, 5},
+        {10, 14, 6},
+        {13, 7, 6},
+        {14, 5, 6},
+        {15, 3, 6},
+    }));
+  }
+
+  @Test
+  public void testIv_eevee_wrong() {
+    final Pokemon pokemon = Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE");
+    assertThat(Guesser.iv(pokemon, 482, 63, 15), is(new int[][]{}));
+  }
+
+  @Test
+  public void testIv_ponyta() {
+    final Pokemon pokemon = Pokemon.create(77, "Ponyta", 168, 138, 100, "PONYTA");
+    assertThat(Guesser.iv(pokemon, 732, 63, 17), is(new int[][]{
+        {14, 15, 15},
+    }));
+  }
 }

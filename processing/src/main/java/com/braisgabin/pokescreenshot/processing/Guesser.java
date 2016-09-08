@@ -1,5 +1,8 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.braisgabin.pokescreenshot.processing.CP.CPM;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
@@ -39,5 +42,21 @@ public class Guesser {
       throw new RuntimeException("Unknown pokémon.");
     }
     return pokemon;
+  }
+
+  static int[][] iv(Pokemon pokemon, int cp, int hp, float lvl) {
+    final List<int[]> ivs = new ArrayList<>();
+    for (int stam = 0; stam < 16; stam++) {
+      if (hp == calculateHp(pokemon, lvl, stam)) {
+        for (int atk = 0; atk < 16; atk++) {
+          for (int def = 0; def < 16; def++) {
+            if (cp == calculateCp(pokemon, lvl, atk, def, stam)) {
+              ivs.add(new int[]{atk, def, stam});
+            }
+          }
+        }
+      }
+    }
+    return ivs.toArray(new int[ivs.size()][]);
   }
 }

@@ -19,27 +19,27 @@ public class Pokemon {
     return (float) Math.toRadians(180 - degree);
   }
 
-  private int pc;
-  private int ps;
+  private int cp;
+  private int hp;
   private int stardustToPowerUp;
   private String candyName;
   private String name;
 
 
-  public Pokemon(int pc, int ps, int stardust, String candy, String name) {
-    this.pc = pc;
-    this.ps = ps;
+  public Pokemon(int cp, int hp, int stardust, String candy, String name) {
+    this.cp = cp;
+    this.hp = hp;
     this.stardustToPowerUp = stardust;
     this.candyName = candy;
     this.name = name;
   }
 
-  public int getPc() {
-    return pc;
+  public int getCp() {
+    return cp;
   }
 
-  public int getPs() {
-    return ps;
+  public int getHp() {
+    return hp;
   }
 
   public int getStardust() {

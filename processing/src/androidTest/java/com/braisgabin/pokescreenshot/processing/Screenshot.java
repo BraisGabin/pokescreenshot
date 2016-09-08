@@ -28,10 +28,10 @@ class Screenshot {
   private BigDecimal lvl;
 
   @CsvField(pos = 7)
-  private int pc;
+  private int cp;
 
   @CsvField(pos = 8)
-  private int ps;
+  private int hp;
 
   @CsvField(pos = 9)
   private int stardus;
@@ -58,12 +58,12 @@ class Screenshot {
     return Pokemon.radian(trainerLvl, lvl.floatValue());
   }
 
-  public int getPc() {
-    return pc;
+  public int getCp() {
+    return cp;
   }
 
-  public int getPs() {
-    return ps;
+  public int getHp() {
+    return hp;
   }
 
   public int getStardus() {

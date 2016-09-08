@@ -51,14 +51,14 @@ public class Ocr {
   public Pokemon ocr() {
     final Rect rect = new Rect();
 
-    final int pc = pc(pcRect(width), rect);
-    Log.d(TAG, "PC: " + pc);
+    final int cp = cp(cpRect(width), rect);
+    Log.d(TAG, "CP: " + cp);
 
     final String name = name(nameRect(width, rect.bottom));
     Log.d(TAG, "Name: " + name);
 
-    final int ps = ps(psRect(width, rect.bottom));
-    Log.d(TAG, "PS: " + ps);
+    final int hp = hp(hpRect(width, rect.bottom));
+    Log.d(TAG, "HP: " + hp);
 
     final String candy = candy(candyRect(width, rect.bottom));
     Log.d(TAG, "Candy: " + candy);
@@ -66,21 +66,21 @@ public class Ocr {
     final int stardust = stardust(stardustRect(width, rect.bottom));
     Log.d(TAG, "Stardust: " + stardust);
 
-    return new Pokemon(pc, ps, stardust, candy, name);
+    return new Pokemon(cp, hp, stardust, candy, name);
   }
 
-  private int pc(Rect ocrRect, Rect regionRect) {
+  private int cp(Rect ocrRect, Rect regionRect) {
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
-    int pc = -1;
+    int cp = -1;
     final Pattern pattern = Pattern.compile("PC([0-9]+).?", Pattern.CASE_INSENSITIVE);
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
       regionRect.set(tess.getRegions().getBoxRect(0));
       regionRect.offset(ocrRect.left, ocrRect.top);
-      pc = Integer.parseInt(matcher.group(1));
+      cp = Integer.parseInt(matcher.group(1));
     } else {
       final ResultIterator iterator = tess.getResultIterator();
       while (iterator.next(RIL_WORD)) {
@@ -88,14 +88,14 @@ public class Ocr {
         matcher = pattern.matcher(word);
         if (matcher.matches()) {
           regionRect.set(iterator.getBoundingRect(RIL_WORD));
-          pc = Integer.parseInt(matcher.group(1));
+          cp = Integer.parseInt(matcher.group(1));
           break;
         }
       }
     }
 
-    if (pc <= 0) {
-      Log.w(TAG, "Error parsing PC:\n" + text);
+    if (cp <= 0) {
+      Log.w(TAG, "Error parsing CP:\n" + text);
     }
     if (canvas != null) {
       paint.setColor(Color.RED);
@@ -104,10 +104,10 @@ public class Ocr {
       canvas.drawRect(regionRect, paint);
     }
 
-    return pc;
+    return cp;
   }
 
-  private Rect pcRect(int width) {
+  private Rect cpRect(int width) {
     Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(95 * d));
     rect.offset(width / 2 - rect.width() / 2, 0);
     return rect;
@@ -152,12 +152,12 @@ public class Ocr {
     return rect;
   }
 
-  private int ps(Rect ocrRect) {
+  private int hp(Rect ocrRect) {
     tess.setRectangle(ocrRect);
     String text = tess.getUTF8Text();
     Rect regionRect = new Rect();
 
-    int ps = -1;
+    int hp = -1;
     final Pattern pattern = Pattern.compile("P[S5] ?[0-9]+ ?/ ?([0-9]+)", Pattern.CASE_INSENSITIVE);
 
     text = text.replace("l", "1");
@@ -165,11 +165,11 @@ public class Ocr {
     if (matcher.matches()) {
       regionRect.set(tess.getRegions().getBoxRect(0));
       regionRect.offset(ocrRect.left, ocrRect.top);
-      ps = Integer.parseInt(matcher.group(1));
+      hp = Integer.parseInt(matcher.group(1));
     }
 
-    if (ps <= 0) {
-      Log.w(TAG, "Error parsing PS:\n" + text);
+    if (hp <= 0) {
+      Log.w(TAG, "Error parsing HP:\n" + text);
     }
     if (canvas != null) {
       paint.setColor(Color.RED);
@@ -178,10 +178,10 @@ public class Ocr {
       canvas.drawRect(regionRect, paint);
     }
 
-    return ps;
+    return hp;
   }
 
-  private Rect psRect(int width, int bottom) {
+  private Rect hpRect(int width, int bottom) {
     Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
     rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(335 * d));
     return rect;

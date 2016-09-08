@@ -79,7 +79,7 @@ public class Ocr {
     final String text = tess.getUTF8Text();
 
     int pc = -1;
-    final Pattern pattern = Pattern.compile("PC([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("PC([0-9]+).?", Pattern.CASE_INSENSITIVE);
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
@@ -152,19 +152,20 @@ public class Ocr {
   }
 
   private Rect nameRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(40 * d));
+    Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(44 * d));
     rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(275 * d));
     return rect;
   }
 
   private int ps(Rect ocrRect) {
     tess.setRectangle(ocrRect);
-    final String text = tess.getUTF8Text();
+    String text = tess.getUTF8Text();
     Rect regionRect = new Rect();
 
     int ps = -1;
-    final Pattern pattern = Pattern.compile("P[S5] [0-9]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("P[S5] ?[0-9]+ ?/ ?([0-9]+)", Pattern.CASE_INSENSITIVE);
 
+    text = text.replace("l", "1");
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
       regionRect.set(tess.getRegions().getBoxRect(0));
@@ -226,7 +227,7 @@ public class Ocr {
 
     int stardust = -1;
     Rect regionRect = new Rect();
-    final Pattern pattern = Pattern.compile("^i([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("^[HE@]([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {

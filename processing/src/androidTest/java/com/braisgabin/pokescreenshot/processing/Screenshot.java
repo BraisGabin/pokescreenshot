@@ -15,41 +15,34 @@ class Screenshot {
   private String file;
 
   @CsvField(pos = 2)
-  private BigDecimal density;
-
-  @CsvField(pos = 3)
   private int initPointX;
 
-  @CsvField(pos = 4)
+  @CsvField(pos = 3)
   private int initPointY;
 
-  @CsvField(pos = 5)
+  @CsvField(pos = 4)
   private int trainerLvl;
 
-  @CsvField(pos = 6)
+  @CsvField(pos = 5)
   private BigDecimal lvl;
 
-  @CsvField(pos = 7)
+  @CsvField(pos = 6)
   private int cp;
 
-  @CsvField(pos = 8)
+  @CsvField(pos = 7)
   private int hp;
 
-  @CsvField(pos = 9)
+  @CsvField(pos = 8)
   private int stardus;
 
-  @CsvField(pos = 10)
+  @CsvField(pos = 9)
   private String candyType;
 
-  @CsvField(pos = 11)
+  @CsvField(pos = 10)
   private String name;
 
   public String file() {
     return file;
-  }
-
-  public float density() {
-    return density.floatValue();
   }
 
   public Point initialPoint() {

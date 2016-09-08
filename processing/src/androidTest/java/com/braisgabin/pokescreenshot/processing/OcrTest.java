@@ -74,7 +74,7 @@ public class OcrTest {
     tess.readConfigFile("pokemon");
     tess.setImage(bitmap);
 
-    this.ocr = Ocr.create(tess, bitmap, screenshot.density(), null);
+    this.ocr = Ocr.create(tess, bitmap, null);
   }
   @Test
   public void testOcr() throws Exception {

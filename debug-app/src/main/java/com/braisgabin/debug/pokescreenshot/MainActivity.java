@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     final Bitmap bitmap2 = bitmap.copy(bitmap.getConfig(), true);
     Canvas canvas = new Canvas(bitmap2);
 
-    final Angle angle = new Angle(bitmap, 3);
+    final Angle angle = new Angle(bitmap);
     angle.radian(canvas);
     tess(bitmap, canvas);
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     final String absolutePath = root.getAbsolutePath() + "/tesseract/";
     tessBaseAPI.init(absolutePath, "eng");
     tessBaseAPI.readConfigFile("pokemon");
-    final Ocr ocr = Ocr.create(tessBaseAPI, bitmap, 3, canvas);
+    final Ocr ocr = Ocr.create(tessBaseAPI, bitmap, canvas);
     ocr.ocr();
   }
 

@@ -20,11 +20,11 @@ import static com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel.RIL
 public class Ocr {
   private final static String TAG = "OCR";
 
-  public static Ocr create(TessBaseAPI tess, Bitmap bitmap, float density, Canvas canvas) {
+  public static Ocr create(TessBaseAPI tess, Bitmap bitmap, Canvas canvas) {
     final int navBarHeight = navBarHeight(bitmap);
     BitmapOperations.filter(bitmap, 208, 229);
     tess.setImage(bitmap);
-    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), navBarHeight, density, canvas);
+    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), navBarHeight, canvas);
   }
 
   private final TessBaseAPI tess;
@@ -34,16 +34,16 @@ public class Ocr {
   private final Canvas canvas;
   private final Paint paint;
 
-  public Ocr(TessBaseAPI tess, int width, int height, int navBarHeight, float density, Canvas canvas) {
+  public Ocr(TessBaseAPI tess, int width, int height, int navBarHeight, Canvas canvas) {
     this.tess = tess;
     this.width = width;
     this.height = height;
-    this.d = (width - navBarHeight) / (float) (480 - 56); // density / density
+    this.d = (width - navBarHeight) / (float) (480 - 56);
     this.canvas = canvas;
     if (canvas != null) {
       this.paint = new Paint();
       paint.setStyle(Paint.Style.STROKE);
-      paint.setStrokeWidth(2 * density);
+      paint.setStrokeWidth(2 * d);
     } else {
       paint = null;
     }

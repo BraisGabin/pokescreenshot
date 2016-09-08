@@ -13,12 +13,10 @@ import static java.lang.Math.PI;
 public class Angle {
   private final Bitmap bitmap;
   private final float d;
-  private final float p;
 
-  public Angle(Bitmap bitmap, float density) {
+  public Angle(Bitmap bitmap) {
     this.bitmap = bitmap;
-    this.d = density;
-    this.p = (bitmap.getWidth() - navBarHeight(bitmap)) / (float) (480 - 56);
+    this.d = (bitmap.getWidth() - navBarHeight(bitmap)) / (float) (480 - 56);
   }
 
   public double radian() {
@@ -86,7 +84,7 @@ public class Angle {
       final double radians = i * PI / max;
       final int x = (int) Math.round(Math.cos(radians) * radius);
       final int y = (int) Math.round(Math.sin(radians) * radius);
-      if (isCircle(center.x + x, center.y - y, Math.round(3.2f * p))) {
+      if (isCircle(center.x + x, center.y - y, Math.round(3.2f * d))) {
         return radians;
       }
     }

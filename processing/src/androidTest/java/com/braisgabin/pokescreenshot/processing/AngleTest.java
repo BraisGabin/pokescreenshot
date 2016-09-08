@@ -57,7 +57,7 @@ public class AngleTest {
     this.screenshot = screenshot;
     final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()));
-    this.angle = new Angle(bitmap, screenshot.density());
+    this.angle = new Angle(bitmap);
     this.width = bitmap.getWidth();
   }
 

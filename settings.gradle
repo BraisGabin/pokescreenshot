@@ -1,1 +1,1 @@
-include ':app', ':processing'
+include ':app', ':processing', ':debug-app'

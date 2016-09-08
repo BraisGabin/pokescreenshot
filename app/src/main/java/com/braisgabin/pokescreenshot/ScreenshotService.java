@@ -5,12 +5,18 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class ScreenshotService extends Service {
   public static Intent getCallingIntent(Context context) {
@@ -20,16 +26,8 @@ public class ScreenshotService extends Service {
   }
 
   private File screenshotsDir;
-  private Runnable runnable;
-  private Handler handler;
-  private long time;
-  private Ring<File> ring;
-  private FileFilter fileFilter = new FileFilter() {
-    @Override
-    public boolean accept(File file) {
-      return !ring.contains(file) && file.lastModified() / 1000 >= time;
-    }
-  };
+  private FF fileFilter = new FF();
+  private Subscription subscription;
 
   @Override
   public IBinder onBind(Intent intent) {
@@ -42,32 +40,43 @@ public class ScreenshotService extends Service {
     // https://github.com/android/platform_frameworks_base/blob/master/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java#L98
     final File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
     this.screenshotsDir = new File(root, "Screenshots");
-    this.time = Long.MAX_VALUE;
-    this.ring = new Ring<>(5);
-
-    this.handler = new Handler();
-    this.runnable = new Runnable() {
-      @Override
-      public void run() {
-        final File[] files = screenshotsDir.listFiles(fileFilter);
-        time = System.currentTimeMillis();
-        time = time / 1000;
-        if (files.length > 0) {
-          for (File file : files) {
-            ring.add(file);
-            System.out.println(file);
-          }
-        }
-        handler.postDelayed(runnable, 1001);
-      }
-    };
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     startForeground(1, notification());
 
-    runnable.run();
+    if (subscription == null) {
+      subscription = Observable.interval(0, 1000, TimeUnit.MILLISECONDS)
+          .subscribeOn(Schedulers.io())
+          .flatMap(new Func1<Long, Observable<File>>() {
+            @Override
+            public Observable<File> call(Long aLong) {
+              final File[] files = screenshotsDir.listFiles(fileFilter);
+              fileFilter.time = System.currentTimeMillis() / 1000;
+              return Observable.from(files);
+            }
+          })
+          .doOnNext(new Action1<File>() {
+            @Override
+            public void call(File file) {
+              fileFilter.ring.add(file);
+            }
+          })
+          .subscribe(
+              new Action1<File>() {
+                @Override
+                public void call(File file) {
+                  System.out.println(file);
+                }
+              },
+              new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                  throw new RuntimeException(throwable);
+                }
+              });
+    }
 
     return Service.START_STICKY;
   }
@@ -75,7 +84,10 @@ public class ScreenshotService extends Service {
   @Override
   public void onDestroy() {
     super.onDestroy();
-    handler.removeCallbacks(runnable);
+    if (subscription != null) {
+      subscription.unsubscribe();
+      subscription = null;
+    }
   }
 
   private Notification notification() {
@@ -84,5 +96,15 @@ public class ScreenshotService extends Service {
         .setContentTitle(getString(R.string.app_name))
         .setOngoing(true)
         .build();
+  }
+
+  class FF implements FileFilter {
+    long time = Long.MAX_VALUE;
+    final Ring<File> ring = new Ring<>(5);
+
+    @Override
+    public boolean accept(File file) {
+      return !ring.contains(file) && file.lastModified() / 1000 >= time;
+    }
   }
 }

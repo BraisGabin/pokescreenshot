@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.google.auto.value.AutoValue;
 import com.googlecode.tesseract.android.ResultIterator;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -66,7 +67,7 @@ public class Ocr {
     final int stardust = stardust(stardustRect(width, rect.bottom));
     Log.d(TAG, "Stardust: " + stardust);
 
-    return new Pokemon(cp, hp, stardust, candy, name);
+    return Pokemon.create(cp, hp, stardust, candy, name);
   }
 
   private int cp(Rect ocrRect, Rect regionRect) {
@@ -248,5 +249,22 @@ public class Ocr {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
     rect.offset(width / 2, bottom + Math.round(547 * d));
     return rect;
+  }
+
+  @AutoValue
+  abstract static class Pokemon {
+    static Pokemon create(int cp, int hp, int stardust, String candy, String name) {
+      return new AutoValue_Ocr_Pokemon(cp, hp, stardust, candy, name);
+    }
+
+    abstract int getCp();
+
+    abstract int getHp();
+
+    abstract int getStardust();
+
+    abstract String getCandyName();
+
+    abstract String getName();
   }
 }

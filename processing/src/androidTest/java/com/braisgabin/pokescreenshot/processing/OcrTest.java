@@ -78,7 +78,7 @@ public class OcrTest {
   }
   @Test
   public void testOcr() throws Exception {
-    final Pokemon pokemon = ocr.ocr();
+    final Ocr.Pokemon pokemon = ocr.ocr();
     assertThat(pokemon.getCp(), is(screenshot.getCp()));
     assertThat(pokemon.getHp(), is(screenshot.getHp()));
     assertThat(pokemon.getStardust(), is(screenshot.getStardus()));

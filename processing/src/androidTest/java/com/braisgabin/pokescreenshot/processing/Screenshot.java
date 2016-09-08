@@ -7,6 +7,8 @@ import net.sf.jsefa.csv.annotation.CsvField;
 
 import java.math.BigDecimal;
 
+import static com.braisgabin.pokescreenshot.processing.CP.*;
+
 @CsvDataType
 class Screenshot {
   @CsvField(pos = 1)
@@ -55,7 +57,7 @@ class Screenshot {
   }
 
   public double radian() {
-    return Pokemon.radian(trainerLvl, lvl.floatValue());
+    return lvl2Radian(trainerLvl, lvl.floatValue());
   }
 
   public int getCp() {

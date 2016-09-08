@@ -102,4 +102,19 @@ public class CP {
     }
     return (index + 2) / 2f;
   }
+
+  public static float radian2Lvl(int trainerLvl, float radian) {
+    // Formula extracted from:
+    // https://www.reddit.com/r/TheSilphRoad/comments/4uz4tl/determining_pokemon_level_from_the_semicircle/d5uisb6
+    final float degree = (float) (180 - Math.toDegrees(radian));
+    final float cpm = degree * CPM(trainerLvl) / 202.04f + CPM(1);
+    return CPM2Lvl(cpm);
+  }
+
+  public static float lvl2Radian(int trainerLvl, float pokemonLvl) {
+    // Formula extracted from:
+    // https://www.reddit.com/r/TheSilphRoad/comments/4uz4tl/determining_pokemon_level_from_the_semicircle/d5uisb6
+    final float degree = (CPM(pokemonLvl) - CPM(1)) * 202.04f / CPM(trainerLvl);
+    return (float) Math.toRadians(180 - degree);
+  }
 }

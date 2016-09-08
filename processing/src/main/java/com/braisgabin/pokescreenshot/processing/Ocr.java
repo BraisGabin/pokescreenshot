@@ -111,7 +111,7 @@ public class Ocr {
   }
 
   private Rect pcRect(int width) {
-    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(90 * d));
+    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(95 * d));
     rect.offset(width / 2 - rect.width() / 2, 0);
     return rect;
   }
@@ -184,7 +184,7 @@ public class Ocr {
   }
 
   private Rect psRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(24 * d));
+    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
     rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(335 * d));
     return rect;
   }
@@ -213,8 +213,8 @@ public class Ocr {
   }
 
   private Rect candyRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(20 * d));
-    rect.offset(width / 2, bottom + Math.round(495 * d));
+    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(24 * d));
+    rect.offset(width / 2, bottom + Math.round(496 * d));
     return rect;
   }
 
@@ -247,8 +247,8 @@ public class Ocr {
   }
 
   private Rect stardustRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(20 * d));
-    rect.offset(width / 2, bottom + Math.round(553 * d));
+    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
+    rect.offset(width / 2, bottom + Math.round(547 * d));
     return rect;
   }
 }

@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 
 import java.io.File;
+import java.io.FileFilter;
 
 public class ScreenshotService extends Service {
   public static Intent getCallingIntent(Context context) {
@@ -21,6 +22,14 @@ public class ScreenshotService extends Service {
   private File screenshotsDir;
   private Runnable runnable;
   private Handler handler;
+  private long time;
+  private Ring<File> ring;
+  private FileFilter fileFilter = new FileFilter() {
+    @Override
+    public boolean accept(File file) {
+      return !ring.contains(file) && file.lastModified() / 1000 >= time;
+    }
+  };
 
   @Override
   public IBinder onBind(Intent intent) {
@@ -33,14 +42,23 @@ public class ScreenshotService extends Service {
     // https://github.com/android/platform_frameworks_base/blob/master/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java#L98
     final File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
     this.screenshotsDir = new File(root, "Screenshots");
-
+    this.time = Long.MAX_VALUE;
+    this.ring = new Ring<>(5);
 
     this.handler = new Handler();
     this.runnable = new Runnable() {
       @Override
       public void run() {
-        System.out.println(screenshotsDir.listFiles().length);
-        handler.postDelayed(this, 2000);
+        final File[] files = screenshotsDir.listFiles(fileFilter);
+        time = System.currentTimeMillis();
+        time = time / 1000;
+        if (files.length > 0) {
+          for (File file : files) {
+            ring.add(file);
+            System.out.println(file);
+          }
+        }
+        handler.postDelayed(runnable, 1001);
       }
     };
   }

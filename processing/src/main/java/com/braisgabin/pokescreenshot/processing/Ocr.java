@@ -66,11 +66,6 @@ public class Ocr {
     final int stardust = stardust(stardustRect(width, rect.bottom));
     Log.d(TAG, "Stardust: " + stardust);
 
-    if (canvas != null) {
-      paint.setColor(Color.CYAN);
-      canvas.drawLine(width / 2, 0, width / 2, height, paint);
-    }
-
     return new Pokemon(pc, ps, stardust, candy, name);
   }
 

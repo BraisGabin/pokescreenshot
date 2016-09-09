@@ -19,11 +19,11 @@ public class Angle {
     this.d = (bitmap.getWidth() - navBarHeight(bitmap)) / (float) (480 - 56);
   }
 
-  public double radian() {
+  public float radian() {
     return radian(null);
   }
 
-  public double radian(Canvas canvas) {
+  public float radian(Canvas canvas) {
     final Point initialPoint = initialPoint();
     final Point center = center(initialPoint, bitmap.getWidth());
     final int radius = radius(initialPoint, center);
@@ -31,7 +31,7 @@ public class Angle {
     if (canvas != null) {
       debug(initialPoint, center, radius, radian, canvas);
     }
-    return radian;
+    return (float) radian;
   }
 
   private void debug(Point initialPoint, Point center, int radius, double radian, Canvas canvas) {

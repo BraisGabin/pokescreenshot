@@ -6,6 +6,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -45,7 +47,7 @@ public class GuesserUnitTest {
         IvImplementation.create(192, 174, 130),
         IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(coreStats, 482, 63, 17), is(coreStats[0]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 482, 63, 17), is(coreStats[0]));
   }
 
   @Test
@@ -56,7 +58,7 @@ public class GuesserUnitTest {
         IvImplementation.create(192, 174, 130),
         IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(coreStats, 1173, 142, 15), is(coreStats[1]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 1173, 142, 15), is(coreStats[1]));
   }
 
   @Test
@@ -67,7 +69,7 @@ public class GuesserUnitTest {
         IvImplementation.create(192, 174, 130),
         IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(coreStats, 736, 64, 13), is(coreStats[2]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 736, 64, 13), is(coreStats[2]));
   }
 
   @Test
@@ -78,7 +80,7 @@ public class GuesserUnitTest {
         IvImplementation.create(192, 174, 130),
         IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(coreStats, 1415, 82, 19), is(coreStats[3]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19), is(coreStats[3]));
   }
 
   @Test
@@ -91,7 +93,7 @@ public class GuesserUnitTest {
     };
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("Unknown pokémon.");
-    Guesser.getPokemon(coreStats, 50, 82, 19);
+    Guesser.getPokemon(Arrays.asList(coreStats), 50, 82, 19);
   }
 
   @Test
@@ -102,7 +104,7 @@ public class GuesserUnitTest {
     };
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("Multiple Pokémon.");
-    Guesser.getPokemon(coreStats, 1415, 82, 19);
+    Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19);
   }
 
   @Test

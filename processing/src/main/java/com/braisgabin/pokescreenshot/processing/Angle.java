@@ -63,7 +63,7 @@ public class Angle {
     for (int y = (34 * height) / 100; y >= 0; y--) {
       for (int x = width / 10, count = (14 * width) / 100; x < count; x++) {
         if (bitmap.getPixel(x, y) == -1) {
-          return new Point(x + Math.round(d), y + Math.round(2 * d));
+          return new Point(x + Math.round(1.7f * d), y + Math.round(2.6f * d));
         }
       }
     }
@@ -79,12 +79,12 @@ public class Angle {
   }
 
   double radian(Point center, int radius) {
-    final double max = radius * PI;
+    final int max = radius * 4;
     for (int i = 0; i <= max; i++) {
       final double radians = i * PI / max;
       final int x = (int) Math.round(Math.cos(radians) * radius);
       final int y = (int) Math.round(Math.sin(radians) * radius);
-      if (isCircle(center.x + x, center.y - y, Math.round(3.2f * d))) {
+      if (isCircle(center.x + x, center.y - y, Math.round(3.1f * d))) {
         return radians;
       }
     }

@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.google.auto.value.AutoValue;
+import com.googlecode.leptonica.android.Pixa;
 import com.googlecode.tesseract.android.ResultIterator;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -79,7 +80,7 @@ public class Ocr {
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
-      regionRect.set(tess.getRegions().getBoxRect(0));
+      regionRect.set(getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);
       cp = Integer.parseInt(matcher.group(1));
     } else {
@@ -118,7 +119,7 @@ public class Ocr {
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
-    final Rect boxRect = tess.getRegions().getBoxRect(0);
+    final Rect boxRect = getRegionBox(tess);
     boxRect.offset(ocrRect.left, ocrRect.top);
     final int rectWidth = (width / 2 - boxRect.left) * 2 + Math.round(2 * d);
     final Rect ocrRect2 = new Rect(boxRect);
@@ -126,7 +127,7 @@ public class Ocr {
 
     tess.setRectangle(ocrRect2);
     String name = tess.getUTF8Text();
-    final Rect boxRect2 = tess.getRegions().getBoxRect(0);
+    final Rect boxRect2 = getRegionBox(tess);
     boxRect2.offset(ocrRect2.left, ocrRect2.top);
 
     if (name == null) {
@@ -164,7 +165,7 @@ public class Ocr {
     text = text.replace("l", "1");
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
-      regionRect.set(tess.getRegions().getBoxRect(0));
+      regionRect.set(getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);
       hp = Integer.parseInt(matcher.group(1));
     }
@@ -194,7 +195,7 @@ public class Ocr {
 
     String candy = Candy.candyType(text);
 
-    final Rect boxRect = tess.getRegions().getBoxRect(0);
+    final Rect boxRect = getRegionBox(tess);
     boxRect.offset(ocrRect.left, ocrRect.top);
 
     if (candy == null) {
@@ -227,7 +228,7 @@ public class Ocr {
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
-      regionRect.set(tess.getRegions().getBoxRect(0));
+      regionRect.set(getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);
       stardust = Integer.parseInt(matcher.group(1));
     }
@@ -249,6 +250,13 @@ public class Ocr {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
     rect.offset(width / 2, bottom + Math.round(547 * d));
     return rect;
+  }
+
+  private Rect getRegionBox(TessBaseAPI tess) {
+    final Pixa regions = tess.getRegions();
+    final Rect boxRect = regions.getBoxRect(0);
+    regions.recycle();
+    return boxRect;
   }
 
   @AutoValue

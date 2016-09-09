@@ -13,6 +13,9 @@ import net.sf.jsefa.csv.CsvDeserializer;
 import net.sf.jsefa.csv.CsvIOFactory;
 import net.sf.jsefa.csv.config.CsvConfiguration;
 
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,6 +34,29 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(value = Parameterized.class)
 public class OcrTest {
+  private static TessBaseAPI tess;
+
+  @BeforeClass
+  public static void setUpClass() {
+    final Context context = InstrumentationRegistry.getContext();
+    final File root = context.getCacheDir();
+    try {
+      copyRecursive(context.getAssets(), "tesseract", root);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    tess = new TessBaseAPI();
+    tess.init(root.getAbsolutePath() + "/tesseract/", "eng");
+    tess.readConfigFile("pokemon");
+  }
+
+  @AfterClass
+  public static void setDownClass() {
+    tess.end();
+    tess = null;
+  }
+
   @Parameterized.Parameters
   public static Collection<Screenshot> data() throws IOException {
     final CsvConfiguration config = new CsvConfiguration();
@@ -52,30 +78,24 @@ public class OcrTest {
   }
 
   private final Screenshot screenshot;
-  private final Ocr ocr;
+  private Ocr ocr;
 
-  public OcrTest(Screenshot screenshot) throws Exception {
+  public OcrTest(Screenshot screenshot) {
     this.screenshot = screenshot;
+  }
+
+  @Before
+  public void setUp() throws IOException {
     final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inMutable = true;
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()), null, options);
 
-    final Context context = InstrumentationRegistry.getContext();
-    final File root = context.getCacheDir();
-    try {
-      copyRecursive(context.getAssets(), "tesseract", root);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    final TessBaseAPI tess = new TessBaseAPI();
-    tess.init(root.getAbsolutePath() + "/tesseract/", "eng");
-    tess.readConfigFile("pokemon");
     tess.setImage(bitmap);
 
     this.ocr = Ocr.create(tess, bitmap, null);
   }
+
   @Test
   public void testOcr() throws Exception {
     final Ocr.Pokemon pokemon = ocr.ocr();

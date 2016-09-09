@@ -10,47 +10,47 @@ import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
 public class Guesser {
-  static int calculateCp(Pokemon pokemon, float lvl, int atk, int def, int stam) {
-    atk += pokemon.atk();
-    def += pokemon.def();
-    stam += pokemon.stam();
+  static int calculateCp(CoreStats coreStats, float lvl, int atk, int def, int stam) {
+    atk += coreStats.atk();
+    def += coreStats.def();
+    stam += coreStats.stam();
     float CPM = CPM(lvl);
     // Formula extracted from: https://pokemongo.gamepress.gg/pokemon-stats-advanced
     return max(10, (int) round(floor(((atk) * sqrt(def) * sqrt(stam) * CPM * CPM) / 10)));
   }
 
-  static int calculateHp(Pokemon pokemon, float lvl, int stam) {
+  static int calculateHp(CoreStats pokemon, float lvl, int stam) {
     return max(10, (int) floor(CPM(lvl) * (pokemon.stam() + stam)));
   }
 
-  static Pokemon getPokemon(Pokemon[] pokemonList, int cp, int hp, float lvl) {
-    Pokemon pokemon = null;
-    for (Pokemon p : pokemonList) {
-      final int minCp = calculateCp(p, lvl, 0, 0, 0);
-      final int maxCp = calculateCp(p, lvl, 15, 15, 15);
-      final int minHp = calculateHp(p, lvl, 0);
-      final int maxHp = calculateHp(p, lvl, 15);
+  static <T extends CoreStats> T getPokemon(T[] coreStatsList, int cp, int hp, float lvl) {
+    T coreStats = null;
+    for (T cs : coreStatsList) {
+      final int minCp = calculateCp(cs, lvl, 0, 0, 0);
+      final int maxCp = calculateCp(cs, lvl, 15, 15, 15);
+      final int minHp = calculateHp(cs, lvl, 0);
+      final int maxHp = calculateHp(cs, lvl, 15);
       if (minCp <= cp && maxCp >= cp && minHp <= hp && maxHp >= hp) {
-        if (pokemon == null) {
-          pokemon = p;
+        if (coreStats == null) {
+          coreStats = cs;
         } else {
           throw new RuntimeException("Multiple Pokémon.");
         }
       }
     }
-    if (pokemon == null) {
+    if (coreStats == null) {
       throw new RuntimeException("Unknown pokémon.");
     }
-    return pokemon;
+    return coreStats;
   }
 
-  static int[][] iv(Pokemon pokemon, int cp, int hp, float lvl) {
+  static int[][] iv(CoreStats coreStats, int cp, int hp, float lvl) {
     final List<int[]> ivs = new ArrayList<>();
     for (int stam = 0; stam < 16; stam++) {
-      if (hp == calculateHp(pokemon, lvl, stam)) {
+      if (hp == calculateHp(coreStats, lvl, stam)) {
         for (int atk = 0; atk < 16; atk++) {
           for (int def = 0; def < 16; def++) {
-            if (cp == calculateCp(pokemon, lvl, atk, def, stam)) {
+            if (cp == calculateCp(coreStats, lvl, atk, def, stam)) {
               ivs.add(new int[]{atk, def, stam});
             }
           }

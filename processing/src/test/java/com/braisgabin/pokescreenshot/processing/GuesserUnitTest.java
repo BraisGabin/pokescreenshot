@@ -1,5 +1,7 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import com.google.auto.value.AutoValue;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,100 +15,100 @@ public class GuesserUnitTest {
 
   @Test
   public void testCalculateCp() {
-    Pokemon pokemon = Pokemon.create(77, "Ponyta", 168, 138, 100, "PONYTA");
-    assertThat(Guesser.calculateCp(pokemon, 17, 14, 15, 15), is(732));
+    final CoreStats coreStats = IvImplementation.create(168, 138, 100);
+    assertThat(Guesser.calculateCp(coreStats, 17, 14, 15, 15), is(732));
   }
 
   @Test
   public void testCalculateCp_min10() {
-    Pokemon pokemon = Pokemon.create(1, "", 100, 100, 100, "");
-    assertThat(Guesser.calculateCp(pokemon, 1, 0, 0, 0), is(10));
+    final CoreStats coreStats = IvImplementation.create(100, 100, 100);
+    assertThat(Guesser.calculateCp(coreStats, 1, 0, 0, 0), is(10));
   }
 
   @Test
   public void testCalculateHP() {
-    Pokemon pokemon = Pokemon.create(77, "Ponyta", 168, 138, 100, "PONYTA");
-    assertThat(Guesser.calculateHp(pokemon, 17, 15), is(63));
+    final CoreStats coreStats = IvImplementation.create(168, 138, 100);
+    assertThat(Guesser.calculateHp(coreStats, 17, 15), is(63));
   }
 
   @Test
   public void testCalculateHP_min10() {
-    Pokemon pokemon = Pokemon.create(1, "", 100, 100, 100, "");
-    assertThat(Guesser.calculateHp(pokemon, 1, 0), is(10));
+    final CoreStats coreStats = IvImplementation.create(100, 100, 100);
+    assertThat(Guesser.calculateHp(coreStats, 1, 0), is(10));
   }
 
   @Test
   public void testGetPokemon_eevee() {
-    Pokemon[] pokemon = {
-        Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE"),
-        Pokemon.create(134, "Vaporeon", 186, 168, 260, "EEVEE"),
-        Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    final CoreStats[] coreStats = {
+        IvImplementation.create(114, 128, 110),
+        IvImplementation.create(186, 168, 260),
+        IvImplementation.create(192, 174, 130),
+        IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(pokemon, 482, 63, 17), is(pokemon[0]));
+    assertThat(Guesser.getPokemon(coreStats, 482, 63, 17), is(coreStats[0]));
   }
 
   @Test
   public void testGetPokemon_vaporeon() {
-    Pokemon[] pokemon = {
-        Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE"),
-        Pokemon.create(134, "Vaporeon", 186, 168, 260, "EEVEE"),
-        Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    final CoreStats[] coreStats = {
+        IvImplementation.create(114, 128, 110),
+        IvImplementation.create(186, 168, 260),
+        IvImplementation.create(192, 174, 130),
+        IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(pokemon, 1173, 142, 15), is(pokemon[1]));
+    assertThat(Guesser.getPokemon(coreStats, 1173, 142, 15), is(coreStats[1]));
   }
 
   @Test
   public void testGetPokemon_jolteon() {
-    Pokemon[] pokemon = {
-        Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE"),
-        Pokemon.create(134, "Vaporeon", 186, 168, 260, "EEVEE"),
-        Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    final CoreStats[] coreStats = {
+        IvImplementation.create(114, 128, 110),
+        IvImplementation.create(186, 168, 260),
+        IvImplementation.create(192, 174, 130),
+        IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(pokemon, 736, 64, 13), is(pokemon[2]));
+    assertThat(Guesser.getPokemon(coreStats, 736, 64, 13), is(coreStats[2]));
   }
 
   @Test
   public void testGetPokemon_flareon() {
-    Pokemon[] pokemon = {
-        Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE"),
-        Pokemon.create(134, "Vaporeon", 186, 168, 260, "EEVEE"),
-        Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    final CoreStats[] coreStats = {
+        IvImplementation.create(114, 128, 110),
+        IvImplementation.create(186, 168, 260),
+        IvImplementation.create(192, 174, 130),
+        IvImplementation.create(238, 178, 130),
     };
-    assertThat(Guesser.getPokemon(pokemon, 1415, 82, 19), is(pokemon[3]));
+    assertThat(Guesser.getPokemon(coreStats, 1415, 82, 19), is(coreStats[3]));
   }
 
   @Test
   public void testGetPokemon_none() {
-    Pokemon[] pokemon = {
-        Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE"),
-        Pokemon.create(134, "Vaporeon", 186, 168, 260, "EEVEE"),
-        Pokemon.create(135, "Jolteon", 192, 174, 130, "EEVEE"),
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    final CoreStats[] coreStats = {
+        IvImplementation.create(114, 128, 110),
+        IvImplementation.create(186, 168, 260),
+        IvImplementation.create(192, 174, 130),
+        IvImplementation.create(238, 178, 130),
     };
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("Unknown pokémon.");
-    Guesser.getPokemon(pokemon, 50, 82, 19);
+    Guesser.getPokemon(coreStats, 50, 82, 19);
   }
 
   @Test
   public void testGetPokemon_tooMuch() {
-    Pokemon[] pokemon = {
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
-        Pokemon.create(136, "Flareon", 238, 178, 130, "EEVEE"),
+    final CoreStats[] coreStats = {
+        IvImplementation.create(238, 178, 130),
+        IvImplementation.create(238, 178, 130),
     };
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("Multiple Pokémon.");
-    Guesser.getPokemon(pokemon, 1415, 82, 19);
+    Guesser.getPokemon(coreStats, 1415, 82, 19);
   }
 
   @Test
   public void testIv_eevee() {
-    final Pokemon pokemon = Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE");
-    assertThat(Guesser.iv(pokemon, 482, 63, 17), is(new int[][]{
+    final CoreStats coreStats = IvImplementation.create(114, 128, 110);
+    assertThat(Guesser.iv(coreStats, 482, 63, 17), is(new int[][]{
         {10, 15, 5},
         {11, 13, 5},
         {14, 6, 5},
@@ -120,15 +122,31 @@ public class GuesserUnitTest {
 
   @Test
   public void testIv_eevee_wrong() {
-    final Pokemon pokemon = Pokemon.create(133, "Eevee", 114, 128, 110, "EEVEE");
-    assertThat(Guesser.iv(pokemon, 482, 63, 15), is(new int[][]{}));
+    final CoreStats coreStats = IvImplementation.create(114, 128, 110);
+    assertThat(Guesser.iv(coreStats, 482, 63, 15), is(new int[][]{}));
   }
 
   @Test
   public void testIv_ponyta() {
-    final Pokemon pokemon = Pokemon.create(77, "Ponyta", 168, 138, 100, "PONYTA");
-    assertThat(Guesser.iv(pokemon, 732, 63, 17), is(new int[][]{
+    final CoreStats coreStats = IvImplementation.create(168, 138, 100);
+    assertThat(Guesser.iv(coreStats, 732, 63, 17), is(new int[][]{
         {14, 15, 15},
     }));
+  }
+
+  @AutoValue
+  abstract static class IvImplementation implements CoreStats {
+    static CoreStats create(int atk, int def, int stam) {
+      return new AutoValue_GuesserUnitTest_IvImplementation(atk, def, stam);
+    }
+
+    @Override
+    public abstract int atk();
+
+    @Override
+    public abstract int def();
+
+    @Override
+    public abstract int stam();
   }
 }

@@ -86,14 +86,15 @@ public class OcrTest {
 
   @Before
   public void setUp() throws IOException {
-    final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
+    final Context context = InstrumentationRegistry.getContext();
+    final AssetManager assets = context.getAssets();
     final BitmapFactory.Options options = new BitmapFactory.Options();
     options.inMutable = true;
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()), null, options);
 
     tess.setImage(bitmap);
 
-    this.ocr = Ocr.create(tess, bitmap, null);
+    this.ocr = Ocr.create(tess, context, bitmap, null);
   }
 
   @Test

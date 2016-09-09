@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     final String absolutePath = root.getAbsolutePath() + "/tesseract/";
     tessBaseAPI.init(absolutePath, "eng");
     tessBaseAPI.readConfigFile("pokemon");
-    final Ocr ocr = Ocr.create(tessBaseAPI, bitmap, canvas);
+    final Ocr ocr = Ocr.create(tessBaseAPI, this, bitmap, canvas);
     ocr.ocr();
   }
 

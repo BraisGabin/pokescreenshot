@@ -23,7 +23,7 @@ public class Guesser {
     return max(10, (int) floor(CPM(lvl) * (pokemon.stam() + stam)));
   }
 
-  static <T extends CoreStats> T getPokemon(T[] coreStatsList, int cp, int hp, float lvl) {
+  public static <T extends CoreStats> T getPokemon(Iterable<T> coreStatsList, int cp, int hp, float lvl) {
     T coreStats = null;
     for (T cs : coreStatsList) {
       final int minCp = calculateCp(cs, lvl, 0, 0, 0);

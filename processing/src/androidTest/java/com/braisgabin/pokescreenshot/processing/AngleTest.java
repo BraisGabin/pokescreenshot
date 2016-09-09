@@ -50,11 +50,14 @@ public class AngleTest {
   }
 
   private final Screenshot screenshot;
-  private final Angle angle;
-  private final int width;
+  private Angle angle;
+  private int width;
 
-  public AngleTest(Screenshot screenshot) throws Exception {
+  public AngleTest(Screenshot screenshot) {
     this.screenshot = screenshot;
+  }
+
+  public void setUp() throws IOException {
     final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()));
     this.angle = new Angle(bitmap);
@@ -62,7 +65,8 @@ public class AngleTest {
   }
 
   @Test
-  public void testInitialTest() {
+  public void testInitialTest() throws IOException {
+    setUp();
     Point point = angle.initialPoint();
     assertThat(point, is(screenshot.initialPoint()));
   }
@@ -81,7 +85,8 @@ public class AngleTest {
   }
 
   @Test
-  public void testRadian() {
+  public void testRadian() throws IOException {
+    setUp();
     final Point initialPoint = screenshot.initialPoint();
     final Point center = Angle.center(screenshot.initialPoint(), width);
     final int radius = Angle.radius(initialPoint, center);

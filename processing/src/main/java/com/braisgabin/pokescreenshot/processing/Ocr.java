@@ -1,5 +1,6 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,9 +22,9 @@ import static com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel.RIL
 public class Ocr {
   private final static String TAG = "OCR";
 
-  public static Ocr create(TessBaseAPI tess, Bitmap bitmap, Canvas canvas) {
+  public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
     final int navBarHeight = navBarHeight(bitmap);
-    BitmapOperations.filter(bitmap, 208, 229);
+    BitmapOperations.filter(context, bitmap, 219);
     tess.setImage(bitmap);
     return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), navBarHeight, canvas);
   }

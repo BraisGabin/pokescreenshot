@@ -1,0 +1,13 @@
+CREATE TABLE pokemon (
+  id INTEGER PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  atk INTEGER NOT NULL,
+  def INTEGER NOT NULL,
+  stam INTEGER NOT NULL,
+  candy TEXT NOT NULL
+);
+
+select_by_candy:
+SELECT *
+FROM pokemon
+WHERE candy = ?;

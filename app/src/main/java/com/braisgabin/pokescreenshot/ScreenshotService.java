@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
@@ -11,6 +12,8 @@ import android.support.v7.app.NotificationCompat;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -24,6 +27,9 @@ public class ScreenshotService extends Service {
 
     return intent;
   }
+
+  @Inject
+  SQLiteDatabase database;
 
   private File screenshotsDir;
   private FF fileFilter = new FF();
@@ -40,6 +46,9 @@ public class ScreenshotService extends Service {
     // https://github.com/android/platform_frameworks_base/blob/master/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java#L98
     final File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
     this.screenshotsDir = new File(root, "Screenshots");
+
+    App.component(this)
+        .inject(this);
   }
 
   @Override

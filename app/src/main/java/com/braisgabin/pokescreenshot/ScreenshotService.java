@@ -220,7 +220,7 @@ public class ScreenshotService extends Service {
 
     @Override
     public boolean accept(File file) {
-      return !ring.contains(file) && file.lastModified() / 1000 >= time;
+      return file.lastModified() / 1000 >= time && !ring.contains(file);
     }
   }
 }

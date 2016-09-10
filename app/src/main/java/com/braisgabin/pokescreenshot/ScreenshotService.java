@@ -1,9 +1,12 @@
 package com.braisgabin.pokescreenshot;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,8 +39,16 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class ScreenshotService extends Service {
+  private final static String ACTION_STOP = "com.braisgabin.pokescreenshot.ACTION_STOP";
+
   public static Intent getCallingIntent(Context context) {
     final Intent intent = new Intent(context, ScreenshotService.class);
+
+    return intent;
+  }
+
+  private static Intent getStopActionIntent() {
+    final Intent intent = new Intent(ACTION_STOP);
 
     return intent;
   }
@@ -51,6 +62,7 @@ public class ScreenshotService extends Service {
   private File screenshotsDir;
   private FF fileFilter = new FF();
   private Subscription subscription;
+  private BroadcastReceiver broadcastReceiver;
 
   @Override
   public IBinder onBind(Intent intent) {
@@ -66,11 +78,21 @@ public class ScreenshotService extends Service {
 
     App.component(this)
         .inject(this);
+
+    broadcastReceiver = new BroadcastReceiver() {
+
+      @Override
+      public void onReceive(Context context, Intent intent) {
+        stopSelf();
+      }
+    };
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     startForeground(1, notification());
+
+    registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
     if (subscription == null) {
       subscription = Observable.interval(0, 1000, TimeUnit.MILLISECONDS)
@@ -163,13 +185,18 @@ public class ScreenshotService extends Service {
       subscription.unsubscribe();
       subscription = null;
     }
+    unregisterReceiver(broadcastReceiver);
   }
 
   private Notification notification() {
+    final Intent stopIntent = getStopActionIntent();
+    final PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
     return new NotificationCompat.Builder(this)
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle(getString(R.string.app_name))
         .setOngoing(true)
+        .addAction(0, getString(R.string.stop_service), stopPendingIntent)
         .build();
   }
 

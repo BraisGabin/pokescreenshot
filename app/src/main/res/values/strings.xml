@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PokeScreenshot</string>
+    <string name="stop_service">Stop</string>
 </resources>

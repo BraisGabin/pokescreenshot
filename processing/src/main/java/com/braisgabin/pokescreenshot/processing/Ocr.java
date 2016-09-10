@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class Ocr {
   private final static String TAG = "OCR";
   public static final int HEIGHT_CP = 95;
-  public static final int VALUE_CP = 230;
+  public static final int VALUE_CP = 240;
   public static final int VALUE_NO_CP = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {

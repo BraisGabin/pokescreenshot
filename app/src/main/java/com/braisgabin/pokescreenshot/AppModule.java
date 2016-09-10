@@ -1,10 +1,14 @@
 package com.braisgabin.pokescreenshot;
 
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 
 import com.braisgabin.pokescreenshot.model.MySQLiteOpenHelper;
+import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences.RxSharedPreferences;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
@@ -66,5 +70,23 @@ class AppModule {
   @Provides
   SQLiteDatabase sqLiteDatabaseProvider(SQLiteOpenHelper sqLiteOpenHelper) {
     return sqLiteOpenHelper.getReadableDatabase();
+  }
+
+  @Singleton
+  @Provides
+  SharedPreferences sharedPreferencesProvider() {
+    return PreferenceManager.getDefaultSharedPreferences(app);
+  }
+
+  @Singleton
+  @Provides
+  RxSharedPreferences rxSharedPreferencesProvider(SharedPreferences sharedPreferences) {
+    return RxSharedPreferences.create(sharedPreferences);
+  }
+
+  @Singleton
+  @Provides
+  Preference<String> trainerLvlProvider(RxSharedPreferences rxSharedPreferences) {
+    return rxSharedPreferences.getString("trainer_lvl", "1");
   }
 }

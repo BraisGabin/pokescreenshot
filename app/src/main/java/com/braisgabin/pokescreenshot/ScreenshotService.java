@@ -192,11 +192,15 @@ public class ScreenshotService extends Service {
     final Intent stopIntent = getStopActionIntent();
     final PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+    final Intent settingsIntent = SettingsActivity.getCallingIntent(this);
+    final PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
     return new NotificationCompat.Builder(this)
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle(getString(R.string.app_name))
         .setOngoing(true)
         .addAction(0, getString(R.string.stop_service), stopPendingIntent)
+        .addAction(0, getString(R.string.settings), settingsPendingIntent)
         .build();
   }
 

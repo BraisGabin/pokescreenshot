@@ -19,12 +19,15 @@ import java.util.regex.Pattern;
 
 public class Ocr {
   private final static String TAG = "OCR";
-  public final static int FILTER = 219;
+  public static final int HEIGHT_CP = 95;
+  public static final int VALUE_CP = 230;
+  public static final int VALUE_NO_CP = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
-    BitmapOperations.filter(context, bitmap, FILTER);
+    final float d = bitmap.getWidth() / (float) 480;
+    BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), VALUE_CP, VALUE_NO_CP);
     tess.setImage(bitmap);
-    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), canvas);
+    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), d, canvas);
   }
 
   private final TessBaseAPI tess;
@@ -34,11 +37,11 @@ public class Ocr {
   private final Canvas canvas;
   private final Paint paint;
 
-  public Ocr(TessBaseAPI tess, int width, int height, Canvas canvas) {
+  public Ocr(TessBaseAPI tess, int width, int height, float d, Canvas canvas) {
     this.tess = tess;
     this.width = width;
     this.height = height;
-    this.d = width / (float) 480;
+    this.d = d;
     this.canvas = canvas;
     if (canvas != null) {
       this.paint = new Paint();
@@ -105,7 +108,7 @@ public class Ocr {
   }
 
   private Rect cpRect(int width) {
-    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(95 * d));
+    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(HEIGHT_CP * d));
     rect.offset(width / 2 - rect.width() / 2, 0);
     return rect;
   }

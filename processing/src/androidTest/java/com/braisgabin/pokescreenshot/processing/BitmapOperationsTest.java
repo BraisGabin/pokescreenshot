@@ -46,26 +46,28 @@ public class BitmapOperationsTest {
 
   @Before
   public void setUp() {
-    this.bitmap1 = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+    this.bitmap1 = Bitmap.createBitmap(1, 2, Bitmap.Config.ARGB_8888);
     bitmap1.setPixel(0, 0, color);
+    bitmap1.setPixel(0, 1, color);
     this.bitmap2 = bitmap1.copy(bitmap1.getConfig(), true);
     this.context = InstrumentationRegistry.getContext();
   }
 
   @Test
   public void testFilter_black() throws Exception {
-    BitmapOperations.filter(context, bitmap1, 150);
-    filter(bitmap2, 150);
+    BitmapOperations.filter(context, bitmap1, 0, 150, 200);
+    filter(bitmap2, 0, 150, 200);
 
     assertThat(bitmap1.getPixel(0, 0), is(bitmap2.getPixel(0, 0)));
+    assertThat(bitmap1.getPixel(0, 1), is(bitmap2.getPixel(0, 1)));
   }
 
-  static void filter(Bitmap bitmap, int value) {
+  static void filter(Bitmap bitmap, int heightCP, int valueCp, int valueNoCp) {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-        final int g = range(grey(bitmap.getPixel(x, y)), value);
+        final int g = range(grey(bitmap.getPixel(x, y)), y <= heightCP ? valueCp : valueNoCp);
         bitmap.setPixel(x, y, Color.rgb(g, g, g));
       }
     }

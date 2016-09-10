@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     final Bitmap bitmap = bitmap(image);
     final Bitmap bitmap2 = bitmap.copy(bitmap.getConfig(), true);
-    BitmapOperations.filter(this, bitmap2, Ocr.FILTER);
+    BitmapOperations.filter(this, bitmap2, Math.round(Ocr.HEIGHT_CP * bitmap2.getWidth() / (float) 480), Ocr.VALUE_CP, Ocr.VALUE_NO_CP);
     Canvas canvas = new Canvas(bitmap2);
 
     final Angle angle = new Angle(bitmap);

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.braisgabin.pokescreenshot.model.Pokemon;
@@ -141,6 +142,7 @@ public class ScreenshotService extends Service {
               final ScreenshotComponent c = component.plus(new ScreenshotModule(bitmap));
               try {
                 final float pokemonLvl = CP.radian2Lvl(Integer.parseInt(trainerLvl.get()), c.angle().radian());
+                Log.d("PSS", String.format(Locale.US, "lvl: %.1f", pokemonLvl));
                 final Ocr.Pokemon ocrData = c.ocr().ocr();
                 final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
                 final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);

@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 
+import java.util.Locale;
+
 import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 import static java.lang.Math.PI;
 
@@ -19,11 +21,11 @@ public class Angle {
     this.d = (bitmap.getWidth() - navBarHeight(bitmap)) / (float) (480 - 56);
   }
 
-  public float radian() {
+  public float radian() throws RadianException, InitialPointException {
     return radian(null);
   }
 
-  public float radian(Canvas canvas) {
+  public float radian(Canvas canvas) throws InitialPointException, RadianException {
     final Point initialPoint = initialPoint();
     final Point center = center(initialPoint, bitmap.getWidth());
     final int radius = radius(initialPoint, center);
@@ -57,7 +59,7 @@ public class Angle {
     canvas.drawCircle(center.x + x, center.y - y, 6 * d, paint);
   }
 
-  Point initialPoint() {
+  Point initialPoint() throws InitialPointException {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
     for (int y = (34 * height) / 100; y >= 0; y--) {
@@ -67,7 +69,7 @@ public class Angle {
         }
       }
     }
-    throw new RuntimeException();
+    throw new InitialPointException("Impossible to detect the initial point of the circumference.");
   }
 
   static Point center(Point initialPoint, int width) {
@@ -78,7 +80,7 @@ public class Angle {
     return center.x - initialPoint.x;
   }
 
-  double radian(Point center, int radius) {
+  double radian(Point center, int radius) throws RadianException {
     final int max = radius * 4;
     for (int i = 0; i <= max; i++) {
       final double radians = i * PI / max;
@@ -88,7 +90,7 @@ public class Angle {
         return radians;
       }
     }
-    throw new RuntimeException();
+    throw new RadianException(String.format(Locale.US, "Impossible to detect the bubble. Center: %s, radius: %d", center.toString(), radius));
   }
 
   private boolean isCircle(int x, int y, int range) {
@@ -101,5 +103,24 @@ public class Angle {
       }
     }
     return true;
+  }
+
+  public static abstract class AngleException extends ProcessingException {
+
+    public AngleException(String message) {
+      super(message);
+    }
+  }
+
+  public static class InitialPointException extends AngleException {
+    public InitialPointException(String message) {
+      super(message);
+    }
+  }
+
+  public static class RadianException extends AngleException {
+    public RadianException(String message) {
+      super(message);
+    }
   }
 }

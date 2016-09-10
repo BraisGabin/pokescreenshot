@@ -19,6 +19,7 @@ import com.braisgabin.pokescreenshot.model.Pokemon;
 import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
+import com.braisgabin.pokescreenshot.processing.ProcessingException;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -134,11 +135,15 @@ public class ScreenshotService extends Service {
             @Override
             public int[][] call(Bitmap bitmap) {
               final ScreenshotComponent c = component.plus(new ScreenshotModule(bitmap));
-              final float pokemonLvl = CP.radian2Lvl(22, c.angle().radian()); // FIXME Hardcode
-              final Ocr.Pokemon ocrData = c.ocr().ocr();
-              final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
-              final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
-              return Guesser.iv(pokemon, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
+              try {
+                final float pokemonLvl = CP.radian2Lvl(22, c.angle().radian()); // FIXME Hardcode
+                final Ocr.Pokemon ocrData = c.ocr().ocr();
+                final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
+                final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
+                return Guesser.iv(pokemon, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
+              } catch (ProcessingException e) {
+                throw new RuntimeException(e);
+              }
             }
           })
           .observeOn(AndroidSchedulers.mainThread())

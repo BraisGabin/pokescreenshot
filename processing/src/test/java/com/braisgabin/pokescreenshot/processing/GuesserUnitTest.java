@@ -103,9 +103,22 @@ public class GuesserUnitTest {
         IvImplementation.create(192, 174, 130),
         IvImplementation.create(238, 178, 130),
     };
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("Unknown pokémon.");
+    thrown.expect(Guesser.UnknownPokemonException.class);
+    thrown.expectMessage("Unknown Pókemon with CP: 50, HP: 82, lvl: 19");
     Guesser.getPokemon(Arrays.asList(coreStats), 50, 82, 19);
+  }
+
+  @Test
+  public void testGetPokemon_none2() throws Exception {
+    final CoreStats[] coreStats = {
+        IvImplementation.create(114, 128, 110),
+        IvImplementation.create(186, 168, 260),
+        IvImplementation.create(192, 174, 130),
+        IvImplementation.create(238, 178, 130),
+    };
+    thrown.expect(Guesser.UnknownPokemonException.class);
+    thrown.expectMessage("Unknown Pókemon with CP: 50, HP: 82, lvl: 19.5");
+    Guesser.getPokemon(Arrays.asList(coreStats), 50, 82, 19.5f);
   }
 
   @Test
@@ -114,8 +127,8 @@ public class GuesserUnitTest {
         IvImplementation.create(238, 178, 130),
         IvImplementation.create(238, 178, 130),
     };
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("Multiple Pokémon.");
+    thrown.expect(Guesser.MultiplePokemonException.class);
+    thrown.expectMessage("IvImplementation{atk=238, def=178, stam=130} and IvImplementation{atk=238, def=178, stam=130} are possible candidates.");
     Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19);
   }
 

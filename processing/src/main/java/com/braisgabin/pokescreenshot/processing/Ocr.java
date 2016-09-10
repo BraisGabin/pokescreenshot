@@ -21,10 +21,11 @@ import static com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel.RIL
 
 public class Ocr {
   private final static String TAG = "OCR";
+  public final static int FILTER = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
     final int navBarHeight = navBarHeight(bitmap);
-    BitmapOperations.filter(context, bitmap, 219);
+    BitmapOperations.filter(context, bitmap, FILTER);
     tess.setImage(bitmap);
     return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), navBarHeight, canvas);
   }

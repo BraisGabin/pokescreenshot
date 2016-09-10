@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 
-class BitmapOperations {
+public class BitmapOperations {
 
-  static void filter(Context context, Bitmap bitmap, int value) {
+  public static void filter(Context context, Bitmap bitmap, int value) {
     RenderScript rs = RenderScript.create(context);
     ScriptC_ocrpreprocess script = new ScriptC_ocrpreprocess(rs);
     Allocation allocation = Allocation.createFromBitmap(rs, bitmap);

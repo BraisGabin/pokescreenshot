@@ -65,7 +65,7 @@ public class AngleTest {
   }
 
   @Test
-  public void testInitialTest() throws IOException {
+  public void testInitialTest() throws Exception {
     setUp();
     Point point = angle.initialPoint();
     assertThat(point, is(screenshot.initialPoint()));
@@ -85,7 +85,7 @@ public class AngleTest {
   }
 
   @Test
-  public void testRadian() throws IOException {
+  public void testRadian() throws Exception {
     setUp();
     final Point initialPoint = screenshot.initialPoint();
     final Point center = Angle.center(screenshot.initialPoint(), width);

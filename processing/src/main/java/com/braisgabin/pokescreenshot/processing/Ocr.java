@@ -75,7 +75,9 @@ public class Ocr {
 
   private int cp(Rect ocrRect, Rect regionRect) {
     tess.setRectangle(ocrRect);
-    final String text = tess.getUTF8Text();
+    String text = tess.getUTF8Text();
+    text = text.replace('O', '0');
+    text = text.replace('o', '0');
 
     int cp = -1;
     final Pattern pattern = Pattern.compile("PC([0-9]+).?", Pattern.CASE_INSENSITIVE);
@@ -88,7 +90,9 @@ public class Ocr {
     } else {
       final ResultIterator iterator = tess.getResultIterator();
       while (iterator.next(RIL_WORD)) {
-        final String word = iterator.getUTF8Text(RIL_WORD);
+        String word = iterator.getUTF8Text(RIL_WORD);
+        word = word.replace('O', '0');
+        word = word.replace('o', '0');
         matcher = pattern.matcher(word);
         if (matcher.matches()) {
           regionRect.set(iterator.getBoundingRect(RIL_WORD));

@@ -11,14 +11,12 @@ import android.util.Log;
 
 import com.google.auto.value.AutoValue;
 import com.googlecode.leptonica.android.Pixa;
-import com.googlecode.tesseract.android.ResultIterator;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
-import static com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel.RIL_WORD;
 
 public class Ocr {
   private final static String TAG = "OCR";
@@ -77,29 +75,21 @@ public class Ocr {
   private int cp(Rect ocrRect, Rect regionRect) {
     tess.setRectangle(ocrRect);
     String text = tess.getUTF8Text();
+    text = text.replace(" ", "");
     text = text.replace('O', '0');
     text = text.replace('o', '0');
+    final String[] lines = text.split("\n");
 
     int cp = -1;
     final Pattern pattern = Pattern.compile("PC([0-9]+).?", Pattern.CASE_INSENSITIVE);
 
-    Matcher matcher = pattern.matcher(text);
-    if (matcher.matches()) {
-      regionRect.set(getRegionBox(tess));
-      regionRect.offset(ocrRect.left, ocrRect.top);
-      cp = Integer.parseInt(matcher.group(1));
-    } else {
-      final ResultIterator iterator = tess.getResultIterator();
-      while (iterator.next(RIL_WORD)) {
-        String word = iterator.getUTF8Text(RIL_WORD);
-        word = word.replace('O', '0');
-        word = word.replace('o', '0');
-        matcher = pattern.matcher(word);
-        if (matcher.matches()) {
-          regionRect.set(iterator.getBoundingRect(RIL_WORD));
-          cp = Integer.parseInt(matcher.group(1));
-          break;
-        }
+    for (int i = 0, length = lines.length; i < length; i++) {
+      final Matcher matcher = pattern.matcher(lines[i]);
+      if (matcher.matches()) {
+        regionRect.set(getTextline(tess, i));
+        regionRect.offset(ocrRect.left, ocrRect.top);
+        cp = Integer.parseInt(matcher.group(1));
+        break;
       }
     }
 
@@ -262,6 +252,13 @@ public class Ocr {
   private Rect getRegionBox(TessBaseAPI tess) {
     final Pixa regions = tess.getRegions();
     final Rect boxRect = regions.getBoxRect(0);
+    regions.recycle();
+    return boxRect;
+  }
+
+  private Rect getTextline(TessBaseAPI tess, int index) {
+    final Pixa regions = tess.getTextlines();
+    final Rect boxRect = regions.getBoxRect(index);
     regions.recycle();
     return boxRect;
   }

@@ -261,19 +261,19 @@ public class Ocr {
   }
 
   @AutoValue
-  abstract static class Pokemon {
+  public abstract static class Pokemon {
     static Pokemon create(int cp, int hp, int stardust, String candy, String name) {
       return new AutoValue_Ocr_Pokemon(cp, hp, stardust, candy, name);
     }
 
-    abstract int getCp();
+    public abstract int getCp();
 
-    abstract int getHp();
+    public abstract int getHp();
 
-    abstract int getStardust();
+    public abstract int getStardust();
 
-    abstract String getCandy();
+    public abstract String getCandy();
 
-    abstract String getName();
+    public abstract String getName();
   }
 }

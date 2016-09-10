@@ -11,6 +11,8 @@ import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 
 public class GuesserUnitTest {
   @Rule
@@ -135,7 +137,7 @@ public class GuesserUnitTest {
   @Test
   public void testIv_eevee() {
     final CoreStats coreStats = IvImplementation.create(114, 128, 110);
-    assertThat(Guesser.iv(coreStats, 482, 63, 17), is(new int[][]{
+    assertThat(Guesser.iv(coreStats, 482, 63, 17), contains(new int[][]{
         {10, 15, 5},
         {11, 13, 5},
         {14, 6, 5},
@@ -150,13 +152,13 @@ public class GuesserUnitTest {
   @Test
   public void testIv_eevee_wrong() {
     final CoreStats coreStats = IvImplementation.create(114, 128, 110);
-    assertThat(Guesser.iv(coreStats, 482, 63, 15), is(new int[][]{}));
+    assertThat(Guesser.iv(coreStats, 482, 63, 15), empty());
   }
 
   @Test
   public void testIv_ponyta() {
     final CoreStats coreStats = IvImplementation.create(168, 138, 100);
-    assertThat(Guesser.iv(coreStats, 732, 63, 17), is(new int[][]{
+    assertThat(Guesser.iv(coreStats, 732, 63, 17), contains(new int[][]{
         {14, 15, 15},
     }));
   }

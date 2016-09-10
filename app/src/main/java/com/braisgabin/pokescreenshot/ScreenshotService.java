@@ -135,9 +135,9 @@ public class ScreenshotService extends Service {
               return bitmap;
             }
           })
-          .map(new Func1<Bitmap, int[][]>() {
+          .map(new Func1<Bitmap, List<int[]>>() {
             @Override
-            public int[][] call(Bitmap bitmap) {
+            public List<int[]> call(Bitmap bitmap) {
               final ScreenshotComponent c = component.plus(new ScreenshotModule(bitmap));
               try {
                 final float pokemonLvl = CP.radian2Lvl(Integer.parseInt(trainerLvl.get()), c.angle().radian());
@@ -152,9 +152,9 @@ public class ScreenshotService extends Service {
           })
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe(
-              new Action1<int[][]>() {
+              new Action1<List<int[]>>() {
                 @Override
-                public void call(int[][] ivs) {
+                public void call(List<int[]> ivs) {
                   float[] ivRange = calculateIvRange(ivs);
                   String s = String.format(Locale.getDefault(),
                       "(%.2f%%, %.2f%%) %.2f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
@@ -173,7 +173,7 @@ public class ScreenshotService extends Service {
     return Service.START_STICKY;
   }
 
-  private float[] calculateIvRange(int[][] ivs) {
+  private float[] calculateIvRange(List<int[]> ivs) {
     final float[] values = {45, 0, 0};
     for (int[] iv : ivs) {
       final int value = iv[0] + iv[1] + iv[2];
@@ -182,7 +182,7 @@ public class ScreenshotService extends Service {
       values[2] = max(values[2], value);
     }
     values[0] = values[0] / 45;
-    values[1] = values[1] / (ivs.length * 45);
+    values[1] = values[1] / (ivs.size() * 45);
     values[2] = values[2] / 45;
     return values;
   }

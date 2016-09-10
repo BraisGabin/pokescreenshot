@@ -45,7 +45,7 @@ public class Guesser {
     return coreStats;
   }
 
-  public static int[][] iv(CoreStats coreStats, int cp, int hp, float lvl) {
+  public static List<int[]> iv(CoreStats coreStats, int cp, int hp, float lvl) {
     final List<int[]> ivs = new ArrayList<>();
     for (int stam = 0; stam < 16; stam++) {
       if (hp == calculateHp(coreStats, lvl, stam)) {
@@ -58,7 +58,7 @@ public class Guesser {
         }
       }
     }
-    return ivs.toArray(new int[ivs.size()][]);
+    return ivs;
   }
 
   public static abstract class GuesserException extends ProcessingException {

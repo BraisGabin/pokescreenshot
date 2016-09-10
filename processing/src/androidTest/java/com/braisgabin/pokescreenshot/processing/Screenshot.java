@@ -65,7 +65,7 @@ class Screenshot {
     return stardus;
   }
 
-  public String getCandyName() {
+  public String getCandy() {
     return candyType;
   }
 

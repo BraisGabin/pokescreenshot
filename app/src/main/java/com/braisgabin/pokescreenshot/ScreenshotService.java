@@ -20,6 +20,7 @@ import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.braisgabin.pokescreenshot.processing.ProcessingException;
+import com.f2prateek.rx.preferences.Preference;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -60,6 +61,9 @@ public class ScreenshotService extends Service {
   @Inject
   SQLiteDatabase database;
 
+  @Inject
+  Preference<String> trainerLvl;
+
   private File screenshotsDir;
   private FF fileFilter = new FF();
   private Subscription subscription;
@@ -91,7 +95,7 @@ public class ScreenshotService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    startForeground(1, notification());
+    startForeground(1, notification(Integer.parseInt(trainerLvl.get())));
 
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
@@ -136,7 +140,7 @@ public class ScreenshotService extends Service {
             public int[][] call(Bitmap bitmap) {
               final ScreenshotComponent c = component.plus(new ScreenshotModule(bitmap));
               try {
-                final float pokemonLvl = CP.radian2Lvl(22, c.angle().radian()); // FIXME Hardcode
+                final float pokemonLvl = CP.radian2Lvl(Integer.parseInt(trainerLvl.get()), c.angle().radian());
                 final Ocr.Pokemon ocrData = c.ocr().ocr();
                 final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
                 final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
@@ -193,7 +197,7 @@ public class ScreenshotService extends Service {
     unregisterReceiver(broadcastReceiver);
   }
 
-  private Notification notification() {
+  private Notification notification(int trainerLvl) {
     final Intent stopIntent = getStopActionIntent();
     final PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -203,6 +207,7 @@ public class ScreenshotService extends Service {
     return new NotificationCompat.Builder(this)
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle(getString(R.string.app_name))
+        .setContentText("Trainer lvl " + trainerLvl)
         .setOngoing(true)
         .addAction(0, getString(R.string.stop_service), stopPendingIntent)
         .addAction(0, getString(R.string.settings), settingsPendingIntent)

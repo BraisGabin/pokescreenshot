@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.braisgabin.pokescreenshot.processing.Angle;
+import com.braisgabin.pokescreenshot.processing.BitmapOperations;
 import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     final Bitmap bitmap = bitmap(image);
     final Bitmap bitmap2 = bitmap.copy(bitmap.getConfig(), true);
+    BitmapOperations.filter(this, bitmap2, Ocr.FILTER);
     Canvas canvas = new Canvas(bitmap2);
 
     final Angle angle = new Angle(bitmap);

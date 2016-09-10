@@ -103,7 +103,7 @@ public class OcrTest {
     assertThat(pokemon.getCp(), is(screenshot.getCp()));
     assertThat(pokemon.getHp(), is(screenshot.getHp()));
     assertThat(pokemon.getStardust(), is(screenshot.getStardus()));
-    assertThat(pokemon.getCandyName(), is(screenshot.getCandyName()));
+    assertThat(pokemon.getCandy(), is(screenshot.getCandy()));
     assertThat(pokemon.getName(), is(screenshot.getName()));
   }
 }

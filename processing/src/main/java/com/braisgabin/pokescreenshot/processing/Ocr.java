@@ -272,7 +272,7 @@ public class Ocr {
 
     abstract int getStardust();
 
-    abstract String getCandyName();
+    abstract String getCandy();
 
     abstract String getName();
   }

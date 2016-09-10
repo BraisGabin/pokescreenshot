@@ -1,9 +1,9 @@
 CREATE TABLE pokemon (
   id INTEGER PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
-  atk INTEGER NOT NULL,
-  def INTEGER NOT NULL,
-  stam INTEGER NOT NULL,
+  atk INTEGER AS Integer NOT NULL,
+  def INTEGER AS Integer NOT NULL,
+  stam INTEGER AS Integer NOT NULL,
   candy TEXT NOT NULL
 );
 

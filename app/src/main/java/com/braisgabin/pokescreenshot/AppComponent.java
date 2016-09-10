@@ -12,4 +12,6 @@ import dagger.Component;
 )
 public interface AppComponent {
   void inject(ScreenshotService service);
+
+  ScreenshotComponent plus(ScreenshotModule module);
 }

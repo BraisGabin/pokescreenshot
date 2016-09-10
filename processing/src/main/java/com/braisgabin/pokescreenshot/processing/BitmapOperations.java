@@ -7,12 +7,12 @@ import android.renderscript.RenderScript;
 
 public class BitmapOperations {
 
-  public static void filter(Context context, Bitmap bitmap, int value) {
+  public static void filter(Context context, Bitmap bitmap, int heightCp, int valueCp, int valueNoCp) {
     RenderScript rs = RenderScript.create(context);
     ScriptC_ocrpreprocess script = new ScriptC_ocrpreprocess(rs);
     Allocation allocation = Allocation.createFromBitmap(rs, bitmap);
     script.set_script(script);
-    script.invoke_process(allocation, value);
+    script.invoke_process(allocation, heightCp, valueCp, valueNoCp);
     allocation.copyTo(bitmap);
   }
 }

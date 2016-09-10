@@ -16,17 +16,15 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 
 public class Ocr {
   private final static String TAG = "OCR";
   public final static int FILTER = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
-    final int navBarHeight = navBarHeight(bitmap);
     BitmapOperations.filter(context, bitmap, FILTER);
     tess.setImage(bitmap);
-    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), navBarHeight, canvas);
+    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), canvas);
   }
 
   private final TessBaseAPI tess;
@@ -36,11 +34,11 @@ public class Ocr {
   private final Canvas canvas;
   private final Paint paint;
 
-  public Ocr(TessBaseAPI tess, int width, int height, int navBarHeight, Canvas canvas) {
+  public Ocr(TessBaseAPI tess, int width, int height, Canvas canvas) {
     this.tess = tess;
     this.width = width;
     this.height = height;
-    this.d = (width - navBarHeight) / (float) (480 - 56);
+    this.d = width / (float) 480;
     this.canvas = canvas;
     if (canvas != null) {
       this.paint = new Paint();
@@ -147,7 +145,7 @@ public class Ocr {
 
   private Rect nameRect(int width, int bottom) {
     Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(44 * d));
-    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(275 * d));
+    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(272 * d));
     return rect;
   }
 
@@ -181,8 +179,8 @@ public class Ocr {
   }
 
   private Rect hpRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
-    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(335 * d));
+    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(30 * d));
+    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(333 * d));
     return rect;
   }
 
@@ -211,7 +209,7 @@ public class Ocr {
 
   private Rect candyRect(int width, int bottom) {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(24 * d));
-    rect.offset(width / 2, bottom + Math.round(496 * d));
+    rect.offset(width / 2, bottom + Math.round(490 * d));
     return rect;
   }
 
@@ -244,8 +242,8 @@ public class Ocr {
   }
 
   private Rect stardustRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
-    rect.offset(width / 2, bottom + Math.round(547 * d));
+    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(34 * d));
+    rect.offset(width / 2, bottom + Math.round(540 * d));
     return rect;
   }
 

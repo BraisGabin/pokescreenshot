@@ -9,7 +9,6 @@ import android.graphics.RectF;
 
 import java.util.Locale;
 
-import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 import static java.lang.Math.PI;
 
 public class Angle {
@@ -18,7 +17,7 @@ public class Angle {
 
   public Angle(Bitmap bitmap) {
     this.bitmap = bitmap;
-    this.d = (bitmap.getWidth() - navBarHeight(bitmap)) / (float) (480 - 56);
+    this.d = bitmap.getWidth() / (float) 480;
   }
 
   public float radian() throws RadianException, InitialPointException {

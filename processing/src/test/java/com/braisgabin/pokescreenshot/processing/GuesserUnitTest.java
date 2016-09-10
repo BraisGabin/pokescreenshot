@@ -41,7 +41,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testGetPokemon_eevee() {
+  public void testGetPokemon_eevee() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(114, 128, 110),
         IvImplementation.create(186, 168, 260),
@@ -52,7 +52,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testGetPokemon_vaporeon() {
+  public void testGetPokemon_vaporeon() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(114, 128, 110),
         IvImplementation.create(186, 168, 260),
@@ -63,7 +63,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testGetPokemon_jolteon() {
+  public void testGetPokemon_jolteon() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(114, 128, 110),
         IvImplementation.create(186, 168, 260),
@@ -74,7 +74,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testGetPokemon_flareon() {
+  public void testGetPokemon_flareon() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(114, 128, 110),
         IvImplementation.create(186, 168, 260),
@@ -86,7 +86,7 @@ public class GuesserUnitTest {
 
   @Test
   @Ignore("I must find a solution")
-  public void testGetPokemon_caterpie() {
+  public void testGetPokemon_caterpie() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(62, 66, 90),
         IvImplementation.create(56, 86, 100),
@@ -96,7 +96,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testGetPokemon_none() {
+  public void testGetPokemon_none() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(114, 128, 110),
         IvImplementation.create(186, 168, 260),
@@ -109,7 +109,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testGetPokemon_tooMuch() {
+  public void testGetPokemon_tooMuch() throws Exception {
     final CoreStats[] coreStats = {
         IvImplementation.create(238, 178, 130),
         IvImplementation.create(238, 178, 130),

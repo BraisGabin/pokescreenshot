@@ -2,6 +2,7 @@ package com.braisgabin.pokescreenshot.processing;
 
 import com.google.auto.value.AutoValue;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -81,6 +82,17 @@ public class GuesserUnitTest {
         IvImplementation.create(238, 178, 130),
     };
     assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19), is(coreStats[3]));
+  }
+
+  @Test
+  @Ignore("I must find a solution")
+  public void testGetPokemon_caterpie() {
+    final CoreStats[] coreStats = {
+        IvImplementation.create(62, 66, 90),
+        IvImplementation.create(56, 86, 100),
+        IvImplementation.create(144, 144, 120),
+    };
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 150, 54, 16), is(coreStats[0]));
   }
 
   @Test

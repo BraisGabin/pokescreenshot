@@ -2,6 +2,7 @@ package com.braisgabin.pokescreenshot.processing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.braisgabin.pokescreenshot.processing.CP.CPM;
 import static java.lang.Math.floor;
@@ -23,7 +24,7 @@ public class Guesser {
     return max(10, (int) floor(CPM(lvl) * (pokemon.stam() + stam)));
   }
 
-  public static <T extends CoreStats> T getPokemon(Iterable<T> coreStatsList, int cp, int hp, float lvl) {
+  public static <T extends CoreStats> T getPokemon(Iterable<T> coreStatsList, int cp, int hp, float lvl) throws UnknownPokemonException, MultiplePokemonException {
     T coreStats = null;
     for (T cs : coreStatsList) {
       final int minCp = calculateCp(cs, lvl, 0, 0, 0);
@@ -34,12 +35,12 @@ public class Guesser {
         if (coreStats == null) {
           coreStats = cs;
         } else {
-          throw new RuntimeException("Multiple Pokémon.");
+          throw new MultiplePokemonException(String.format(Locale.US, "%s and %s are possible candidates.", coreStats.toString(), cs.toString()));
         }
       }
     }
     if (coreStats == null) {
-      throw new RuntimeException("Unknown pokémon.");
+      throw new UnknownPokemonException(String.format(Locale.US, "Unknown Pókemon with CP: %d, HP: %d, lvl: %.1f", cp, hp, lvl));
     }
     return coreStats;
   }
@@ -58,5 +59,24 @@ public class Guesser {
       }
     }
     return ivs.toArray(new int[ivs.size()][]);
+  }
+
+  public static abstract class GuesserException extends ProcessingException {
+
+    public GuesserException(String message) {
+      super(message);
+    }
+  }
+
+  public static class UnknownPokemonException extends GuesserException {
+    public UnknownPokemonException(String message) {
+      super(message);
+    }
+  }
+
+  public static class MultiplePokemonException extends GuesserException {
+    public MultiplePokemonException(String message) {
+      super(message);
+    }
   }
 }

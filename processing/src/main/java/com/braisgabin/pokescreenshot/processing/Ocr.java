@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.auto.value.AutoValue;
@@ -277,8 +278,10 @@ public class Ocr {
 
     public abstract int getStardust();
 
+    @Nullable
     public abstract String getCandy();
 
+    @Nullable
     public abstract String getName();
   }
 }

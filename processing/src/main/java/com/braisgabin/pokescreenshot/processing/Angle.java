@@ -64,7 +64,7 @@ public class Angle {
     for (int y = (34 * height) / 100; y >= 0; y--) {
       for (int x = width / 10, count = (14 * width) / 100; x < count; x++) {
         if (bitmap.getPixel(x, y) == -1) {
-          return new Point(x + Math.round(1.7f * d), y + Math.round(2.6f * d));
+          return new Point(x + Math.round(1.5f * d), y + Math.round(2.6f * d));
         }
       }
     }

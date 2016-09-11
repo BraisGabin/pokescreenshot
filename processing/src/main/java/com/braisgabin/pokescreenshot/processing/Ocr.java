@@ -193,7 +193,10 @@ public class Ocr {
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
-    String candy = Candy.candyType(text);
+    String text2 = text.replace("NIDORANQ", "NIDORAN♀");
+    text2 = text2.replace("NIDORANo", "NIDORAN♂");
+
+    String candy = Candy.candyType(text2);
 
     final Rect boxRect = getRegionBox(tess);
     boxRect.offset(ocrRect.left, ocrRect.top);

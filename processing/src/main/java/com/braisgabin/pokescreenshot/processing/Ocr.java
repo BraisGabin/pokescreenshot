@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class Ocr {
   private final static String TAG = "OCR";
   public static final int HEIGHT_CP = 95;
-  public static final int VALUE_CP = 240;
+  public static final int VALUE_CP = 245;
   public static final int VALUE_NO_CP = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
@@ -82,7 +82,7 @@ public class Ocr {
     final String[] lines = text.split("\n");
 
     int cp = -1;
-    final Pattern pattern = Pattern.compile("PC([0-9]+).?", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("PC([0-9]+)", Pattern.CASE_INSENSITIVE);
 
     for (int i = 0, length = lines.length; i < length; i++) {
       final Matcher matcher = pattern.matcher(lines[i]);

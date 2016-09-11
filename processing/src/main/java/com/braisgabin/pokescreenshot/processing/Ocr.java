@@ -160,9 +160,11 @@ public class Ocr {
     Rect regionRect = new Rect();
 
     int hp = -1;
-    final Pattern pattern = Pattern.compile("P[S5] ?[0-9]+ ?/ ?([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
 
     String text2 = text.replace("l", "1");
+    text2 = text2.replace("S", "5");
+    text2 = text2.replace(" ", "");
     Matcher matcher = pattern.matcher(text2);
     if (matcher.matches()) {
       regionRect.set(getRegionBox(tess));

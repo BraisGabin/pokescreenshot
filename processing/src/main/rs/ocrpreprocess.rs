@@ -20,7 +20,7 @@ void root(const uchar4* in, uchar4* out, uint32_t x, uint32_t y) {
   out->b = g;
 }
 
-void process(rs_allocation image, int heightCp, int valueCp, valueNoCp) {
+void process(rs_allocation image, int heightCp, int valueCp, int valueNoCp) {
   HEIGHT_CP = heightCp;
   VALUE_CP = valueCp;
   VALUE_NO_CP = valueNoCp;

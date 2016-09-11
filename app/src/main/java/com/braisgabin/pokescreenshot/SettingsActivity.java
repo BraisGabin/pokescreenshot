@@ -46,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
       addPreferencesFromResource(R.xml.settings);
 
       bindPreferenceSummaryToValue(findPreference("trainer_lvl"));
+
+      ((MyListPreference) findPreference("trainer_lvl")).show(null);
     }
   }
 

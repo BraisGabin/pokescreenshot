@@ -222,7 +222,7 @@ public class Ocr {
 
     int stardust = -1;
     Rect regionRect = new Rect();
-    final Pattern pattern = Pattern.compile("^[HE@]([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("^[HEi@]([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {

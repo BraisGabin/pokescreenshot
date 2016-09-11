@@ -74,6 +74,7 @@ public class Ocr {
   }
 
   private int cp(Rect ocrRect, Rect regionRect) {
+    tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
     String text2 = text.replace(" ", "");
@@ -93,6 +94,7 @@ public class Ocr {
         break;
       }
     }
+    tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "");
 
     if (cp <= 0) {
       Log.w(TAG, "Error parsing CP:\n" + text);

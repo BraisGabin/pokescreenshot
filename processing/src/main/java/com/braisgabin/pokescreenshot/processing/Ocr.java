@@ -156,14 +156,14 @@ public class Ocr {
 
   private int hp(Rect ocrRect) {
     tess.setRectangle(ocrRect);
-    String text = tess.getUTF8Text();
+    final String text = tess.getUTF8Text();
     Rect regionRect = new Rect();
 
     int hp = -1;
     final Pattern pattern = Pattern.compile("P[S5] ?[0-9]+ ?/ ?([0-9]+)", Pattern.CASE_INSENSITIVE);
 
-    text = text.replace("l", "1");
-    Matcher matcher = pattern.matcher(text);
+    String text2 = text.replace("l", "1");
+    Matcher matcher = pattern.matcher(text2);
     if (matcher.matches()) {
       regionRect.set(getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);

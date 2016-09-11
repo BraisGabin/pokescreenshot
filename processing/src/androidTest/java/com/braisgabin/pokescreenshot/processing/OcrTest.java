@@ -13,7 +13,7 @@ import net.sf.jsefa.csv.CsvDeserializer;
 import net.sf.jsefa.csv.CsvIOFactory;
 import net.sf.jsefa.csv.config.CsvConfiguration;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,27 +34,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(value = Parameterized.class)
 public class OcrTest {
-  private static TessBaseAPI tess;
+  private static File root;
 
   @BeforeClass
   public static void setUpClass() {
     final Context context = InstrumentationRegistry.getContext();
-    final File root = context.getCacheDir();
+    root = context.getCacheDir();
     try {
       copyRecursive(context.getAssets(), "tesseract", root);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-
-    tess = new TessBaseAPI();
-    tess.init(root.getAbsolutePath() + "/tesseract/", "eng");
-    tess.readConfigFile("pokemon");
-  }
-
-  @AfterClass
-  public static void setDownClass() {
-    tess.end();
-    tess = null;
   }
 
   @Parameterized.Parameters
@@ -78,6 +68,7 @@ public class OcrTest {
   }
 
   private final Screenshot screenshot;
+  private TessBaseAPI tess;
   private Ocr ocr;
 
   public OcrTest(Screenshot screenshot) {
@@ -92,9 +83,17 @@ public class OcrTest {
     options.inMutable = true;
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()), null, options);
 
+    tess = new TessBaseAPI();
+    tess.init(root.getAbsolutePath() + "/tesseract/", "eng");
+    tess.readConfigFile("pokemon");
     tess.setImage(bitmap);
 
     this.ocr = Ocr.create(tess, context, bitmap, null);
+  }
+
+  @After
+  public void shutDown() {
+    tess.end();
   }
 
   @Test

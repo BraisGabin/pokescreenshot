@@ -75,11 +75,11 @@ public class Ocr {
 
   private int cp(Rect ocrRect, Rect regionRect) {
     tess.setRectangle(ocrRect);
-    String text = tess.getUTF8Text();
-    text = text.replace(" ", "");
-    text = text.replace('O', '0');
-    text = text.replace('o', '0');
-    final String[] lines = text.split("\n");
+    final String text = tess.getUTF8Text();
+    String text2 = text.replace(" ", "");
+    text2 = text2.replace('O', '0');
+    text2 = text2.replace('o', '0');
+    final String[] lines = text2.split("\n");
 
     int cp = -1;
     final Pattern pattern = Pattern.compile("PC([0-9]+)", Pattern.CASE_INSENSITIVE);

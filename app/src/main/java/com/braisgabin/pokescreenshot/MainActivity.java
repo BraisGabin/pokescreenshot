@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -16,11 +17,13 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
     final Intent intent = ScreenshotService.getCallingIntent(this);
     if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
       ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
     } else {
       startService(intent);
+      findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
       finish();
     }
   }
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
       default:
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+    findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
     finish();
   }
 }

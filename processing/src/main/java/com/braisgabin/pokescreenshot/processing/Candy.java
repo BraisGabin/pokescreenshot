@@ -85,7 +85,7 @@ public class Candy {
   public static String candyType(String text) {
     text = text.replace(" ", "");
     for (String candy : CANDY_TYPES) {
-      if (text.contains(candy)) {
+      if (text.contains(candy.replace(" ", ""))) {
         return candy;
       }
     }

@@ -88,11 +88,11 @@ public class CP {
     return CPM[Math.round(lvl * 2) - 2];
   }
 
-  static float CPM2Lvl(float cpm) {
-    float delta = Float.MAX_VALUE;
+  static float CPM2Lvl(double cpm) {
+    double delta = Double.MAX_VALUE;
     int index = 0;
     for (int i = 0; i < CPM.length; i++) {
-      float d = Math.abs(cpm - CPM[i]);
+      double d = Math.abs(cpm - CPM[i]);
       if (d < delta) {
         delta = d;
         index = i;
@@ -103,18 +103,18 @@ public class CP {
     return (index + 2) / 2f;
   }
 
-  public static float radian2Lvl(int trainerLvl, float radian) {
+  public static float radian2Lvl(int trainerLvl, double radian) {
     // Formula extracted from:
     // https://www.reddit.com/r/TheSilphRoad/comments/4uz4tl/determining_pokemon_level_from_the_semicircle/d5uisb6
-    final float degree = (float) (180 - Math.toDegrees(radian));
-    final float cpm = degree * CPM(trainerLvl) / 202.04f + CPM(1);
+    final double degree = (float) (180 - Math.toDegrees(radian));
+    final double cpm = degree * CPM(trainerLvl) / 202.04f + CPM(1);
     return CPM2Lvl(cpm);
   }
 
-  public static float lvl2Radian(int trainerLvl, float pokemonLvl) {
+  public static double lvl2Radian(int trainerLvl, float pokemonLvl) {
     // Formula extracted from:
     // https://www.reddit.com/r/TheSilphRoad/comments/4uz4tl/determining_pokemon_level_from_the_semicircle/d5uisb6
     final float degree = (CPM(pokemonLvl) - CPM(1)) * 202.04f / CPM(trainerLvl);
-    return (float) Math.toRadians(180 - degree);
+    return Math.toRadians(180 - degree);
   }
 }

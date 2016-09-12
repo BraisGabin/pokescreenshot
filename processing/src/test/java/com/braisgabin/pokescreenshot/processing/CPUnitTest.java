@@ -28,11 +28,11 @@ public class CPUnitTest {
 
   @Test
   public void testRadian2Lvl() {
-    assertThat(radian2Lvl(22, (float) Math.toRadians(270 - 103.2647f)), is(1.5f));
+    assertThat(radian2Lvl(22, Math.toRadians(270 - 103.2647f)), is(1.5f));
   }
 
   @Test
   public void testLvl2Radian() {
-    assertThat((double) lvl2Radian(22, 1.5f), is(closeTo(Math.toRadians(270 - 103.2647f), 0.00001)));
+    assertThat(lvl2Radian(22, 1.5f), is(closeTo(Math.toRadians(270 - 103.2647f), 0.00001)));
   }
 }

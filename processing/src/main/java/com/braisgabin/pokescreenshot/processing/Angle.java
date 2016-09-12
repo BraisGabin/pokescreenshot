@@ -20,11 +20,11 @@ public class Angle {
     this.d = bitmap.getWidth() / (float) 480;
   }
 
-  public float radian() throws RadianException, InitialPointException {
+  public double radian() throws RadianException, InitialPointException {
     return radian(null);
   }
 
-  public float radian(Canvas canvas) throws InitialPointException, RadianException {
+  public double radian(Canvas canvas) throws InitialPointException, RadianException {
     final Point initialPoint = initialPoint();
     final Point center = center(initialPoint, bitmap.getWidth());
     final int radius = radius(initialPoint, center);
@@ -32,7 +32,7 @@ public class Angle {
     if (canvas != null) {
       debug(initialPoint, center, radius, radian, canvas);
     }
-    return (float) radian;
+    return radian;
   }
 
   private void debug(Point initialPoint, Point center, int radius, double radian, Canvas canvas) {

@@ -1,1 +1,2 @@
 src/androidTest/assets/screenshots/*.png filter=lfs diff=lfs merge=lfs -text
+src/main/assets/tesseract/tessdata/*.traineddata filter=lfs diff=lfs merge=lfs -text

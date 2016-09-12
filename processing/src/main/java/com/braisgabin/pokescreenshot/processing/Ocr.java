@@ -20,7 +20,7 @@ import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 
 public class Ocr {
   private final static String TAG = "OCR";
-  public static final int HEIGHT_CP = 95;
+  public static final int HEIGHT_CP = 85;
   public static final int VALUE_CP = 245;
   public static final int VALUE_NO_CP = 219;
 
@@ -113,8 +113,9 @@ public class Ocr {
   }
 
   private Rect cpRect(int width) {
-    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(HEIGHT_CP * d));
+    Rect rect = new Rect(0, 0, Math.round(160 * d), Math.round(HEIGHT_CP * d));
     rect.offset(width / 2 - rect.width() / 2, 0);
+    rect.right -= Math.round(30 * d);
     return rect;
   }
 

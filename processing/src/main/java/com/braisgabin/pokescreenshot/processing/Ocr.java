@@ -16,6 +16,7 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 
 public class Ocr {
   private final static String TAG = "OCR";
@@ -24,7 +25,8 @@ public class Ocr {
   public static final int VALUE_NO_CP = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
-    final float d = bitmap.getWidth() / (float) 480;
+    final int navBarHeight = navBarHeight(bitmap);
+    final float d = (bitmap.getWidth() - navBarHeight) / (float) (480 - 56);
     BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), VALUE_CP, VALUE_NO_CP);
     tess.setImage(bitmap);
     return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), d, canvas);
@@ -151,7 +153,7 @@ public class Ocr {
 
   private Rect nameRect(int width, int bottom) {
     Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(44 * d));
-    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(272 * d));
+    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(275 * d));
     return rect;
   }
 
@@ -187,8 +189,8 @@ public class Ocr {
   }
 
   private Rect hpRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(30 * d));
-    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(333 * d));
+    Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
+    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(335 * d));
     return rect;
   }
 
@@ -220,7 +222,7 @@ public class Ocr {
 
   private Rect candyRect(int width, int bottom) {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(24 * d));
-    rect.offset(width / 2, bottom + Math.round(490 * d));
+    rect.offset(width / 2, bottom + Math.round(496 * d));
     return rect;
   }
 
@@ -253,8 +255,8 @@ public class Ocr {
   }
 
   private Rect stardustRect(int width, int bottom) {
-    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(34 * d));
-    rect.offset(width / 2, bottom + Math.round(540 * d));
+    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
+    rect.offset(width / 2, bottom + Math.round(547 * d));
     return rect;
   }
 

@@ -80,6 +80,7 @@ public class Ocr {
     String text2 = text.replace(" ", "");
     text2 = text2.replace('O', '0');
     text2 = text2.replace('o', '0');
+    text2 = text2.replace('l', '1');
     final String[] lines = text2.split("\n");
 
     int cp = -1;

@@ -42,7 +42,7 @@ class Screenshot {
   private String name;
 
   public String file() {
-    return file;
+    return "screenshots/" + file;
   }
 
   public Point initialPoint() {

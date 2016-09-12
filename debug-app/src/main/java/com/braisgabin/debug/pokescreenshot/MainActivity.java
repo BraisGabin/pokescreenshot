@@ -3,8 +3,6 @@ package com.braisgabin.debug.pokescreenshot;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -50,11 +48,6 @@ public class MainActivity extends AppCompatActivity {
       e.printStackTrace();
     }
     tess(bitmap, canvas);
-
-    final Paint paint = new Paint();
-    paint.setColor(Color.CYAN);
-    paint.setStrokeWidth(3);
-    canvas.drawLine(canvas.getWidth() / 2, 0, canvas.getWidth() / 2, canvas.getHeight(), paint);
 
 
     ((ImageView) findViewById(R.id.imageView)).setImageBitmap(bitmap2);

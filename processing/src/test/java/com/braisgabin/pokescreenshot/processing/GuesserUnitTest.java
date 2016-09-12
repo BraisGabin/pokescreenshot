@@ -163,6 +163,16 @@ public class GuesserUnitTest {
     }));
   }
 
+  // Confirm we don't have this bug:
+  // https://www.reddit.com/r/PokemonGOIVs/comments/4x2f6v/some_iv_range_calculators_have_been_using_the/
+  @Test
+  public void testIv_bulbasur() {
+    final CoreStats coreStats = IvImplementation.create(126, 126, 90);
+    assertThat(Guesser.iv(coreStats, 321, 45, 10.5f), contains(new int[][]{
+        {15, 15, 15},
+    }));
+  }
+
   @AutoValue
   abstract static class IvImplementation implements CoreStats {
     static CoreStats create(int atk, int def, int stam) {

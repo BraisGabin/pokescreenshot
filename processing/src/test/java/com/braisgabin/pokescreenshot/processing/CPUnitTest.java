@@ -21,8 +21,12 @@ public class CPUnitTest {
   }
 
   @Test
-  public void testCPM2Lvl() {
+  public void testCPM2Lvl_3() {
     assertThat(CP.CPM2Lvl(CP.CPM[4] - 0.001f), is(3f));
+  }
+
+  @Test
+  public void testCPM2Lvl_3_5() {
     assertThat(CP.CPM2Lvl(CP.CPM[5] + 0.001f), is(3.5f));
   }
 

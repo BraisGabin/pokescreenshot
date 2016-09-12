@@ -1,6 +1,8 @@
 package com.braisgabin.pokescreenshot.processing;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,5 +35,15 @@ public class Utils {
       in.close();
       out.close();
     }
+  }
+
+  public static int navBarHeight(Bitmap bitmap) {
+    final int height = bitmap.getHeight();
+    for (int y = height - 1; y >= 0; y--) {
+      if (bitmap.getPixel(0, y) != Color.BLACK) {
+        return height - y - 1;
+      }
+    }
+    throw new IllegalStateException();
   }
 }

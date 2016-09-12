@@ -1,5 +1,8 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.min;
+
 public class CP {
   // Generated with: https://gist.github.com/BraisGabin/42ed1f2be736831323eb3cafcd4cdafd
   final static float[] CPM = {
@@ -105,16 +108,15 @@ public class CP {
 
   public static float radian2Lvl(int trainerLvl, double radian) {
     // Formula extracted from:
-    // https://www.reddit.com/r/TheSilphRoad/comments/4uz4tl/determining_pokemon_level_from_the_semicircle/d5uisb6
-    final double degree = (float) (180 - Math.toDegrees(radian));
-    final double cpm = degree * CPM(trainerLvl) / 202.04f + CPM(1);
+    // https://www.reddit.com/r/pokemongodev/comments/50z4sx/arc_angle_to_pokemon_level_formula_used_by/
+    final double cpm = ((CPM(min(40, trainerLvl + 2)) - (double) CPM(1)) * (PI - radian)) / PI + CPM(1);
     return CPM2Lvl(cpm);
   }
 
   public static double lvl2Radian(int trainerLvl, float pokemonLvl) {
     // Formula extracted from:
-    // https://www.reddit.com/r/TheSilphRoad/comments/4uz4tl/determining_pokemon_level_from_the_semicircle/d5uisb6
-    final float degree = (CPM(pokemonLvl) - CPM(1)) * 202.04f / CPM(trainerLvl);
-    return Math.toRadians(180 - degree);
+    // https://www.reddit.com/r/pokemongodev/comments/50z4sx/arc_angle_to_pokemon_level_formula_used_by/
+    final double v = (CPM(pokemonLvl) - (double) CPM(1)) / (CPM(min(40, trainerLvl + 2)) - (double) CPM(1));
+    return PI - v * PI;
   }
 }

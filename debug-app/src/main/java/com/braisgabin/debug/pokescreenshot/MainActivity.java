@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
     setContentView(R.layout.activity_main);
-    final String image = "4.png";
+    final String image = "screenshots/10_caterpie.png";
 
     final Bitmap bitmap = bitmap(image);
     final Bitmap bitmap2 = bitmap.copy(bitmap.getConfig(), true);

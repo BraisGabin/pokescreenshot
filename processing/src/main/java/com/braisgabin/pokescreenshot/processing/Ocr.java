@@ -125,7 +125,7 @@ public class Ocr {
 
   private String name(Rect ocrRect) {
     tess.setRectangle(ocrRect);
-    final String text = tess.getUTF8Text();
+    tess.getUTF8Text();
 
     final Rect boxRect = getRegionBox(tess);
     boxRect.offset(ocrRect.left, ocrRect.top);
@@ -134,7 +134,7 @@ public class Ocr {
     ocrRect2.right = boxRect.left + rectWidth;
 
     tess.setRectangle(ocrRect2);
-    String name = tess.getUTF8Text();
+    final String name = tess.getUTF8Text();
     final Rect boxRect2 = getRegionBox(tess);
     boxRect2.offset(ocrRect2.left, ocrRect2.top);
 

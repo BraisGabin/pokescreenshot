@@ -60,6 +60,10 @@ public class Ocr {
     final int cp = cp(cpRect(width), rect);
     Log.d(TAG, "CP: " + cp);
 
+    if (rect.bottom == 0) {
+      rect.bottom = Math.round(HEIGHT_CP * d);
+    }
+
     final String name = name(nameRect(width, rect.bottom));
     Log.d(TAG, "Name: " + name);
 

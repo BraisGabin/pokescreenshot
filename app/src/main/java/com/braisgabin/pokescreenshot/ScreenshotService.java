@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.widget.Toast;
 
+import com.braisgabin.fileobservable.FileObservable;
 import com.braisgabin.pokescreenshot.model.Pokemon;
 import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
@@ -23,19 +24,15 @@ import com.braisgabin.pokescreenshot.processing.ProcessingException;
 import com.f2prateek.rx.preferences.Preference;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static java.lang.Math.max;
@@ -66,7 +63,6 @@ public class ScreenshotService extends Service {
   Preference<String> trainerLvl;
 
   private File screenshotsDir;
-  private FF fileFilter = new FF();
   private Subscription subscription;
   private BroadcastReceiver broadcastReceiver;
 
@@ -101,22 +97,7 @@ public class ScreenshotService extends Service {
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
     if (subscription == null) {
-      subscription = Observable.interval(0, 1000, TimeUnit.MILLISECONDS)
-          .subscribeOn(Schedulers.io())
-          .flatMap(new Func1<Long, Observable<File>>() {
-            @Override
-            public Observable<File> call(Long aLong) {
-              final File[] files = screenshotsDir.listFiles(fileFilter);
-              fileFilter.time = System.currentTimeMillis() / 1000;
-              return Observable.from(files);
-            }
-          })
-          .doOnNext(new Action1<File>() {
-            @Override
-            public void call(File file) {
-              fileFilter.ring.add(file);
-            }
-          })
+      subscription = FileObservable.newFiles(screenshotsDir)
           .map(new Func1<File, Bitmap>() {
             @Override
             public Bitmap call(File file) {
@@ -214,15 +195,5 @@ public class ScreenshotService extends Service {
         .addAction(0, getString(R.string.stop_service), stopPendingIntent)
         .addAction(0, getString(R.string.settings), settingsPendingIntent)
         .build();
-  }
-
-  class FF implements FileFilter {
-    long time = Long.MAX_VALUE;
-    final Ring<File> ring = new Ring<>(5);
-
-    @Override
-    public boolean accept(File file) {
-      return file.lastModified() / 1000 >= time && !ring.contains(file);
-    }
   }
 }

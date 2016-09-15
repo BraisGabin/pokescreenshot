@@ -1,4 +1,4 @@
-package com.braisgabin.pokescreenshot;
+package com.braisgabin.fileobservable;
 
 import android.support.annotation.NonNull;
 
@@ -7,13 +7,13 @@ import java.util.Iterator;
 
 import static java.lang.Math.max;
 
-public class Ring<T> implements Collection<T> {
+class Ring<T> implements Collection<T> {
   private final Object[] array;
   private int count;
   private int index;
 
 
-  public Ring(int maxSize) {
+  Ring(int maxSize) {
     array = new Object[maxSize];
     count = 0;
     index = 0;

@@ -21,6 +21,7 @@ import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.braisgabin.pokescreenshot.processing.ProcessingException;
+import com.braisgabin.pokescreenshot.processing.ScreenshotChecker;
 import com.f2prateek.rx.preferences.Preference;
 
 import java.io.File;
@@ -134,6 +135,12 @@ public class ScreenshotService extends Service {
                 bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
               }
               return bitmap;
+            }
+          })
+          .filter(new Func1<Bitmap, Boolean>() {
+            @Override
+            public Boolean call(Bitmap bitmap) {
+              return ScreenshotChecker.isPokemonGoScreenshot(bitmap);
             }
           })
           .map(new Func1<Bitmap, List<int[]>>() {

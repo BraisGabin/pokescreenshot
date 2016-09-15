@@ -13,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.braisgabin.pokescreenshot.model.Pokemon;
@@ -21,7 +20,6 @@ import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.braisgabin.pokescreenshot.processing.ProcessingException;
-import com.braisgabin.pokescreenshot.processing.ScreenshotChecker;
 import com.f2prateek.rx.preferences.Preference;
 
 import java.io.File;
@@ -38,6 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -137,19 +136,13 @@ public class ScreenshotService extends Service {
               return bitmap;
             }
           })
-          .filter(new Func1<Bitmap, Boolean>() {
-            @Override
-            public Boolean call(Bitmap bitmap) {
-              return ScreenshotChecker.isPokemonGoScreenshot(bitmap);
-            }
-          })
           .map(new Func1<Bitmap, List<int[]>>() {
             @Override
             public List<int[]> call(Bitmap bitmap) {
               final ScreenshotComponent c = component.plus(new ScreenshotModule(bitmap));
               try {
                 final float pokemonLvl = CP.radian2Lvl(Integer.parseInt(trainerLvl.get()), c.angle().radian());
-                Log.d("PSS", String.format(Locale.US, "lvl: %.1f", pokemonLvl));
+                Timber.d("lvl: %.1f", pokemonLvl);
                 final Ocr.Pokemon ocrData = c.ocr().ocr();
                 final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
                 final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
@@ -164,10 +157,10 @@ public class ScreenshotService extends Service {
               new Action1<List<int[]>>() {
                 @Override
                 public void call(List<int[]> ivs) {
-                  float[] ivRange = calculateIvRange(ivs);
-                  String s = String.format(Locale.getDefault(),
+                  final float[] ivRange = calculateIvRange(ivs);
+                  final String s = String.format(Locale.getDefault(),
                       "(%.2f%%, %.2f%%) %.2f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
-                  System.out.println(s);
+                  Timber.d(s);
                   Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_SHORT).show();
                 }
               },

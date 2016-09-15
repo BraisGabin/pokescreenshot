@@ -196,6 +196,7 @@ public class Ocr {
   }
 
   private String candy(Rect ocrRect) {
+    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " '.ABCDEFGHIJKLMNOPQRSTUVWXYZo");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
@@ -206,6 +207,7 @@ public class Ocr {
 
     final Rect boxRect = getRegionBox(tess);
     boxRect.offset(ocrRect.left, ocrRect.top);
+    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
 
     if (candy == null) {
       Log.w(TAG, "Error parsing candy: " + text);

@@ -21,7 +21,9 @@ import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.braisgabin.pokescreenshot.processing.ProcessingException;
+import com.braisgabin.pokescreenshot.processing.ScreenshotChecker;
 import com.f2prateek.rx.preferences.Preference;
+import com.google.auto.value.AutoValue;
 
 import java.io.File;
 import java.util.List;
@@ -29,10 +31,13 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 import static java.lang.Math.max;
@@ -98,29 +103,27 @@ public class ScreenshotService extends Service {
 
     if (subscription == null) {
       subscription = FileObservable.newFiles(screenshotsDir)
-          .map(new Func1<File, Bitmap>() {
+          .publish(new Func1<Observable<File>, Observable<FileBitmap>>() {
             @Override
-            public Bitmap call(File file) {
+            public Observable<FileBitmap> call(Observable<File> fileObservable) {
               final BitmapFactory.Options options = new BitmapFactory.Options();
               options.inMutable = true;
-              long sleep = 100;
-              Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-              while (bitmap == null) {
-                try {
-                  Thread.sleep(sleep);
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                }
-                sleep = sleep << 1;
-                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-              }
-              return bitmap;
+              return Observable.zip(
+                  fileObservable,
+                  fileObservable
+                      .map(toBitmap(options, 5, 100)),
+                  new Func2<File, Bitmap, FileBitmap>() {
+                    @Override
+                    public FileBitmap call(File file, Bitmap bitmap) {
+                      return FileBitmap.create(file, bitmap);
+                    }
+                  });
             }
           })
-          .map(new Func1<Bitmap, List<int[]>>() {
+          .map(new Func1<FileBitmap, List<int[]>>() {
             @Override
-            public List<int[]> call(Bitmap bitmap) {
-              final ScreenshotComponent c = component.plus(new ScreenshotModule(bitmap));
+            public List<int[]> call(FileBitmap fb) {
+              final ScreenshotComponent c = component.plus(new ScreenshotModule(fb.bitmap()));
               try {
                 final float pokemonLvl = CP.radian2Lvl(Integer.parseInt(trainerLvl.get()), c.angle().radian());
                 Timber.d("lvl: %.1f", pokemonLvl);
@@ -154,6 +157,27 @@ public class ScreenshotService extends Service {
     }
 
     return Service.START_STICKY;
+  }
+
+  private Func1<? super File, Bitmap> toBitmap(final BitmapFactory.Options options, final int retryTimes, final long initialWait) {
+    return new Func1<File, Bitmap>() {
+      @Override
+      public Bitmap call(File file) {
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        for (int i = 0; i < retryTimes && bitmap == null; i++) {
+          try {
+            Thread.sleep(initialWait << i);
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+          } catch (InterruptedException e) {
+            throw Exceptions.propagate(e);
+          }
+        }
+        if (bitmap == null) {
+          throw new IllegalStateException("Impossible to decode the file.");
+        }
+        return bitmap;
+      }
+    };
   }
 
   private float[] calculateIvRange(List<int[]> ivs) {
@@ -195,5 +219,16 @@ public class ScreenshotService extends Service {
         .addAction(0, getString(R.string.stop_service), stopPendingIntent)
         .addAction(0, getString(R.string.settings), settingsPendingIntent)
         .build();
+  }
+
+  @AutoValue
+  static abstract class FileBitmap {
+    public static FileBitmap create(File file, Bitmap bitmap) {
+      return new AutoValue_ScreenshotService_FileBitmap(file, bitmap);
+    }
+
+    abstract File file();
+
+    abstract Bitmap bitmap();
   }
 }

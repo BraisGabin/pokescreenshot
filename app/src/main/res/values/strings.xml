@@ -4,4 +4,8 @@
     <string name="settings">Settings</string>
     <string name="trainer_lvl">Trainer level</string>
     <string name="select_trainter_level">Please, select your trainer level.</string>
+    <string name="trainer_lvl_d">Trainer lvl %d</string>
+    <string name="idle">Idle</string>
+    <string name="working">Working</string>
+    <string name="no_pokemon_go_screenshot">This screenshot isn\'t from Pokémon Go</string>
 </resources>

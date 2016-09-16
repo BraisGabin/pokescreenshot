@@ -105,20 +105,19 @@ public class Angle {
     return true;
   }
 
-  public static abstract class AngleException extends ProcessingException {
-
-    public AngleException(String message) {
+  public static abstract class Exception extends ProcessingException {
+    public Exception(String message) {
       super(message);
     }
   }
 
-  public static class InitialPointException extends AngleException {
+  public static class InitialPointException extends Exception {
     public InitialPointException(String message) {
       super(message);
     }
   }
 
-  public static class RadianException extends AngleException {
+  public static class RadianException extends Exception {
     public RadianException(String message) {
       super(message);
     }

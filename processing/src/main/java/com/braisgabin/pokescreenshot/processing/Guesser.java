@@ -61,20 +61,20 @@ public class Guesser {
     return ivs;
   }
 
-  public static abstract class GuesserException extends ProcessingException {
+  public static abstract class Exception extends ProcessingException {
 
-    public GuesserException(String message) {
+    public Exception(String message) {
       super(message);
     }
   }
 
-  public static class UnknownPokemonException extends GuesserException {
+  public static class UnknownPokemonException extends Exception {
     public UnknownPokemonException(String message) {
       super(message);
     }
   }
 
-  public static class MultiplePokemonException extends GuesserException {
+  public static class MultiplePokemonException extends Exception {
     public MultiplePokemonException(String message) {
       super(message);
     }

@@ -97,7 +97,7 @@ public class ScreenshotService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    startForeground(1, notification(Integer.parseInt(trainerLvl.get())));
+    startForeground(1, notification(trainerLvl()));
 
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
@@ -163,6 +163,10 @@ public class ScreenshotService extends Service {
     }
 
     return Service.START_STICKY;
+  }
+
+  private int trainerLvl() {
+    return Integer.parseInt(trainerLvl.get());
   }
 
   private Func1<? super File, Bitmap> toBitmap(final BitmapFactory.Options options, final int retryTimes, final long initialWait) {

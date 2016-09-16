@@ -29,20 +29,18 @@ public class Ocr {
     final float d = (bitmap.getWidth() - navBarHeight) / (float) (480 - 56);
     BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), VALUE_CP, VALUE_NO_CP);
     tess.setImage(bitmap);
-    return new Ocr(tess, bitmap.getWidth(), bitmap.getHeight(), d, canvas);
+    return new Ocr(tess, bitmap.getWidth(), d, canvas);
   }
 
   private final TessBaseAPI tess;
   private final int width;
-  private final int height;
   private final float d;
   private final Canvas canvas;
   private final Paint paint;
 
-  public Ocr(TessBaseAPI tess, int width, int height, float d, Canvas canvas) {
+  private Ocr(TessBaseAPI tess, int width, float d, Canvas canvas) {
     this.tess = tess;
     this.width = width;
-    this.height = height;
     this.d = d;
     this.canvas = canvas;
     if (canvas != null) {

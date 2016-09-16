@@ -246,6 +246,9 @@ public class Ocr {
       regionRect.set(getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);
       stardust = Integer.parseInt(matcher.group(1));
+      if (!Stardust.isStardustCorrect(stardust)) {
+        stardust = -1;
+      }
     }
 
     if (stardust < 0) {

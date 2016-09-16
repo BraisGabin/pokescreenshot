@@ -27,6 +27,7 @@ import com.google.auto.value.AutoValue;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.observables.GroupedObservable;
 import timber.log.Timber;
 
 import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.isPokemonGoScreenshot;
@@ -97,7 +99,8 @@ public class ScreenshotService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    startForeground(1, notification(trainerLvl()));
+    startForeground(1, notification(trainerLvl(), false));
+    final AtomicInteger ref = new AtomicInteger(0);
 
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
@@ -111,6 +114,12 @@ public class ScreenshotService extends Service {
               return Observable.zip(
                   fileObservable,
                   fileObservable
+                      .doOnNext(new Action1<File>() {
+                        @Override
+                        public void call(File file) {
+                          startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
+                        }
+                      })
                       .map(toBitmap(options, 5, 100)),
                   new Func2<File, Bitmap, FileBitmap>() {
                     @Override
@@ -120,49 +129,80 @@ public class ScreenshotService extends Service {
                   });
             }
           })
-          .filter(new Func1<FileBitmap, Boolean>() {
+          .groupBy(new Func1<FileBitmap, Boolean>() {
             @Override
             public Boolean call(FileBitmap fb) {
               return isPokemonGoScreenshot(fb.bitmap());
             }
           })
-          .map(new Func1<FileBitmap, List<int[]>>() {
-            @Override
-            public List<int[]> call(FileBitmap fb) {
-              final ScreenshotComponent c = component.plus(new ScreenshotModule(fb.bitmap()));
-              try {
-                final float pokemonLvl = CP.radian2Lvl(Integer.parseInt(trainerLvl.get()), c.angle().radian());
-                Timber.d("lvl: %.1f", pokemonLvl);
-                final Ocr.Pokemon ocrData = c.ocr().ocr();
-                final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
-                final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
-                return Guesser.iv(pokemon, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
-              } catch (ProcessingException e) {
-                throw new RuntimeException(e);
-              }
-            }
-          })
-          .observeOn(AndroidSchedulers.mainThread())
           .subscribe(
-              new Action1<List<int[]>>() {
+              new Action1<GroupedObservable<Boolean, FileBitmap>>() {
                 @Override
-                public void call(List<int[]> ivs) {
-                  final float[] ivRange = calculateIvRange(ivs);
-                  final String s = String.format(Locale.getDefault(),
-                      "(%.2f%%, %.2f%%) %.2f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
-                  Timber.d(s);
-                  Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_SHORT).show();
+                public void call(GroupedObservable<Boolean, FileBitmap> observable) {
+                  if (observable.getKey()) {
+                    pokemonGoScreenshot(observable, ref);
+                  } else {
+                    noPokemonGoScreenshot(observable, ref);
+                  }
                 }
               },
               new Action1<Throwable>() {
                 @Override
                 public void call(Throwable throwable) {
+                  startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
                   throw new RuntimeException(throwable);
                 }
-              });
+              }
+          );
     }
 
     return Service.START_STICKY;
+  }
+
+  private Subscription pokemonGoScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+    return observable
+        .map(new Func1<FileBitmap, List<int[]>>() {
+          @Override
+          public List<int[]> call(FileBitmap fb) {
+            final ScreenshotComponent c = component.plus(new ScreenshotModule(fb.bitmap()));
+            try {
+              final float pokemonLvl = CP.radian2Lvl(trainerLvl(), c.angle().radian());
+              Timber.d("lvl: %.1f", pokemonLvl);
+              final Ocr.Pokemon ocrData = c.ocr().ocr();
+              final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
+              final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
+              return Guesser.iv(pokemon, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
+            } catch (ProcessingException e) {
+              throw new RuntimeException(e);
+            }
+          }
+        })
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new Action1<List<int[]>>() {
+              @Override
+              public void call(List<int[]> ivs) {
+                final float[] ivRange = calculateIvRange(ivs);
+                final String s = String.format(Locale.getDefault(),
+                    "(%.2f%%, %.2f%%) %.2f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
+                Timber.d(s);
+                Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_SHORT).show();
+                startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
+              }
+            });
+  }
+
+  private void noPokemonGoScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+    observable
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<FileBitmap>() {
+          @Override
+          public void call(FileBitmap fileBitmap) {
+            startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
+            final String text = getString(R.string.no_pokemon_go_screenshot);
+            Toast.makeText(ScreenshotService.this, text, Toast.LENGTH_LONG).show();
+          }
+        });
   }
 
   private int trainerLvl() {
@@ -216,18 +256,21 @@ public class ScreenshotService extends Service {
     unregisterReceiver(broadcastReceiver);
   }
 
-  private Notification notification(int trainerLvl) {
+  private Notification notification(int trainerLvl, boolean working) {
     final Intent stopIntent = getStopActionIntent();
     final PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     final Intent settingsIntent = SettingsActivity.getCallingIntent(this);
     final PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+    final String contentText = getString(working ? R.string.working : R.string.idle);
     return new NotificationCompat.Builder(this)
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle(getString(R.string.app_name))
-        .setContentText("Trainer lvl " + trainerLvl)
+        .setContentText(contentText)
+        .setContentInfo(getString(R.string.trainer_lvl_d, trainerLvl))
         .setOngoing(true)
+        .setCategory(NotificationCompat.CATEGORY_SERVICE)
         .addAction(0, getString(R.string.stop_service), stopPendingIntent)
         .addAction(0, getString(R.string.settings), settingsPendingIntent)
         .build();

@@ -168,10 +168,12 @@ public class ScreenshotService extends Service {
             try {
               final float pokemonLvl = CP.radian2Lvl(trainerLvl(), c.angle().radian());
               Timber.d("lvl: %.1f", pokemonLvl);
-              final Ocr.Pokemon ocrData = c.ocr().ocr();
-              final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocrData.getCandy());
-              final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
-              return Guesser.iv(pokemon, ocrData.getCp(), ocrData.getHp(), pokemonLvl);
+              final Ocr ocr = c.ocr();
+              final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocr.candy());
+              final int cp = ocr.cp();
+              final int hp = ocr.hp();
+              final Pokemon pokemon = Guesser.getPokemon(pokemonList, cp, hp, pokemonLvl);
+              return Guesser.iv(pokemon, cp, hp, pokemonLvl);
             } catch (ProcessingException e) {
               throw new RuntimeException(e);
             }

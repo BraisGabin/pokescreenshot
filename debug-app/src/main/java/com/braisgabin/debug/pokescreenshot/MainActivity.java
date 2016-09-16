@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     tessBaseAPI.init(absolutePath, "eng");
     tessBaseAPI.readConfigFile("pokemon");
     final Ocr ocr = Ocr.create(tessBaseAPI, this, bitmap, canvas);
-    ocr.ocr();
+    ocr.debug();
   }
 
   private Bitmap bitmap(String s) {

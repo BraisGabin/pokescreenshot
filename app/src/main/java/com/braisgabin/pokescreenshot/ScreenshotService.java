@@ -21,7 +21,6 @@ import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.braisgabin.pokescreenshot.processing.ProcessingException;
-import com.braisgabin.pokescreenshot.processing.ScreenshotChecker;
 import com.f2prateek.rx.preferences.Preference;
 import com.google.auto.value.AutoValue;
 
@@ -40,6 +39,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
 
+import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.isPokemonGoScreenshot;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -118,6 +118,12 @@ public class ScreenshotService extends Service {
                       return FileBitmap.create(file, bitmap);
                     }
                   });
+            }
+          })
+          .filter(new Func1<FileBitmap, Boolean>() {
+            @Override
+            public Boolean call(FileBitmap fb) {
+              return isPokemonGoScreenshot(fb.bitmap());
             }
           })
           .map(new Func1<FileBitmap, List<int[]>>() {

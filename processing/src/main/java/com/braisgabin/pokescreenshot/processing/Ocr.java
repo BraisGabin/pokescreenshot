@@ -6,10 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.google.auto.value.AutoValue;
 import com.googlecode.leptonica.android.Pixa;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -52,32 +50,19 @@ public class Ocr {
     }
   }
 
-  public Pokemon ocr() {
-    final Rect rect = new Rect();
-
-    final int cp = cp(cpRect(width), rect);
-    Log.d(TAG, "CP: " + cp);
-
-    if (rect.bottom == 0) {
-      rect.bottom = Math.round(HEIGHT_CP * d);
-    }
-
-    final String name = name(nameRect(width, rect.bottom));
-    Log.d(TAG, "Name: " + name);
-
-    final int hp = hp(hpRect(width, rect.bottom));
-    Log.d(TAG, "HP: " + hp);
-
-    final String candy = candy(candyRect(width, rect.bottom));
-    Log.d(TAG, "Candy: " + candy);
-
-    final int stardust = stardust(stardustRect(width, rect.bottom));
-    Log.d(TAG, "Stardust: " + stardust);
-
-    return Pokemon.create(cp, hp, stardust, candy, name);
+  public void debug() {
+    Log.d(TAG, "CP: " + cp());
+    Log.d(TAG, "Name: " + name());
+    Log.d(TAG, "HP: " + hp());
+    Log.d(TAG, "Candy: " + candy());
+    Log.d(TAG, "Stardust: " + stardust());
   }
 
-  private int cp(Rect ocrRect, Rect regionRect) {
+  public int cp() {
+    return cp(cpRect(width));
+  }
+
+  private int cp(Rect ocrRect) {
     tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
@@ -86,6 +71,7 @@ public class Ocr {
     text2 = text2.replace('o', '0');
     text2 = text2.replace('l', '1');
     final String[] lines = text2.split("\n");
+    Rect regionRect = new Rect();
 
     int cp = -1;
     final Pattern pattern = Pattern.compile("PC([0-9]+)", Pattern.CASE_INSENSITIVE);
@@ -121,6 +107,10 @@ public class Ocr {
     return rect;
   }
 
+  public String name() {
+    return name(nameRect(width));
+  }
+
   private String name(Rect ocrRect) {
     tess.setRectangle(ocrRect);
     tess.getUTF8Text();
@@ -154,10 +144,14 @@ public class Ocr {
     return name;
   }
 
-  private Rect nameRect(int width, int bottom) {
+  private Rect nameRect(int width) {
     Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(44 * d));
-    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(275 * d));
+    rect.offset(width / 2 - rect.width() / 2, Math.round((HEIGHT_CP + 275) * d));
     return rect;
+  }
+
+  public int hp() {
+    return hp(hpRect(width));
   }
 
   private int hp(Rect ocrRect) {
@@ -191,10 +185,14 @@ public class Ocr {
     return hp;
   }
 
-  private Rect hpRect(int width, int bottom) {
+  private Rect hpRect(int width) {
     Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
-    rect.offset(width / 2 - rect.width() / 2, bottom + Math.round(335 * d));
+    rect.offset(width / 2 - rect.width() / 2, Math.round((HEIGHT_CP + 335) * d));
     return rect;
+  }
+
+  public String candy() {
+    return candy(candyRect(width));
   }
 
   private String candy(Rect ocrRect) {
@@ -225,10 +223,14 @@ public class Ocr {
     return candy;
   }
 
-  private Rect candyRect(int width, int bottom) {
+  private Rect candyRect(int width) {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(24 * d));
-    rect.offset(width / 2, bottom + Math.round(496 * d));
+    rect.offset(width / 2, Math.round((HEIGHT_CP + 496) * d));
     return rect;
+  }
+
+  public int stardust() {
+    return stardust(stardustRect(width));
   }
 
   private int stardust(Rect ocrRect) {
@@ -262,9 +264,9 @@ public class Ocr {
     return stardust;
   }
 
-  private Rect stardustRect(int width, int bottom) {
+  private Rect stardustRect(int width) {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
-    rect.offset(width / 2, bottom + Math.round(547 * d));
+    rect.offset(width / 2, Math.round((HEIGHT_CP + 547) * d));
     return rect;
   }
 
@@ -280,24 +282,5 @@ public class Ocr {
     final Rect boxRect = regions.getBoxRect(index);
     regions.recycle();
     return boxRect;
-  }
-
-  @AutoValue
-  public abstract static class Pokemon {
-    static Pokemon create(int cp, int hp, int stardust, String candy, String name) {
-      return new AutoValue_Ocr_Pokemon(cp, hp, stardust, candy, name);
-    }
-
-    public abstract int getCp();
-
-    public abstract int getHp();
-
-    public abstract int getStardust();
-
-    @Nullable
-    public abstract String getCandy();
-
-    @Nullable
-    public abstract String getName();
   }
 }

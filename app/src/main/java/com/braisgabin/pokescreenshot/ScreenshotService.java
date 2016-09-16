@@ -172,7 +172,9 @@ public class ScreenshotService extends Service {
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
         for (int i = 0; i < retryTimes && bitmap == null; i++) {
           try {
-            Thread.sleep(initialWait << i);
+            final long wait = initialWait << i;
+            Timber.d("Error decoding image, waiting to retry %dms", wait);
+            Thread.sleep(wait);
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
           } catch (InterruptedException e) {
             throw Exceptions.propagate(e);

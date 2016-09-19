@@ -206,7 +206,7 @@ public class ScreenshotService extends Service {
                 if (exception == null) {
                   final float[] ivRange = calculateIvRange(result.ivs());
                   final String s = String.format(Locale.getDefault(),
-                      "(%.2f%%, %.2f%%) %.2f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
+                      "(%.1f%%, %.1f%%) %.1f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
                   Timber.d(s);
                   Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_LONG).show();
                 } else {

@@ -11,8 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
-  public static Intent getCallingIntent(Context context) {
+  private static final String FINISH_ON_UPDATE_TRAINER_LVL = "FINISH_ON_UPDATE_TRAINER_LVL";
+
+  public static Intent getCallingIntent(Context context, boolean finishOnUpdateTrainerLvl) {
     final Intent intent = new Intent(context, SettingsActivity.class);
+
+    intent.putExtra(FINISH_ON_UPDATE_TRAINER_LVL, finishOnUpdateTrainerLvl);
 
     return intent;
   }
@@ -22,17 +26,19 @@ public class SettingsActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_settings);
     if (savedInstanceState == null) {
+      final Intent intent = getIntent();
       getFragmentManager()
           .beginTransaction()
-          .add(R.id.f_for_fragment, SettingsFragment.newInstance())
+          .add(R.id.f_for_fragment, SettingsFragment.newInstance(intent.getBooleanExtra(FINISH_ON_UPDATE_TRAINER_LVL, false)))
           .commit();
     }
   }
 
 
   public static class SettingsFragment extends PreferenceFragment {
-    public static SettingsFragment newInstance() {
+    public static SettingsFragment newInstance(boolean finishOnUpdateTrainerLvl) {
       Bundle args = new Bundle();
+      args.putBoolean(FINISH_ON_UPDATE_TRAINER_LVL, finishOnUpdateTrainerLvl);
 
       SettingsFragment fragment = new SettingsFragment();
       fragment.setArguments(args);
@@ -85,6 +91,10 @@ public class SettingsActivity extends AppCompatActivity {
           // the preference's 'entries' list.
           ListPreference listPreference = (ListPreference) preference;
           int index = listPreference.findIndexOfValue(stringValue);
+
+          if (getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false) && index >= 0 && preference.getKey().equals("trainer_lvl")) {
+            getActivity().finish();
+          }
 
           // Set the summary to reflect the new value.
           preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);

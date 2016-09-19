@@ -17,4 +17,8 @@
     <string name="error_guessing_pokemon_none">There is no option.</string>
     <string name="error_unknown_title">Unknown error</string>
     <string name="do_you_want_to_report">Do you want to report this error?</string>
+    <string name="error_ocr_title">Error reading the screenshot</string>
+    <string name="error_ocr_candy">Impossible to read the candy name.</string>
+    <string name="error_ocr_cp">Impossible to read the CP.</string>
+    <string name="error_ocr_hp">Impossible to read the HP.</string>
 </resources>

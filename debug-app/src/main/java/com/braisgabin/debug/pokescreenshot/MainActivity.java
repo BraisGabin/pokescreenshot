@@ -44,16 +44,18 @@ public class MainActivity extends AppCompatActivity {
     final Angle angle = new Angle(bitmap);
     try {
       angle.radian(canvas);
+      tess(bitmap, canvas);
     } catch (Angle.Exception e) {
       e.printStackTrace();
+    } catch (Ocr.Exception e) {
+      e.printStackTrace();
     }
-    tess(bitmap, canvas);
 
 
     ((ImageView) findViewById(R.id.imageView)).setImageBitmap(bitmap2);
   }
 
-  private void tess(Bitmap bitmap, Canvas canvas) {
+  private void tess(Bitmap bitmap, Canvas canvas) throws Ocr.Exception {
     final File root = getCacheDir();
     try {
       copyRecursive(getAssets(), "tesseract", root);

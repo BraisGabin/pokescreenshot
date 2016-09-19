@@ -50,7 +50,7 @@ public class Ocr {
     }
   }
 
-  public void debug() {
+  public void debug() throws Exception {
     Log.d(TAG, "CP: " + cp());
     Log.d(TAG, "Name: " + name());
     Log.d(TAG, "HP: " + hp());
@@ -58,11 +58,11 @@ public class Ocr {
     Log.d(TAG, "Stardust: " + stardust());
   }
 
-  public int cp() {
+  public int cp() throws CpException {
     return cp(cpRect(width));
   }
 
-  private int cp(Rect ocrRect) {
+  private int cp(Rect ocrRect) throws CpException {
     tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
@@ -88,7 +88,7 @@ public class Ocr {
     tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "");
 
     if (cp <= 0) {
-      Log.w(TAG, "Error parsing CP:\n" + text);
+      throw new CpException("Error parsing CP:\n" + text);
     }
     if (canvas != null) {
       paint.setColor(Color.RED);
@@ -107,11 +107,11 @@ public class Ocr {
     return rect;
   }
 
-  public String name() {
+  public String name() throws NameException {
     return name(nameRect(width));
   }
 
-  private String name(Rect ocrRect) {
+  private String name(Rect ocrRect) throws NameException {
     tess.setRectangle(ocrRect);
     tess.getUTF8Text();
 
@@ -127,7 +127,7 @@ public class Ocr {
     boxRect2.offset(ocrRect2.left, ocrRect2.top);
 
     if (name == null) {
-      Log.w(TAG, "Error parsing name: No name");
+      throw new NameException("Error parsing name: No name");
     }
 
     if (canvas != null) {
@@ -150,11 +150,11 @@ public class Ocr {
     return rect;
   }
 
-  public int hp() {
+  public int hp() throws HpException {
     return hp(hpRect(width));
   }
 
-  private int hp(Rect ocrRect) {
+  private int hp(Rect ocrRect) throws HpException {
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
     Rect regionRect = new Rect();
@@ -173,7 +173,7 @@ public class Ocr {
     }
 
     if (hp <= 0) {
-      Log.w(TAG, "Error parsing HP:\n" + text);
+      throw new HpException("Error parsing HP:\n" + text);
     }
     if (canvas != null) {
       paint.setColor(Color.RED);
@@ -191,11 +191,11 @@ public class Ocr {
     return rect;
   }
 
-  public String candy() {
+  public String candy() throws CandyException {
     return candy(candyRect(width));
   }
 
-  private String candy(Rect ocrRect) {
+  private String candy(Rect ocrRect) throws CandyException {
     tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " '.ABCDEFGHIJKLMNOPQRSTUVWXYZo");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
@@ -210,7 +210,7 @@ public class Ocr {
     tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
 
     if (candy == null) {
-      Log.w(TAG, "Error parsing candy: " + text);
+      throw new CandyException("Error parsing candy: " + text);
     }
 
     if (canvas != null) {
@@ -229,11 +229,11 @@ public class Ocr {
     return rect;
   }
 
-  public int stardust() {
+  public int stardust() throws StardustException {
     return stardust(stardustRect(width));
   }
 
-  private int stardust(Rect ocrRect) {
+  private int stardust(Rect ocrRect) throws StardustException {
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
@@ -252,7 +252,7 @@ public class Ocr {
     }
 
     if (stardust < 0) {
-      Log.w(TAG, "Error parsing stardust:\n" + text);
+      throw new StardustException("Error parsing stardust:\n" + text);
     }
     if (canvas != null) {
       paint.setColor(Color.RED);
@@ -282,5 +282,41 @@ public class Ocr {
     final Rect boxRect = regions.getBoxRect(index);
     regions.recycle();
     return boxRect;
+  }
+
+  public static abstract class Exception extends ProcessingException {
+    public Exception(String message) {
+      super(message);
+    }
+  }
+
+  public static class CpException extends Exception {
+    public CpException(String message) {
+      super(message);
+    }
+  }
+
+  public static class HpException extends Exception {
+    public HpException(String message) {
+      super(message);
+    }
+  }
+
+  public static class NameException extends Exception {
+    public NameException(String message) {
+      super(message);
+    }
+  }
+
+  public static class CandyException extends Exception {
+    public CandyException(String message) {
+      super(message);
+    }
+  }
+
+  public static class StardustException extends Exception {
+    public StardustException(String message) {
+      super(message);
+    }
   }
 }

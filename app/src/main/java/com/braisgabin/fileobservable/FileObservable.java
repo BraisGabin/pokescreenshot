@@ -19,7 +19,13 @@ public class FileObservable {
           public Observable<File> call(Long aLong) {
             final File[] files = file.listFiles(fileFilter);
             fileFilter.time = System.currentTimeMillis() / 1000;
-            return Observable.from(files);
+            final Observable<File> observable;
+            if (files == null) {
+              observable = Observable.empty();
+            } else {
+              observable = Observable.from(files);
+            }
+            return observable;
           }
         })
         .doOnNext(new Action1<File>() {

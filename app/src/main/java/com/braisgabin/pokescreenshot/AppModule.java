@@ -35,7 +35,6 @@ class AppModule {
     return app;
   }
 
-  @Singleton
   @Provides
   AssetManager assetManagerProvider() {
     return app.getAssets();

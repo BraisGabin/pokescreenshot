@@ -43,3 +43,5 @@ dependencies {
 
     compile 'com.jakewharton.timber:timber:4.3.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

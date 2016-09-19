@@ -6,3 +6,4 @@
 /build
 *.apk
 /captures
+google-services.json

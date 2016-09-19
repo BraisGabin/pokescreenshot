@@ -3,6 +3,7 @@
           package="com.braisgabin.pokescreenshot">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:name=".App"
@@ -22,6 +23,10 @@
         </activity>
         <activity
             android:name=".SettingsActivity">
+        </activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:excludeFromRecents="true">
         </activity>
 
         <service

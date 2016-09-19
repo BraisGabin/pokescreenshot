@@ -208,7 +208,7 @@ public class ScreenshotService extends Service {
                   final String s = String.format(Locale.getDefault(),
                       "(%.2f%%, %.2f%%) %.2f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
                   Timber.d(s);
-                  Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_SHORT).show();
+                  Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_LONG).show();
                 } else {
                   try {
                     throw exception;

@@ -200,7 +200,8 @@ public class Ocr {
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
-    String text2 = text.replace("NIDORANQ", "NIDORAN♀");
+    String text2 = text.replace(" ", "");
+    text2 = text2.replace("NIDORANQ", "NIDORAN♀");
     text2 = text2.replace("NIDORANo", "NIDORAN♂");
 
     String candy = Candy.candyType(text2);

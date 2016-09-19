@@ -367,7 +367,7 @@ public class ScreenshotService extends Service {
     final Intent stopIntent = getStopActionIntent();
     final PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-    final Intent settingsIntent = SettingsActivity.getCallingIntent(this);
+    final Intent settingsIntent = SettingsActivity.getCallingIntent(this, false);
     final PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     final String contentText = getString(working ? R.string.working : R.string.idle);

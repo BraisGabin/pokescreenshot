@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
   private void checkTrainerLevel() {
     if (!trainerLvl.isSet()) {
-      startActivityForResult(SettingsActivity.getCallingIntent(this), REQUEST_CODE_TRAINER_LVL);
+      startActivityForResult(SettingsActivity.getCallingIntent(this, true), REQUEST_CODE_TRAINER_LVL);
       Toast.makeText(getApplicationContext(), getString(R.string.select_trainter_level), Toast.LENGTH_LONG).show();
     } else {
       runService();

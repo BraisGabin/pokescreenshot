@@ -8,4 +8,13 @@
     <string name="idle">Idle</string>
     <string name="working">Working</string>
     <string name="no_pokemon_go_screenshot">This screenshot isn\'t from Pokémon Go</string>
+    <string name="action_report">Report</string>
+    <string name="error_pokemon_lvl_title">Error detecting the pokémon\'s level</string>
+    <string name="error_pokemon_lvl_arc">Unable to find the level arc.</string>
+    <string name="error_pokemon_lvl_circle">Unable to find the level ball.</string>
+    <string name="error_guessing_pokemon_title">Error, impossible to know which pokémon is.</string>
+    <string name="error_guessing_pokemon_multiple">There are more than one option.</string>
+    <string name="error_guessing_pokemon_none">There is no option.</string>
+    <string name="error_unknown_title">Unknown error</string>
+    <string name="do_you_want_to_report">Do you want to report this error?</string>
 </resources>

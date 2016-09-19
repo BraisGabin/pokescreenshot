@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.braisgabin.pokescreenshot.model.MySQLiteOpenHelper;
 import com.f2prateek.rx.preferences.Preference;
@@ -38,6 +39,11 @@ class AppModule {
   @Provides
   AssetManager assetManagerProvider() {
     return app.getAssets();
+  }
+
+  @Provides
+  NotificationManagerCompat notificationManagerCompatProvider() {
+    return NotificationManagerCompat.from(app);
   }
 
   @Singleton

@@ -220,6 +220,18 @@ public class ScreenshotService extends Service {
                     notifyError(R.string.error_pokemon_lvl_title,
                         R.string.error_pokemon_lvl_circle,
                         result.file());
+                  } catch (Ocr.CandyException e) {
+                    notifyError(R.string.error_ocr_title,
+                        R.string.error_ocr_candy,
+                        result.file());
+                  } catch (Ocr.CpException e) {
+                    notifyError(R.string.error_ocr_title,
+                        R.string.error_ocr_cp,
+                        result.file());
+                  } catch (Ocr.HpException e) {
+                    notifyError(R.string.error_ocr_title,
+                        R.string.error_ocr_hp,
+                        result.file());
                   } catch (Guesser.MultiplePokemonException e) {
                     notifyError(R.string.error_guessing_pokemon_title,
                         R.string.error_guessing_pokemon_multiple,

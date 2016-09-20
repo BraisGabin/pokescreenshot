@@ -343,7 +343,7 @@ public class ScreenshotService extends Service {
     final Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("message/rfc822");
     intent.putExtra(Intent.EXTRA_SUBJECT, "[Pokescreenshot] " + title);
-    intent.putExtra(Intent.EXTRA_TEXT, message + "\nLocale: " + Locale.getDefault() + "\n");
+    intent.putExtra(Intent.EXTRA_TEXT, message + "\nLocale: " + Locale.getDefault() + "\nTrainer lvl: " + trainerLvl() + "\n");
     intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"pokescreenshotreport@braisgabin.com"});
     intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
     intent.addFlags(SDK_INT < LOLLIPOP ? FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET : FLAG_ACTIVITY_NEW_DOCUMENT);

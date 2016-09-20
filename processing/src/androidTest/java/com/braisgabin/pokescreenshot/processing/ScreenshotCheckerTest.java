@@ -17,7 +17,7 @@ public class ScreenshotCheckerTest {
   public void testIsPokemonGoScreenshot_480() throws Exception {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
-    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/140_kabuto.png"));
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/es/140_kabuto.png"));
     assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(true));
   }
 
@@ -25,7 +25,7 @@ public class ScreenshotCheckerTest {
   public void testIsPokemonGoScreenshot_360() throws Exception {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
-    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/123_scyther.png"));
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/es/123_scyther.png"));
     assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(true));
   }
 

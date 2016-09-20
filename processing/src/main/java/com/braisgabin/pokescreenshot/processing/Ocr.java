@@ -74,9 +74,9 @@ public class Ocr {
     Rect regionRect = new Rect();
 
     int cp = -1;
-    final Pattern pattern = Pattern.compile("PC([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("[^0-9]+([0-9]+)", Pattern.CASE_INSENSITIVE);
 
-    for (int i = 0, length = lines.length; i < length; i++) {
+    for (int i = lines.length - 1; i >= 0; i--) {
       final Matcher matcher = pattern.matcher(lines[i]);
       if (matcher.matches()) {
         regionRect.set(getTextline(tess, i));

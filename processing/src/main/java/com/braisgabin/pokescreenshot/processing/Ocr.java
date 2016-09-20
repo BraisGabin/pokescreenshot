@@ -203,6 +203,7 @@ public class Ocr {
     String text2 = text.replace(" ", "");
     text2 = text2.replace("NIDORANQ", "NIDORAN♀");
     text2 = text2.replace("NIDORANo", "NIDORAN♂");
+    text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
 
     String candy = Candy.candyType(text2);
 

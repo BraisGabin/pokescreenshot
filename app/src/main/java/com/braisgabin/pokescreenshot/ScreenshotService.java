@@ -305,7 +305,7 @@ public class ScreenshotService extends Service {
       final PendingIntent notifyErrorPendingIntent = PendingIntent.getActivities(this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
 
       final Notification notification = new NotificationCompat.Builder(this)
-          .setSmallIcon(R.drawable.ic_notification)
+          .setSmallIcon(R.drawable.ic_notification01)
           .setContentTitle(title)
           .setContentText(message)
           .setStyle(new NotificationCompat.BigTextStyle()
@@ -382,9 +382,10 @@ public class ScreenshotService extends Service {
     final Intent settingsIntent = SettingsActivity.getCallingIntent(this, false);
     final PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+    final int smallIcon = working ? R.drawable.ic_notification_working : R.drawable.ic_notification01;
     final String contentText = getString(working ? R.string.working : R.string.idle);
     return new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_notification)
+        .setSmallIcon(smallIcon)
         .setContentTitle(getString(R.string.app_name))
         .setContentText(contentText)
         .setContentInfo(getString(R.string.trainer_lvl_d, trainerLvl))

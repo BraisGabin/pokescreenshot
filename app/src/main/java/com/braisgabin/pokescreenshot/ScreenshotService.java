@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
 import android.view.WindowManager;
@@ -306,6 +307,7 @@ public class ScreenshotService extends Service {
 
       final Notification notification = new NotificationCompat.Builder(this)
           .setSmallIcon(R.drawable.ic_notification01)
+          .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
           .setContentTitle(title)
           .setContentText(message)
           .setStyle(new NotificationCompat.BigTextStyle()
@@ -386,6 +388,7 @@ public class ScreenshotService extends Service {
     final String contentText = getString(working ? R.string.working : R.string.idle);
     return new NotificationCompat.Builder(this)
         .setSmallIcon(smallIcon)
+        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
         .setContentTitle(getString(R.string.app_name))
         .setContentText(contentText)
         .setContentInfo(getString(R.string.trainer_lvl_d, trainerLvl))

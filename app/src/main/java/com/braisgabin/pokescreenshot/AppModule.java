@@ -50,6 +50,11 @@ class AppModule {
     return NotificationManagerCompat.from(app);
   }
 
+  @Provides
+  SharedPreferences sharedPreferencesProvider() {
+    return PreferenceManager.getDefaultSharedPreferences(app);
+  }
+
   @Singleton
   @Provides
   TessBaseAPI tessBaseAPIProvider(AssetManager assets) {
@@ -79,12 +84,6 @@ class AppModule {
   @Provides
   SQLiteDatabase sqLiteDatabaseProvider(SQLiteOpenHelper sqLiteOpenHelper) {
     return sqLiteOpenHelper.getReadableDatabase();
-  }
-
-  @Singleton
-  @Provides
-  SharedPreferences sharedPreferencesProvider() {
-    return PreferenceManager.getDefaultSharedPreferences(app);
   }
 
   @Singleton

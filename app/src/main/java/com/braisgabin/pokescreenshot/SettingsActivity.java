@@ -11,6 +11,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
+import javax.inject.Inject;
+
 public class SettingsActivity extends AppCompatActivity {
   private static final String FINISH_ON_UPDATE_TRAINER_LVL = "FINISH_ON_UPDATE_TRAINER_LVL";
 
@@ -54,15 +56,20 @@ public class SettingsActivity extends AppCompatActivity {
       return fragment;
     }
 
+    @Inject
+    SharedPreferences sharedPreferences;
+
     private boolean finishOnUpdateTrainerLvl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
+      App.component(getActivity()).inject(this);
+
       addPreferencesFromResource(R.xml.settings);
 
-      initData(PreferenceManager.getDefaultSharedPreferences(getActivity()));
+      initData(sharedPreferences);
 
       bindPreferenceSummaryToValue(findPreference(TRAINER_LVL));
       bindPreferenceSummaryToValue(findPreference(SCREENSHOT_DIR));

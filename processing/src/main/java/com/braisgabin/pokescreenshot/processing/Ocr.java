@@ -163,6 +163,7 @@ public class Ocr {
 
     String text2 = text.replace("l", "1");
     text2 = text2.replace("S", "5");
+    text2 = text2.replace("O", "0");
     text2 = text2.replace(" ", "");
     Matcher matcher = pattern.matcher(text2);
     if (matcher.matches()) {

@@ -45,6 +45,8 @@ public class SettingsActivity extends AppCompatActivity {
       return fragment;
     }
 
+    private boolean finishOnUpdateTrainerLvl;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -53,7 +55,10 @@ public class SettingsActivity extends AppCompatActivity {
 
       bindPreferenceSummaryToValue(findPreference("trainer_lvl"));
 
-      ((MyListPreference) findPreference("trainer_lvl")).show(null);
+      this.finishOnUpdateTrainerLvl = getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false);
+      if (finishOnUpdateTrainerLvl) {
+        ((MyListPreference) findPreference("trainer_lvl")).show(null);
+      }
     }
 
     /**
@@ -92,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
           ListPreference listPreference = (ListPreference) preference;
           int index = listPreference.findIndexOfValue(stringValue);
 
-          if (getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false) && index >= 0 && preference.getKey().equals("trainer_lvl")) {
+          if (finishOnUpdateTrainerLvl && index >= 0 && preference.getKey().equals("trainer_lvl")) {
             getActivity().finish();
           }
 

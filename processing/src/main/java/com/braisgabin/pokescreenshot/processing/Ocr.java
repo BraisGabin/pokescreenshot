@@ -14,7 +14,7 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
+import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 
 public class Ocr {
   private final static String TAG = "OCR";
@@ -23,8 +23,7 @@ public class Ocr {
   public static final int VALUE_NO_CP = 219;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
-    final int navBarHeight = navBarHeight(bitmap);
-    final float d = (bitmap.getWidth() - navBarHeight) / (float) (480 - 56);
+    final float d = proportion(bitmap);
     BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), VALUE_CP, VALUE_NO_CP);
     tess.setImage(bitmap);
     return new Ocr(tess, bitmap.getWidth(), d, canvas);

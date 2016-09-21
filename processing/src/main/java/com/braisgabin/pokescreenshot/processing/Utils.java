@@ -37,7 +37,15 @@ public class Utils {
     }
   }
 
-  public static int navBarHeight(Bitmap bitmap) {
+  static float proportion(Bitmap bitmap) {
+    return proportion(bitmap, navBarHeight(bitmap));
+  }
+
+  static float proportion(Bitmap bitmap, int navBarHeight) {
+    return (bitmap.getWidth() - navBarHeight) / (float) (480 - 56);
+  }
+
+  static int navBarHeight(Bitmap bitmap) {
     final int height = bitmap.getHeight();
     for (int y = height - 1; y >= 0; y--) {
       if (bitmap.getPixel(0, y) != Color.BLACK) {

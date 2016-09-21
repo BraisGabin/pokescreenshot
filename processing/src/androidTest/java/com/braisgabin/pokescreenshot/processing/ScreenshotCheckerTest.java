@@ -30,7 +30,15 @@ public class ScreenshotCheckerTest {
   }
 
   @Test
-  public void testIsPokemonGoScreenshot_noPokemonGo() throws Exception {
+  public void testIsPokemonGoScreenshot_settings() throws Exception {
+    final Context context = InstrumentationRegistry.getContext();
+    final AssetManager assets = context.getAssets();
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/settings.png"));
+    assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(false));
+  }
+
+  @Test
+  public void testIsPokemonGoScreenshot_googleNow() throws Exception {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/google_now.png"));

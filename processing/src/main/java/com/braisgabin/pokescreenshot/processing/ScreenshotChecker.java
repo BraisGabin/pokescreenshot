@@ -21,6 +21,9 @@ public class ScreenshotChecker {
         return false;
       }
     }
+    if (bitmap.getPixel(width / 2, height - Math.round(48 * d) - navBarHeight) != BUTTON_COLOR) {
+      return false;
+    }
     return true;
   }
 }

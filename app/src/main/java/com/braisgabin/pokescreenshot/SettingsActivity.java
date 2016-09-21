@@ -10,8 +10,9 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
-
   private static final String FINISH_ON_UPDATE_TRAINER_LVL = "FINISH_ON_UPDATE_TRAINER_LVL";
+
+  public static final String TRAINER_LVL = "trainer_lvl";
 
   public static Intent getCallingIntent(Context context, boolean finishOnUpdateTrainerLvl) {
     final Intent intent = new Intent(context, SettingsActivity.class);
@@ -53,11 +54,11 @@ public class SettingsActivity extends AppCompatActivity {
 
       addPreferencesFromResource(R.xml.settings);
 
-      bindPreferenceSummaryToValue(findPreference("trainer_lvl"));
+      bindPreferenceSummaryToValue(findPreference(TRAINER_LVL));
 
       this.finishOnUpdateTrainerLvl = getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false);
       if (finishOnUpdateTrainerLvl) {
-        ((MyListPreference) findPreference("trainer_lvl")).show(null);
+        ((MyListPreference) findPreference(TRAINER_LVL)).show(null);
       }
     }
 
@@ -97,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
           ListPreference listPreference = (ListPreference) preference;
           int index = listPreference.findIndexOfValue(stringValue);
 
-          if (finishOnUpdateTrainerLvl && index >= 0 && preference.getKey().equals("trainer_lvl")) {
+          if (finishOnUpdateTrainerLvl && index >= 0 && preference.getKey().equals(TRAINER_LVL)) {
             getActivity().finish();
           }
 

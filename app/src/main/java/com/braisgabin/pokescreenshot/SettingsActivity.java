@@ -11,6 +11,10 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.braisgabin.directorypicker.DirectoryPicker;
+
+import java.io.File;
+
 import javax.inject.Inject;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -46,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
   }
 
 
-  public static class SettingsFragment extends PreferenceFragment {
+  public static class SettingsFragment extends PreferenceFragment implements DirectoryPicker.OnDirectoryClickedListener {
     public static SettingsFragment newInstance(boolean finishOnUpdateTrainerLvl) {
       Bundle args = new Bundle();
       args.putBoolean(FINISH_ON_UPDATE_TRAINER_LVL, finishOnUpdateTrainerLvl);
@@ -73,6 +77,15 @@ public class SettingsActivity extends AppCompatActivity {
 
       bindPreferenceSummaryToValue(findPreference(TRAINER_LVL));
       bindPreferenceSummaryToValue(findPreference(SCREENSHOT_DIR));
+
+      findPreference(SCREENSHOT_DIR).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+          DirectoryPicker.newInstance(Environment.getExternalStorageDirectory(), sharedPreferences.getString(SCREENSHOT_DIR, screenshotDirDefault()))
+              .show(getChildFragmentManager(), SCREENSHOT_DIR);
+          return true;
+        }
+      });
 
       this.finishOnUpdateTrainerLvl = getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false);
       if (finishOnUpdateTrainerLvl) {
@@ -139,5 +152,17 @@ public class SettingsActivity extends AppCompatActivity {
         return true;
       }
     };
+
+    @Override
+    public void onDirectoryClicked(DirectoryPicker picker, File file) {
+      final String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+      String screenshotDir = file.getAbsolutePath().substring(root.length());
+      screenshotDir = screenshotDir.isEmpty() ? "/" : screenshotDir;
+      final Preference preference = findPreference(SCREENSHOT_DIR);
+      preference.getEditor()
+          .putString(SCREENSHOT_DIR, screenshotDir)
+          .apply();
+      bindPreferenceSummaryToValueListener.onPreferenceChange(preference, screenshotDir);
+    }
   }
 }

@@ -15,5 +15,7 @@ public interface AppComponent {
 
   void inject(ScreenshotService service);
 
+  void inject(SettingsActivity.SettingsFragment fragment);
+
   ScreenshotComponent plus(ScreenshotModule module);
 }

@@ -1,1 +1,1 @@
-include ':app', ':processing', ':debug-app'
+include ':app', ':processing', ':debug-app', ':directorypicker'

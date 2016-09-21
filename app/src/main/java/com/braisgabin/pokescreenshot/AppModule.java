@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 import static com.braisgabin.pokescreenshot.processing.Utils.copyRecursive;
 
 @Module
@@ -92,6 +93,6 @@ class AppModule {
   @Singleton
   @Provides
   Preference<String> trainerLvlProvider(RxSharedPreferences rxSharedPreferences) {
-    return rxSharedPreferences.getString("trainer_lvl", "1");
+    return rxSharedPreferences.getString(TRAINER_LVL, "1");
   }
 }

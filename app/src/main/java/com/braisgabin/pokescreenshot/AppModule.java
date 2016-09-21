@@ -15,12 +15,15 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
+import static com.braisgabin.pokescreenshot.SettingsActivity.SCREENSHOT_DIR;
 import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
+import static com.braisgabin.pokescreenshot.SettingsActivity.screenshotDirDefault;
 import static com.braisgabin.pokescreenshot.processing.Utils.copyRecursive;
 
 @Module
@@ -92,7 +95,15 @@ class AppModule {
 
   @Singleton
   @Provides
+  @Named(TRAINER_LVL)
   Preference<String> trainerLvlProvider(RxSharedPreferences rxSharedPreferences) {
     return rxSharedPreferences.getString(TRAINER_LVL, "1");
+  }
+
+  @Singleton
+  @Provides
+  @Named(SCREENSHOT_DIR)
+  Preference<String> screenshotDirProvider(RxSharedPreferences rxSharedPreferences) {
+    return rxSharedPreferences.getString(SCREENSHOT_DIR, screenshotDirDefault());
   }
 }

@@ -12,15 +12,18 @@ import android.widget.Toast;
 import com.f2prateek.rx.preferences.Preference;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 
 public class MainActivity extends AppCompatActivity {
   private static final int REQUEST_CODE_PERMISSION = 0;
   private static final int REQUEST_CODE_TRAINER_LVL = 1;
 
   @Inject
+  @Named(TRAINER_LVL)
   Preference<String> trainerLvl;
 
   @Override

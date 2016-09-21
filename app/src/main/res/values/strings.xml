@@ -21,4 +21,5 @@
     <string name="error_ocr_candy">Impossible to read the candy name.</string>
     <string name="error_ocr_cp">Impossible to read the CP.</string>
     <string name="error_ocr_hp">Impossible to read the HP.</string>
+    <string name="screenshot_dir_title">Screenshot folder</string>
 </resources>

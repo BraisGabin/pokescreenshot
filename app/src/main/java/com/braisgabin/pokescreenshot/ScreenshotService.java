@@ -39,6 +39,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.Subscription;
@@ -54,6 +55,8 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.braisgabin.pokescreenshot.SettingsActivity.SCREENSHOT_DIR;
+import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 import static com.braisgabin.pokescreenshot.Utils.isSystemAlertPermissionGranted;
 import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.isPokemonGoScreenshot;
 import static java.lang.Math.max;
@@ -81,12 +84,17 @@ public class ScreenshotService extends Service {
   SQLiteDatabase database;
 
   @Inject
+  @Named(TRAINER_LVL)
   Preference<String> trainerLvl;
+
+  @Inject
+  @Named(SCREENSHOT_DIR)
+  Preference<String> screenshotDir;
 
   @Inject
   NotificationManagerCompat notificationManager;
 
-  private File screenshotsDir;
+  private File externalStorage;
   private Subscription subscription;
   private BroadcastReceiver broadcastReceiver;
 
@@ -98,9 +106,7 @@ public class ScreenshotService extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
-    // https://github.com/android/platform_frameworks_base/blob/master/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java#L98
-    final File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-    this.screenshotsDir = new File(root, "Screenshots");
+    this.externalStorage = Environment.getExternalStorageDirectory();
 
     App.component(this)
         .inject(this);
@@ -122,7 +128,7 @@ public class ScreenshotService extends Service {
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
     if (subscription == null) {
-      subscription = FileObservable.newFiles(screenshotsDir)
+      subscription = FileObservable.newFiles(new File(externalStorage, screenshotDir.get()))
           .publish(new Func1<Observable<File>, Observable<FileBitmap>>() {
             @Override
             public Observable<FileBitmap> call(Observable<File> fileObservable) {

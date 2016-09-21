@@ -2,7 +2,9 @@ package com.braisgabin.pokescreenshot;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -13,6 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
   private static final String FINISH_ON_UPDATE_TRAINER_LVL = "FINISH_ON_UPDATE_TRAINER_LVL";
 
   public static final String TRAINER_LVL = "trainer_lvl";
+  public static final String SCREENSHOT_DIR = "screenshot_dir";
 
   public static Intent getCallingIntent(Context context, boolean finishOnUpdateTrainerLvl) {
     final Intent intent = new Intent(context, SettingsActivity.class);
@@ -20,6 +23,11 @@ public class SettingsActivity extends AppCompatActivity {
     intent.putExtra(FINISH_ON_UPDATE_TRAINER_LVL, finishOnUpdateTrainerLvl);
 
     return intent;
+  }
+
+  public static String screenshotDirDefault() {
+    // https://github.com/android/platform_frameworks_base/blob/master/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java#L98
+    return "/" + Environment.DIRECTORY_PICTURES + "/Screenshots";
   }
 
   @Override
@@ -54,11 +62,22 @@ public class SettingsActivity extends AppCompatActivity {
 
       addPreferencesFromResource(R.xml.settings);
 
+      initData(PreferenceManager.getDefaultSharedPreferences(getActivity()));
+
       bindPreferenceSummaryToValue(findPreference(TRAINER_LVL));
+      bindPreferenceSummaryToValue(findPreference(SCREENSHOT_DIR));
 
       this.finishOnUpdateTrainerLvl = getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false);
       if (finishOnUpdateTrainerLvl) {
         ((MyListPreference) findPreference(TRAINER_LVL)).show(null);
+      }
+    }
+
+    private void initData(SharedPreferences sharedPreferences) {
+      if (!sharedPreferences.contains(SCREENSHOT_DIR)) {
+        sharedPreferences.edit()
+            .putString(SCREENSHOT_DIR, screenshotDirDefault())
+            .apply();
       }
     }
 

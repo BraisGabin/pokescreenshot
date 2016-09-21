@@ -6,4 +6,9 @@
         android:entryValues="@array/trainer_lvl_value"
         android:key="trainer_lvl"
         android:title="@string/trainer_lvl"/>
+    <Preference
+        android:key="screenshot_dir"
+        android:title="@string/screenshot_dir_title">
+
+    </Preference>
 </PreferenceScreen>

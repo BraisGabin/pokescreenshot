@@ -62,7 +62,7 @@ public class Ocr {
   }
 
   private int cp(Rect ocrRect) throws CpException {
-    tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é");
+    tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é-");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
     String text2 = text.replace(" ", "");

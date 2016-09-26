@@ -81,7 +81,7 @@ public class Angle {
   }
 
   double radian(Point center, int radius) throws RadianException {
-    final int max = radius * 4;
+    final int max = radius * 5;
     for (int i = 0; i <= max; i++) {
       final double radians = i * PI / max;
       final int x = (int) Math.round(Math.cos(radians) * radius);

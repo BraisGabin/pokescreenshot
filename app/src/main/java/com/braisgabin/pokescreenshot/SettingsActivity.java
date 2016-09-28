@@ -9,13 +9,20 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.braisgabin.directorypicker.DirectoryPicker;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class SettingsActivity extends AppCompatActivity {
   private static final String FINISH_ON_UPDATE_TRAINER_LVL = "FINISH_ON_UPDATE_TRAINER_LVL";
@@ -31,9 +38,32 @@ public class SettingsActivity extends AppCompatActivity {
     return intent;
   }
 
-  public static String screenshotDirDefault() {
+  public static String screenshotDirDefault(Context context) {
     // https://github.com/android/platform_frameworks_base/blob/master/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java#L98
-    return "/" + Environment.DIRECTORY_PICTURES + "/Screenshots";
+    final File root = Environment.getExternalStorageDirectory();
+    final File picturesDir = new File(root, Environment.DIRECTORY_PICTURES);
+    final File defaultDir = new File(picturesDir, "Screenshots");
+    File file;
+
+    if (ContextCompat.checkSelfPermission(context, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+      file = defaultDir;
+    } else if (defaultDir.exists()) {
+      file = defaultDir;
+    } else {
+      final FileFilter fileFilter = new FileFilter() {
+        @Override
+        public boolean accept(File pathname) {
+          return pathname.isDirectory();
+        }
+      };
+      final Pattern namePattern = Pattern.compile("Screen.*", Pattern.CASE_INSENSITIVE);
+      file = Utils.find(picturesDir, fileFilter, namePattern);
+      if (file == null) {
+        file = Utils.find(root, fileFilter, namePattern);
+      }
+      file = file == null ? defaultDir : file;
+    }
+    return file.getAbsolutePath().substring(root.getAbsolutePath().length());
   }
 
   @Override
@@ -73,15 +103,13 @@ public class SettingsActivity extends AppCompatActivity {
 
       addPreferencesFromResource(R.xml.settings);
 
-      initData(sharedPreferences);
-
       bindPreferenceSummaryToValue(findPreference(TRAINER_LVL));
       bindPreferenceSummaryToValue(findPreference(SCREENSHOT_DIR));
 
       findPreference(SCREENSHOT_DIR).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
         @Override
         public boolean onPreferenceClick(Preference preference) {
-          DirectoryPicker.newInstance(Environment.getExternalStorageDirectory(), sharedPreferences.getString(SCREENSHOT_DIR, screenshotDirDefault()))
+          DirectoryPicker.newInstance(Environment.getExternalStorageDirectory(), sharedPreferences.getString(SCREENSHOT_DIR, screenshotDirDefault(getActivity())))
               .show(getChildFragmentManager(), SCREENSHOT_DIR);
           return true;
         }
@@ -90,14 +118,6 @@ public class SettingsActivity extends AppCompatActivity {
       this.finishOnUpdateTrainerLvl = getArguments().getBoolean(FINISH_ON_UPDATE_TRAINER_LVL, false);
       if (finishOnUpdateTrainerLvl) {
         ((MyListPreference) findPreference(TRAINER_LVL)).show(null);
-      }
-    }
-
-    private void initData(SharedPreferences sharedPreferences) {
-      if (!sharedPreferences.contains(SCREENSHOT_DIR)) {
-        sharedPreferences.edit()
-            .putString(SCREENSHOT_DIR, screenshotDirDefault())
-            .apply();
       }
     }
 
@@ -144,6 +164,8 @@ public class SettingsActivity extends AppCompatActivity {
           // Set the summary to reflect the new value.
           preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
+        } else if (preference.getKey().equals(SCREENSHOT_DIR)) {
+          preference.setSummary(TextUtils.isEmpty(stringValue) ? screenshotDirDefault(getActivity()) : stringValue);
         } else {
           // For all other preferences, set the summary to the value's
           // simple string representation.

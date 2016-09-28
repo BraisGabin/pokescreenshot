@@ -31,7 +31,15 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     App.component(this).inject(this);
-    checkTrainerLevel();
+    checkPermissions();
+  }
+
+  private void checkPermissions() {
+    if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+    } else {
+      checkTrainerLevel();
+    }
   }
 
   private void checkTrainerLevel() {
@@ -44,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void runService() {
-    final Intent intent = ScreenshotService.getCallingIntent(this);
-    if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
-    } else {
-      startService(intent);
-      findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
-      finish();
-    }
+    startService(ScreenshotService.getCallingIntent(this));
+    finish();
+  }
+
+  @Override
+  public void finish() {
+    findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+    super.finish();
   }
 
   @Override
@@ -70,13 +78,14 @@ public class MainActivity extends AppCompatActivity {
     switch (requestCode) {
       case REQUEST_CODE_PERMISSION:
         if (grantResults[0] == PERMISSION_GRANTED) {
-          startService(ScreenshotService.getCallingIntent(this));
+          checkTrainerLevel();
+        } else {
+          Toast.makeText(getApplicationContext(), R.string.permission_requited, Toast.LENGTH_LONG).show();
+          finish();
         }
         break;
       default:
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-    findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
-    finish();
   }
 }

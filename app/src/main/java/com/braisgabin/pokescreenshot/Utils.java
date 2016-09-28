@@ -9,8 +9,12 @@ import android.provider.Settings;
 
 import com.squareup.sqldelight.RowMapper;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -27,5 +31,21 @@ public class Utils {
   // Extracted from: http://stackoverflow.com/a/33895409/842697
   public static boolean isSystemAlertPermissionGranted(Context context) {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context);
+  }
+
+  public static File find(File root, FileFilter fileFilter, Pattern patternName) {
+    final File[] list = root.listFiles(fileFilter);
+    for (File file : list) {
+      final Matcher matcher = patternName.matcher(file.getName());
+      if (matcher.matches()) {
+        return file;
+      } else {
+        final File result = find(file, fileFilter, patternName);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null;
   }
 }

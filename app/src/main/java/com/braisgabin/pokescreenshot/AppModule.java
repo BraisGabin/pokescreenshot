@@ -103,6 +103,6 @@ class AppModule {
   @Provides
   @Named(SCREENSHOT_DIR)
   Preference<String> screenshotDirProvider(RxSharedPreferences rxSharedPreferences) {
-    return rxSharedPreferences.getString(SCREENSHOT_DIR, screenshotDirDefault());
+    return rxSharedPreferences.getString(SCREENSHOT_DIR, screenshotDirDefault(app));
   }
 }

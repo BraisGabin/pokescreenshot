@@ -78,6 +78,7 @@ public class AngleTest {
     final Point center = Angle.center(screenshot.initialPoint(), width);
     final int radius = Angle.radius(initialPoint, center);
     final double radian = angle.radian(center, radius);
-    assertThat(radian, is(closeTo(screenshot.radian(), Math.toRadians(0.25))));
+    final double degreeError = screenshot.lvl() == 1 ? 2.5 : 0.25;
+    assertThat(radian, is(closeTo(screenshot.radian(), Math.toRadians(degreeError))));
   }
 }

@@ -19,8 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(value = Parameterized.class)
 public class BitmapOperationsTest {
-
-  @Parameterized.Parameters
+  @Parameterized.Parameters(name="{0}[{index}")
   public static Collection<Integer> data() throws IOException {
     return Arrays.asList(
         Color.WHITE,

@@ -47,7 +47,7 @@ public class OcrTest {
     }
   }
 
-  @Parameterized.Parameters
+  @Parameterized.Parameters(name="{0}[{index}")
   public static Collection<Screenshot> data() throws IOException {
     final CsvConfiguration config = new CsvConfiguration();
     config.setLineFilter(new HeaderAndFooterFilter(1, false, true));

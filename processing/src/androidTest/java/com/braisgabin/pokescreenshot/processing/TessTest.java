@@ -33,7 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(value = Parameterized.class)
-public class OcrTest {
+public class TessTest {
   private static File root;
 
   @BeforeClass
@@ -68,10 +68,10 @@ public class OcrTest {
   }
 
   private final Screenshot screenshot;
-  private TessBaseAPI tess;
-  private Ocr ocr;
+  private TessBaseAPI tessBaseAPI;
+  private Tess tess;
 
-  public OcrTest(Screenshot screenshot) {
+  public TessTest(Screenshot screenshot) {
     this.screenshot = screenshot;
   }
 
@@ -83,25 +83,25 @@ public class OcrTest {
     options.inMutable = true;
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()), null, options);
 
-    tess = new TessBaseAPI();
-    tess.init(root.getAbsolutePath() + "/tesseract/", "eng");
-    tess.readConfigFile("pokemon");
-    tess.setImage(bitmap);
+    tessBaseAPI = new TessBaseAPI();
+    tessBaseAPI.init(root.getAbsolutePath() + "/tesseract/", "eng");
+    tessBaseAPI.readConfigFile("pokemon");
+    tessBaseAPI.setImage(bitmap);
 
-    this.ocr = Ocr.create(tess, context, bitmap, null);
+    this.tess = Tess.create(tessBaseAPI, context, bitmap, null);
   }
 
   @After
   public void shutDown() {
-    tess.end();
+    tessBaseAPI.end();
   }
 
   @Test
   public void testOcr() throws Exception {
-    assertThat(ocr.cp(), is(screenshot.getCp()));
-    assertThat(ocr.hp(), is(screenshot.getHp()));
-    assertThat(ocr.stardust(), is(screenshot.getStardus()));
-    assertThat(ocr.candy(), is(screenshot.getCandy()));
-    assertThat(ocr.name(), is(screenshot.getName()));
+    assertThat(tess.cp(), is(screenshot.getCp()));
+    assertThat(tess.hp(), is(screenshot.getHp()));
+    assertThat(tess.stardust(), is(screenshot.getStardus()));
+    assertThat(tess.candy(), is(screenshot.getCandy()));
+    assertThat(tess.name(), is(screenshot.getName()));
   }
 }

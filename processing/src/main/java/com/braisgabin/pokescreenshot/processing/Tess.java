@@ -52,31 +52,38 @@ public class Tess {
   }
 
   int cp(Rect cpRegion) throws Ocr.CpException {
-    final Rect ocrRect = cpRect();
-    tess.setRectangle(ocrRect);
-    tess.getUTF8Text();
-
-    final Rect regionRect = getRegionBox(tess);
-    regionRect.offset(ocrRect.left, ocrRect.top);
-    final int rectWidth = -(width / 2 - regionRect.right) * 2 + Math.round(2 * d);
-    final Rect ocrRect2 = new Rect(regionRect);
-    ocrRect2.left = regionRect.right - rectWidth;
-
-    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
-    tess.setRectangle(ocrRect2);
-    final String text = tess.getUTF8Text();
-    final Rect regionRect2 = getRegionBox(tess);
-    regionRect2.offset(ocrRect2.left, ocrRect2.top);
-    cpRegion.set(regionRect2);
-
     int cp = -1;
-    final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final String text;
 
-    final Matcher matcher = pattern.matcher(text);
-    if (matcher.find()) {
-      cp = Integer.parseInt(matcher.group(1));
+    final Rect ocrRect = cpRect();
+    final Rect regionRect;
+    final Rect ocrRect2;
+    final Rect regionRect2;
+    synchronized (tess) {
+      tess.setRectangle(ocrRect);
+      tess.getUTF8Text();
+
+      regionRect = getRegionBox(tess);
+      regionRect.offset(ocrRect.left, ocrRect.top);
+      final int rectWidth = -(width / 2 - regionRect.right) * 2 + Math.round(2 * d);
+      ocrRect2 = new Rect(regionRect);
+      ocrRect2.left = regionRect.right - rectWidth;
+
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
+      tess.setRectangle(ocrRect2);
+      text = tess.getUTF8Text();
+      regionRect2 = getRegionBox(tess);
+      regionRect2.offset(ocrRect2.left, ocrRect2.top);
+      cpRegion.set(regionRect2);
+
+      final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
+
+      final Matcher matcher = pattern.matcher(text);
+      if (matcher.find()) {
+        cp = Integer.parseInt(matcher.group(1));
+      }
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
-    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
 
     if (cp <= 0) {
       throw new Ocr.CpException("Error parsing CP:\n" + text);
@@ -103,20 +110,27 @@ public class Tess {
   }
 
   String name(int cpHeight) throws Ocr.NameException {
+    final String name;
+
     final Rect ocrRect = nameRect(cpHeight);
-    tess.setRectangle(ocrRect);
-    tess.getUTF8Text();
+    final Rect regionRect;
+    final Rect ocrRect2;
+    final Rect regionRect2;
+    synchronized (tess) {
+      tess.setRectangle(ocrRect);
+      tess.getUTF8Text();
 
-    final Rect regionRect = getRegionBox(tess);
-    regionRect.offset(ocrRect.left, ocrRect.top);
-    final int rectWidth = (width / 2 - regionRect.left) * 2 + Math.round(2 * d);
-    final Rect ocrRect2 = new Rect(regionRect);
-    ocrRect2.right = regionRect.left + rectWidth;
+      regionRect = getRegionBox(tess);
+      regionRect.offset(ocrRect.left, ocrRect.top);
+      final int rectWidth = (width / 2 - regionRect.left) * 2 + Math.round(2 * d);
+      ocrRect2 = new Rect(regionRect);
+      ocrRect2.right = regionRect.left + rectWidth;
 
-    tess.setRectangle(ocrRect2);
-    final String name = tess.getUTF8Text();
-    final Rect regionRect2 = getRegionBox(tess);
-    regionRect2.offset(ocrRect2.left, ocrRect2.top);
+      tess.setRectangle(ocrRect2);
+      name = tess.getUTF8Text();
+      regionRect2 = getRegionBox(tess);
+      regionRect2.offset(ocrRect2.left, ocrRect2.top);
+    }
 
     if (name == null) {
       throw new Ocr.NameException("Error parsing name: No name");
@@ -143,23 +157,27 @@ public class Tess {
   }
 
   int hp(int cpHeight) throws Ocr.HpException {
-    final Rect ocrRect = hpRect(cpHeight);
-    tess.setRectangle(ocrRect);
-    final String text = tess.getUTF8Text();
-    Rect regionRect = new Rect();
-
     int hp = -1;
-    final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final String text;
 
-    String text2 = text.replace("l", "1");
-    text2 = text2.replace("S", "5");
-    text2 = text2.replace("O", "0");
-    text2 = text2.replace(" ", "");
-    Matcher matcher = pattern.matcher(text2);
-    if (matcher.matches()) {
-      regionRect.set(getRegionBox(tess));
+    final Rect ocrRect = hpRect(cpHeight);
+    final Rect regionRect;
+    synchronized (tess) {
+      tess.setRectangle(ocrRect);
+      text = tess.getUTF8Text();
+      regionRect = (getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);
-      hp = Integer.parseInt(matcher.group(1));
+
+      final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
+
+      String text2 = text.replace("l", "1");
+      text2 = text2.replace("S", "5");
+      text2 = text2.replace("O", "0");
+      text2 = text2.replace(" ", "");
+      Matcher matcher = pattern.matcher(text2);
+      if (matcher.matches()) {
+        hp = Integer.parseInt(matcher.group(1));
+      }
     }
 
     if (hp <= 0) {
@@ -182,21 +200,27 @@ public class Tess {
   }
 
   String candy(int cpHeight) throws Ocr.CandyException {
+    final String candy;
+    final String text;
+
     final Rect ocrRect = candyRect(cpHeight);
-    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " '.ABCDEFGHIJKLMNOPQRSTUVWXYZo");
-    tess.setRectangle(ocrRect);
-    final String text = tess.getUTF8Text();
+    final Rect regionRect;
+    synchronized (tess) {
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " '.ABCDEFGHIJKLMNOPQRSTUVWXYZo");
+      tess.setRectangle(ocrRect);
+      text = tess.getUTF8Text();
 
-    String text2 = text.replace(" ", "");
-    text2 = text2.replace("NIDORANQ", "NIDORAN♀");
-    text2 = text2.replace("NIDORANo", "NIDORAN♂");
-    text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
+      String text2 = text.replace(" ", "");
+      text2 = text2.replace("NIDORANQ", "NIDORAN♀");
+      text2 = text2.replace("NIDORANo", "NIDORAN♂");
+      text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
 
-    String candy = Candy.candyType(text2);
+      candy = Candy.candyType(text2);
 
-    final Rect regionRect = getRegionBox(tess);
-    regionRect.offset(ocrRect.left, ocrRect.top);
-    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
+      regionRect = getRegionBox(tess);
+      regionRect.offset(ocrRect.left, ocrRect.top);
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
+    }
 
     if (candy == null) {
       throw new Ocr.CandyException("Error parsing candy: " + text);
@@ -219,21 +243,25 @@ public class Tess {
   }
 
   int stardust(int cpHeight) throws Ocr.StardustException {
-    final Rect ocrRect = stardustRect(cpHeight);
-    tess.setRectangle(ocrRect);
-    final String text = tess.getUTF8Text();
-
     int stardust = -1;
-    Rect regionRect = new Rect();
-    final Pattern pattern = Pattern.compile("^[HEi@]([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
+    final String text;
 
-    Matcher matcher = pattern.matcher(text);
-    if (matcher.matches()) {
-      regionRect.set(getRegionBox(tess));
+    final Rect ocrRect = stardustRect(cpHeight);
+    final Rect regionRect;
+    synchronized (tess) {
+      tess.setRectangle(ocrRect);
+      text = tess.getUTF8Text();
+      regionRect = getRegionBox(tess);
       regionRect.offset(ocrRect.left, ocrRect.top);
-      stardust = Integer.parseInt(matcher.group(1));
-      if (!Stardust.isStardustCorrect(stardust)) {
-        stardust = -1;
+
+      final Pattern pattern = Pattern.compile("^[HEi@]([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
+
+      Matcher matcher = pattern.matcher(text);
+      if (matcher.matches()) {
+        stardust = Integer.parseInt(matcher.group(1));
+        if (!Stardust.isStardustCorrect(stardust)) {
+          stardust = -1;
+        }
       }
     }
 

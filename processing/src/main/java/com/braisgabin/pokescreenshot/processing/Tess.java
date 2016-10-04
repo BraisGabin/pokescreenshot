@@ -53,32 +53,30 @@ public class Tess {
 
   int cp(Rect cpRegion) throws Ocr.CpException {
     final Rect ocrRect = cpRect();
-    tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é-");
     tess.setRectangle(ocrRect);
+    tess.getUTF8Text();
+
+    final Rect regionRect = getRegionBox(tess);
+    regionRect.offset(ocrRect.left, ocrRect.top);
+    final int rectWidth = -(width / 2 - regionRect.right) * 2 + Math.round(2 * d);
+    final Rect ocrRect2 = new Rect(regionRect);
+    ocrRect2.left = regionRect.right - rectWidth;
+
+    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
+    tess.setRectangle(ocrRect2);
     final String text = tess.getUTF8Text();
-    String text2 = text.replace(" ", "");
-    text2 = text2.replace('O', '0');
-    text2 = text2.replace('o', '0');
-    text2 = text2.replace('l', '1');
-    text2 = text2.replace('Z', '2');
-    text2 = text2.replace('S', '5');
-    final String[] lines = text2.split("\n");
-    Rect regionRect = new Rect();
+    final Rect regionRect2 = getRegionBox(tess);
+    regionRect2.offset(ocrRect2.left, ocrRect2.top);
+    cpRegion.set(regionRect2);
 
     int cp = -1;
-    final Pattern pattern = Pattern.compile("[^0-9]+([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
 
-    for (int i = lines.length - 1; i >= 0; i--) {
-      final Matcher matcher = pattern.matcher(lines[i]);
-      if (matcher.matches()) {
-        regionRect.set(getTextline(tess, i));
-        regionRect.offset(ocrRect.left, ocrRect.top);
-        cpRegion.set(regionRect);
-        cp = Integer.parseInt(matcher.group(1));
-        break;
-      }
+    final Matcher matcher = pattern.matcher(text);
+    if (matcher.find()) {
+      cp = Integer.parseInt(matcher.group(1));
     }
-    tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "");
+    tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
 
     if (cp <= 0) {
       throw new Ocr.CpException("Error parsing CP:\n" + text);
@@ -86,8 +84,12 @@ public class Tess {
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
-      paint.setColor(Color.YELLOW);
+      paint.setColor(Color.BLUE);
       canvas.drawRect(regionRect, paint);
+      paint.setColor(Color.RED);
+      canvas.drawRect(ocrRect2, paint);
+      paint.setColor(Color.YELLOW);
+      canvas.drawRect(regionRect2, paint);
     }
 
     return cp;
@@ -259,12 +261,5 @@ public class Tess {
     final Rect regionRect = regions.getBoxRect(0);
     regions.recycle();
     return regionRect;
-  }
-
-  private Rect getTextline(TessBaseAPI tess, int index) {
-    final Pixa regions = tess.getTextlines();
-    final Rect boxRect = regions.getBoxRect(index);
-    regions.recycle();
-    return boxRect;
   }
 }

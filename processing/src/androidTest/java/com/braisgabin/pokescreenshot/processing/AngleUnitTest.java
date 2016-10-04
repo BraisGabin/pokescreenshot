@@ -1,6 +1,7 @@
 package com.braisgabin.pokescreenshot.processing;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 
 import org.junit.Test;
 
@@ -20,5 +21,11 @@ public class AngleUnitTest {
   public void testRadius() {
     final int radius = Angle.radius(new Point(5, 7), new Point(25, 7));
     assertThat(radius, is(20));
+  }
+
+  @Test
+  public void testInitialPointArea() {
+    final Rect range = Angle.initialPointArea(100, 60, 10);
+    assertThat(range, is(new Rect(8, 16, 14, 18)));
   }
 }

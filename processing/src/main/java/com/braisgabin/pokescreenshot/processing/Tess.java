@@ -94,8 +94,8 @@ public class Tess {
   }
 
   private Rect cpRect() {
-    Rect rect = new Rect(0, 0, Math.round(160 * d), Math.round(HEIGHT_CP * d));
-    rect.offset(width / 2 - rect.width() / 2, 0);
+    Rect rect = new Rect(0, 0, Math.round(160 * d), Math.round((HEIGHT_CP - 28) * d));
+    rect.offset(width / 2 - rect.width() / 2, Math.round(28 * d));
     rect.right -= Math.round(30 * d);
     return rect;
   }

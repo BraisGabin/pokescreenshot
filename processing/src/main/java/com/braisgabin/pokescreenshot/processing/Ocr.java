@@ -1,11 +1,18 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import android.graphics.Rect;
 import android.util.Log;
 
 public class Ocr {
   private final static String TAG = "OCR";
 
   private final Tess tess;
+  private int cp = -1;
+  private int cpHeight = -1;
+  private String name = null;
+  private int hp = -1;
+  private String candy = null;
+  private int stardust = -1;
 
   public Ocr(Tess tess) {
     this.tess = tess;
@@ -19,24 +26,53 @@ public class Ocr {
     Log.d(TAG, "Stardust: " + stardust());
   }
 
-  public int cp() throws CpException {
-    return tess.cp();
+  public synchronized int cp() throws CpException {
+    if (cp < 0) {
+      final Rect rect = new Rect();
+      cp = tess.cp(rect);
+      cpHeight = rect.bottom;
+    }
+    return this.cp;
   }
 
-  public String name() throws NameException {
-    return tess.name();
+  public synchronized String name() throws NameException, CpException {
+    if (name == null) {
+      if (cpHeight < 0) {
+        cp();
+      }
+      name = tess.name(cpHeight);
+    }
+    return name;
   }
 
-  public int hp() throws HpException {
-    return tess.hp();
+  public synchronized int hp() throws HpException, CpException {
+    if (hp < 0) {
+      if (cpHeight < 0) {
+        cp();
+      }
+      hp = tess.hp(cpHeight);
+    }
+    return hp;
   }
 
-  public String candy() throws CandyException {
-    return tess.candy();
+  public synchronized String candy() throws CandyException, CpException {
+    if (candy == null) {
+      if (cpHeight < 0) {
+        cp();
+      }
+      candy = tess.candy(cpHeight);
+    }
+    return candy;
   }
 
-  public int stardust() throws StardustException {
-    return tess.stardust();
+  public synchronized int stardust() throws StardustException, CpException {
+    if (stardust < 0) {
+      if (cpHeight < 0) {
+        cp();
+      }
+      stardust = tess.stardust(cpHeight);
+    }
+    return stardust;
   }
 
   public static abstract class Exception extends ProcessingException {

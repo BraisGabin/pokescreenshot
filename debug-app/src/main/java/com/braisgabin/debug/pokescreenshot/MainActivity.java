@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.braisgabin.pokescreenshot.processing.Angle;
 import com.braisgabin.pokescreenshot.processing.Ocr;
+import com.braisgabin.pokescreenshot.processing.Tess;
 import com.braisgabin.pokescreenshot.processing.Utils;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -34,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
     setContentView(R.layout.activity_main);
-    final String image = "screenshots/es/10_caterpie.png";
+    final String image = "screenshots/es/46_paras.png";
 
     final Bitmap bitmap = bitmap(image);
     final Bitmap bitmap2 = bitmap.copy(bitmap.getConfig(), true);
-    Ocr.preprocessingImage(this, bitmap2, Utils.proportion(bitmap2));
+    Tess.preprocessingImage(this, bitmap2, Utils.proportion(bitmap2));
     Canvas canvas = new Canvas(bitmap2);
 
     final Angle angle = new Angle(bitmap);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     final String absolutePath = root.getAbsolutePath() + "/tesseract/";
     tessBaseAPI.init(absolutePath, "eng");
     tessBaseAPI.readConfigFile("pokemon");
-    final Ocr ocr = Ocr.create(tessBaseAPI, this, bitmap, canvas);
+    final Ocr ocr = new Ocr(Tess.create(tessBaseAPI, this, bitmap, canvas));
     ocr.debug();
   }
 

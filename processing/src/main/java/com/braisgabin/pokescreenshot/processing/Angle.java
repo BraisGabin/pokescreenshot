@@ -5,20 +5,32 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.Locale;
 
+import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 import static java.lang.Math.PI;
 
 public class Angle {
+  private static final int X_PERCENTAGE_MIN = 8;
+  private static final int X_PERCENTAGE_MAX = 14;
+  private static final int Y_PERCENTAGE_MIN = 33;
+  private static final int Y_PERCENTAGE_MAX = 37;
   private final Bitmap bitmap;
+  private final int width;
+  private final int height;
+  private final int navBarHeight;
   private final float d;
 
   public Angle(Bitmap bitmap) {
     this.bitmap = bitmap;
-    this.d = proportion(bitmap);
+    this.width = bitmap.getWidth();
+    this.height = bitmap.getHeight();
+    this.navBarHeight = navBarHeight(bitmap);
+    this.d = proportion(bitmap, navBarHeight);
   }
 
   public double radian() throws RadianException, InitialPointException {
@@ -27,7 +39,7 @@ public class Angle {
 
   public double radian(Canvas canvas) throws InitialPointException, RadianException {
     final Point initialPoint = initialPoint();
-    final Point center = center(initialPoint, bitmap.getWidth());
+    final Point center = center(initialPoint, width);
     final int radius = radius(initialPoint, center);
     final double radian = radian(center, radius);
     if (canvas != null) {
@@ -46,6 +58,10 @@ public class Angle {
     // Initial Point
     canvas.drawLine(initialPoint.x - 4 * d, initialPoint.y, initialPoint.x + 4 * d, initialPoint.y, paint);
 
+    paint.setColor(0xb000ff00);
+    canvas.drawRect(initialPointArea(width, height, navBarHeight), paint);
+    paint.setColor(0xb0ff0000);
+
     // Center
     canvas.drawLine(center.x - 4 * d, center.y, center.x + 4 * d, center.y, paint);
     canvas.drawLine(center.x, center.y - 4 * d, center.x, center.y + 4 * d, paint);
@@ -59,11 +75,17 @@ public class Angle {
     canvas.drawCircle(center.x + x, center.y - y, 6 * d, paint);
   }
 
+  static Rect initialPointArea(int width, int height, int navBarHeight) {
+    return new Rect(
+        (X_PERCENTAGE_MIN * width) / 100, (Y_PERCENTAGE_MIN * (height - navBarHeight)) / 100,
+        (X_PERCENTAGE_MAX * width) / 100, (Y_PERCENTAGE_MAX * (height - navBarHeight)) / 100
+    );
+  }
+
   Point initialPoint() throws InitialPointException {
-    final int width = bitmap.getWidth();
-    final int height = bitmap.getHeight();
-    for (int y = (34 * height) / 100; y >= 0; y--) {
-      for (int x = width / 10, count = (14 * width) / 100; x < count; x++) {
+    final Rect area = initialPointArea(width, height, navBarHeight);
+    for (int y = area.bottom, countY = area.top; y >= countY; y--) {
+      for (int x = area.left, countX = area.right; x < countX; x++) {
         if (bitmap.getPixel(x, y) == -1) {
           return new Point(x + Math.round(1.5f * d), y + Math.round(2.6f * d));
         }

@@ -51,7 +51,7 @@ public class Tess {
     }
   }
 
-  int cp() throws Ocr.CpException {
+  int cp(Rect cpRegion) throws Ocr.CpException {
     final Rect ocrRect = cpRect();
     tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é-");
     tess.setRectangle(ocrRect);
@@ -73,6 +73,7 @@ public class Tess {
       if (matcher.matches()) {
         regionRect.set(getTextline(tess, i));
         regionRect.offset(ocrRect.left, ocrRect.top);
+        cpRegion.set(regionRect);
         cp = Integer.parseInt(matcher.group(1));
         break;
       }
@@ -99,8 +100,8 @@ public class Tess {
     return rect;
   }
 
-  String name() throws Ocr.NameException {
-    final Rect ocrRect = nameRect();
+  String name(int cpHeight) throws Ocr.NameException {
+    final Rect ocrRect = nameRect(cpHeight);
     tess.setRectangle(ocrRect);
     tess.getUTF8Text();
 
@@ -133,14 +134,14 @@ public class Tess {
     return name;
   }
 
-  private Rect nameRect() {
+  private Rect nameRect(int cpHeight) {
     Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(44 * d));
-    rect.offset(width / 2 - rect.width() / 2, Math.round((HEIGHT_CP + 275) * d));
+    rect.offset(width / 2 - rect.width() / 2, cpHeight + Math.round(275 * d));
     return rect;
   }
 
-  int hp() throws Ocr.HpException {
-    final Rect ocrRect = hpRect();
+  int hp(int cpHeight) throws Ocr.HpException {
+    final Rect ocrRect = hpRect(cpHeight);
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
     Rect regionRect = new Rect();
@@ -172,14 +173,14 @@ public class Tess {
     return hp;
   }
 
-  private Rect hpRect() {
+  private Rect hpRect(int cpHeight) {
     Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
-    rect.offset(width / 2 - rect.width() / 2, Math.round((HEIGHT_CP + 335) * d));
+    rect.offset(width / 2 - rect.width() / 2, cpHeight + Math.round(335 * d));
     return rect;
   }
 
-  String candy() throws Ocr.CandyException {
-    final Rect ocrRect = candyRect();
+  String candy(int cpHeight) throws Ocr.CandyException {
+    final Rect ocrRect = candyRect(cpHeight);
     tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " '.ABCDEFGHIJKLMNOPQRSTUVWXYZo");
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
@@ -209,14 +210,14 @@ public class Tess {
     return candy;
   }
 
-  private Rect candyRect() {
+  private Rect candyRect(int cpHeight) {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(24 * d));
-    rect.offset(width / 2, Math.round((HEIGHT_CP + 496) * d));
+    rect.offset(width / 2, cpHeight + Math.round((496) * d));
     return rect;
   }
 
-  int stardust() throws Ocr.StardustException {
-    final Rect ocrRect = stardustRect();
+  int stardust(int cpHeight) throws Ocr.StardustException {
+    final Rect ocrRect = stardustRect(cpHeight);
     tess.setRectangle(ocrRect);
     final String text = tess.getUTF8Text();
 
@@ -247,9 +248,9 @@ public class Tess {
     return stardust;
   }
 
-  private Rect stardustRect() {
+  private Rect stardustRect(int cpHeight) {
     Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
-    rect.offset(width / 2, Math.round((HEIGHT_CP + 547) * d));
+    rect.offset(width / 2, cpHeight + Math.round(547 * d));
     return rect;
   }
 

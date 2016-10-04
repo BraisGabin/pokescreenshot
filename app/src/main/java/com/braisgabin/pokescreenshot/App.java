@@ -2,6 +2,8 @@ package com.braisgabin.pokescreenshot;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import timber.log.Timber;
@@ -20,6 +22,16 @@ public class App extends Application {
       Timber.plant(new Timber.DebugTree());
     } else {
       Timber.plant(new ProductionTree());
+    }
+  }
+
+
+  public String versionName() {
+    try {
+      PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+      return packageInfo.packageName;
+    } catch (PackageManager.NameNotFoundException e) {
+      throw new RuntimeException(e);
     }
   }
 

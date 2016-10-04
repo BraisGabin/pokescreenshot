@@ -105,16 +105,16 @@ public class Tess {
     tess.setRectangle(ocrRect);
     tess.getUTF8Text();
 
-    final Rect boxRect = getRegionBox(tess);
-    boxRect.offset(ocrRect.left, ocrRect.top);
-    final int rectWidth = (width / 2 - boxRect.left) * 2 + Math.round(2 * d);
-    final Rect ocrRect2 = new Rect(boxRect);
-    ocrRect2.right = boxRect.left + rectWidth;
+    final Rect regionRect = getRegionBox(tess);
+    regionRect.offset(ocrRect.left, ocrRect.top);
+    final int rectWidth = (width / 2 - regionRect.left) * 2 + Math.round(2 * d);
+    final Rect ocrRect2 = new Rect(regionRect);
+    ocrRect2.right = regionRect.left + rectWidth;
 
     tess.setRectangle(ocrRect2);
     final String name = tess.getUTF8Text();
-    final Rect boxRect2 = getRegionBox(tess);
-    boxRect2.offset(ocrRect2.left, ocrRect2.top);
+    final Rect regionRect2 = getRegionBox(tess);
+    regionRect2.offset(ocrRect2.left, ocrRect2.top);
 
     if (name == null) {
       throw new Ocr.NameException("Error parsing name: No name");
@@ -124,11 +124,11 @@ public class Tess {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
       paint.setColor(Color.BLUE);
-      canvas.drawRect(boxRect, paint);
+      canvas.drawRect(regionRect, paint);
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect2, paint);
       paint.setColor(Color.YELLOW);
-      canvas.drawRect(boxRect2, paint);
+      canvas.drawRect(regionRect2, paint);
     }
 
     return name;
@@ -192,8 +192,8 @@ public class Tess {
 
     String candy = Candy.candyType(text2);
 
-    final Rect boxRect = getRegionBox(tess);
-    boxRect.offset(ocrRect.left, ocrRect.top);
+    final Rect regionRect = getRegionBox(tess);
+    regionRect.offset(ocrRect.left, ocrRect.top);
     tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
 
     if (candy == null) {
@@ -204,7 +204,7 @@ public class Tess {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
       paint.setColor(Color.YELLOW);
-      canvas.drawRect(boxRect, paint);
+      canvas.drawRect(regionRect, paint);
     }
 
     return candy;
@@ -256,9 +256,9 @@ public class Tess {
 
   private Rect getRegionBox(TessBaseAPI tess) {
     final Pixa regions = tess.getRegions();
-    final Rect boxRect = regions.getBoxRect(0);
+    final Rect regionRect = regions.getBoxRect(0);
     regions.recycle();
-    return boxRect;
+    return regionRect;
   }
 
   private Rect getTextline(TessBaseAPI tess, int index) {

@@ -42,7 +42,7 @@ public class Utils {
   }
 
   public static float proportion(Bitmap bitmap, int navBarHeight) {
-    return (bitmap.getWidth() - navBarHeight) / (float) (480 - 56);
+    return (bitmap.getHeight() - navBarHeight) / (480 * (16f / 9f) - 56);
   }
 
   public static int navBarHeight(Bitmap bitmap) {

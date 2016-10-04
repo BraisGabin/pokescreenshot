@@ -18,15 +18,19 @@ import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 
 public class Ocr {
   private final static String TAG = "OCR";
-  public static final int HEIGHT_CP = 85;
-  public static final int VALUE_CP = 245;
-  public static final int VALUE_NO_CP = 219;
+  private static final int HEIGHT_CP = 85;
 
   public static Ocr create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
     final float d = proportion(bitmap);
-    BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), VALUE_CP, VALUE_NO_CP);
+    preprocessingImage(context, bitmap, d);
     tess.setImage(bitmap);
     return new Ocr(tess, bitmap.getWidth(), d, canvas);
+  }
+
+  public static void preprocessingImage(Context context, Bitmap bitmap, float d) {
+    final int valueCp = 245;
+    final int valueNoCp = 219;
+    BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), valueCp, valueNoCp);
   }
 
   private final TessBaseAPI tess;

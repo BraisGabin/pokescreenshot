@@ -400,8 +400,8 @@ public class ScreenshotService extends Service {
         .setContentInfo(getString(R.string.trainer_lvl_d, trainerLvl))
         .setOngoing(true)
         .setCategory(NotificationCompat.CATEGORY_SERVICE)
-        .addAction(0, getString(R.string.stop_service), stopPendingIntent)
-        .addAction(0, getString(R.string.settings), settingsPendingIntent)
+        .addAction(R.drawable.ic_stop_24dp, getString(R.string.stop_service), stopPendingIntent)
+        .addAction(R.drawable.ic_settings_24dp, getString(R.string.settings), settingsPendingIntent)
         .build();
   }
 

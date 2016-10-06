@@ -129,6 +129,12 @@ public class ScreenshotService extends Service {
 
     if (subscription == null) {
       subscription = FileObservable.newFiles(new File(externalStorage, screenshotDir.get()))
+          .doOnNext(new Action1<File>() {
+            @Override
+            public void call(File file) {
+              startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
+            }
+          })
           .publish(new Func1<Observable<File>, Observable<FileBitmap>>() {
             @Override
             public Observable<FileBitmap> call(Observable<File> fileObservable) {
@@ -137,12 +143,6 @@ public class ScreenshotService extends Service {
               return Observable.zip(
                   fileObservable,
                   fileObservable
-                      .doOnNext(new Action1<File>() {
-                        @Override
-                        public void call(File file) {
-                          startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
-                        }
-                      })
                       .map(toBitmap(options, 5, 100)),
                   new Func2<File, Bitmap, FileBitmap>() {
                     @Override

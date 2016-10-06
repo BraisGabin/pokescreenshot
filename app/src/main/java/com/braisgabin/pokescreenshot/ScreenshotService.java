@@ -128,13 +128,12 @@ public class ScreenshotService extends Service {
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
     if (subscription == null) {
-      subscription = FileObservable.newFiles(new File(externalStorage, screenshotDir.get()))
-          .doOnNext(new Action1<File>() {
-            @Override
-            public void call(File file) {
-              startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
-            }
-          })
+      subscription = FileObservable.newFiles(new File(externalStorage, screenshotDir.get()), new Action1<Object>() {
+        @Override
+        public void call(Object object) {
+          startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
+        }
+      })
           .publish(new Func1<Observable<File>, Observable<FileBitmap>>() {
             @Override
             public Observable<FileBitmap> call(Observable<File> fileObservable) {

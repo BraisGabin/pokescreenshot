@@ -40,6 +40,7 @@ dependencies {
 
     compile 'io.reactivex:rxjava:1.1.10'
     compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.github.phajduk:rxfileobserver:0.1.0'
 
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.2'

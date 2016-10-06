@@ -78,7 +78,10 @@ class Ring<T> implements Collection<T> {
 
   @Override
   public boolean addAll(@NonNull Collection<? extends T> collection) {
-    throw new UnsupportedOperationException();
+    for (T item : collection) {
+      add(item);
+    }
+    return true;
   }
 
   @Override

@@ -3,6 +3,9 @@ package com.braisgabin.pokescreenshot.processing;
 import android.graphics.Rect;
 import android.util.Log;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Ocr implements ScreenshotReader {
   private final static String TAG = "OCR";
 
@@ -30,7 +33,18 @@ public class Ocr implements ScreenshotReader {
   public synchronized int cp() throws CpException {
     if (cp < 0) {
       final Rect rect = new Rect();
-      cp = tess.cp(rect);
+      final String text = tess.cp(rect);
+
+      final Pattern pattern = Pattern.compile("([0-9]+)");
+
+      final Matcher matcher = pattern.matcher(text);
+      if (matcher.find()) {
+        cp = Integer.parseInt(matcher.group(1));
+      }
+
+      if (cp <= 0) {
+        throw new CpException("Error parsing CP:\n" + text);
+      }
       cpHeight = rect.bottom;
     }
     return this.cp;
@@ -42,7 +56,11 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      name = tess.name(cpHeight);
+      final String text = tess.name(cpHeight);
+      if (text.equals("")) {
+        throw new NameException("Error parsing name: No name founded");
+      }
+      name = text;
     }
     return name;
   }
@@ -53,7 +71,23 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      hp = tess.hp(cpHeight);
+      final String text = tess.hp(cpHeight);
+
+      final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
+
+      final String text2 = text
+          .replace("l", "1")
+          .replace("S", "5")
+          .replace("O", "0")
+          .replace(" ", "");
+      final Matcher matcher = pattern.matcher(text2);
+      if (matcher.matches()) {
+        hp = Integer.parseInt(matcher.group(1));
+      }
+
+      if (hp <= 0) {
+        throw new HpException("Error parsing HP:\n" + text);
+      }
     }
     return hp;
   }
@@ -64,7 +98,20 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      candy = tess.candy(cpHeight);
+      final String text = tess.candy(cpHeight);
+
+      final String text2 = text
+          .replace(" ", "")
+          .replace("NIDORANo", "NIDORAN♂")
+          .replace("NIDORANU", "NIDORAN♂")
+          .replace("NIDORANJ'", "NIDORAN♂")
+          .replace("NIDORANQ", "NIDORAN♀");
+
+      candy = Candy.candyType(text2);
+
+      if (candy == null) {
+        throw new CandyException("Error parsing candy:\n" + text);
+      }
     }
     return candy;
   }
@@ -75,7 +122,21 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      stardust = tess.stardust(cpHeight);
+      final String text  = tess.stardust(cpHeight);
+
+      final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
+
+      Matcher matcher = pattern.matcher(text);
+      if (matcher.matches()) {
+        stardust = Integer.parseInt(matcher.group(1));
+        if (!Stardust.isStardustCorrect(stardust)) {
+          stardust = -1;
+        }
+      }
+
+      if (stardust < 0) {
+        throw new Ocr.StardustException("Error parsing stardust:\n" + text);
+      }
     }
     return stardust;
   }

@@ -29,7 +29,7 @@ public class App extends Application {
   public String versionName() {
     try {
       PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-      return packageInfo.packageName;
+      return packageInfo.versionName;
     } catch (PackageManager.NameNotFoundException e) {
       throw new RuntimeException(e);
     }

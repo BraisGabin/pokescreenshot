@@ -3,7 +3,7 @@ package com.braisgabin.pokescreenshot.processing;
 import android.graphics.Rect;
 import android.util.Log;
 
-public class Ocr {
+public class Ocr implements ScreenshotReader {
   private final static String TAG = "OCR";
 
   private final Tess tess;
@@ -26,6 +26,7 @@ public class Ocr {
     Log.d(TAG, "Stardust: " + stardust());
   }
 
+  @Override
   public synchronized int cp() throws CpException {
     if (cp < 0) {
       final Rect rect = new Rect();
@@ -35,6 +36,7 @@ public class Ocr {
     return this.cp;
   }
 
+  @Override
   public synchronized String name() throws NameException, CpException {
     if (name == null) {
       if (cpHeight < 0) {
@@ -45,6 +47,7 @@ public class Ocr {
     return name;
   }
 
+  @Override
   public synchronized int hp() throws HpException, CpException {
     if (hp < 0) {
       if (cpHeight < 0) {
@@ -55,6 +58,7 @@ public class Ocr {
     return hp;
   }
 
+  @Override
   public synchronized String candy() throws CandyException, CpException {
     if (candy == null) {
       if (cpHeight < 0) {
@@ -65,6 +69,7 @@ public class Ocr {
     return candy;
   }
 
+  @Override
   public synchronized int stardust() throws StardustException, CpException {
     if (stardust < 0) {
       if (cpHeight < 0) {
@@ -73,41 +78,5 @@ public class Ocr {
       stardust = tess.stardust(cpHeight);
     }
     return stardust;
-  }
-
-  public static abstract class Exception extends ProcessingException {
-    public Exception(String message) {
-      super(message);
-    }
-  }
-
-  public static class CpException extends Exception {
-    public CpException(String message) {
-      super(message);
-    }
-  }
-
-  public static class HpException extends Exception {
-    public HpException(String message) {
-      super(message);
-    }
-  }
-
-  public static class NameException extends Exception {
-    public NameException(String message) {
-      super(message);
-    }
-  }
-
-  public static class CandyException extends Exception {
-    public CandyException(String message) {
-      super(message);
-    }
-  }
-
-  public static class StardustException extends Exception {
-    public StardustException(String message) {
-      super(message);
-    }
   }
 }

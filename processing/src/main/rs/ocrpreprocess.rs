@@ -8,7 +8,7 @@ rs_script script;
 
 void root(const uchar4* in, uchar4* out, uint32_t x, uint32_t y) {
   *out = *in;
-  uint32_t g = (uint32_t) ((in->r + in->g + in->b) / 3.);
+  uint32_t g = (in->r + 4 * in->g + 2 * in->b) / 7;
   int value = y <= HEIGHT_CP ? VALUE_CP : VALUE_NO_CP;
   if (g <= value) {
     g = 0;

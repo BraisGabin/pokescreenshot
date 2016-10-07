@@ -253,15 +253,15 @@ public class Tess {
       text = tess.getUTF8Text();
       regionRect = getRegionBox(tess);
       regionRect.offset(ocrRect.left, ocrRect.top);
+    }
 
-      final Pattern pattern = Pattern.compile("[HEi@] ?([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("[HEi@] ?([0-9]+)", Pattern.CASE_INSENSITIVE);
 
-      Matcher matcher = pattern.matcher(text);
-      if (matcher.matches()) {
-        stardust = Integer.parseInt(matcher.group(1));
-        if (!Stardust.isStardustCorrect(stardust)) {
-          stardust = -1;
-        }
+    Matcher matcher = pattern.matcher(text);
+    if (matcher.matches()) {
+      stardust = Integer.parseInt(matcher.group(1));
+      if (!Stardust.isStardustCorrect(stardust)) {
+        stardust = -1;
       }
     }
 

@@ -10,9 +10,6 @@ import android.graphics.Rect;
 import com.googlecode.leptonica.android.Pixa;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 
 public class Tess {
@@ -51,8 +48,7 @@ public class Tess {
     }
   }
 
-  int cp(Rect cpRegion) throws Ocr.CpException {
-    int cp = -1;
+  String cp(Rect cpRegion) {
     final String text;
 
     final Rect ocrRect = cpRect();
@@ -78,16 +74,6 @@ public class Tess {
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
 
-    final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
-
-    final Matcher matcher = pattern.matcher(text);
-    if (matcher.find()) {
-      cp = Integer.parseInt(matcher.group(1));
-    }
-
-    if (cp <= 0) {
-      throw new Ocr.CpException("Error parsing CP:\n" + text);
-    }
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
@@ -99,7 +85,7 @@ public class Tess {
       canvas.drawRect(regionRect2, paint);
     }
 
-    return cp;
+    return text;
   }
 
   private Rect cpRect() {
@@ -109,7 +95,7 @@ public class Tess {
     return rect;
   }
 
-  String name(int cpHeight) throws Ocr.NameException {
+  String name(int cpHeight) {
     final String name;
 
     final Rect ocrRect = nameRect(cpHeight);
@@ -132,10 +118,6 @@ public class Tess {
       regionRect2.offset(ocrRect2.left, ocrRect2.top);
     }
 
-    if (name == null) {
-      throw new Ocr.NameException("Error parsing name: No name");
-    }
-
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
@@ -156,8 +138,7 @@ public class Tess {
     return rect;
   }
 
-  int hp(int cpHeight) throws Ocr.HpException {
-    int hp = -1;
+  String hp(int cpHeight) {
     final String text;
 
     final Rect ocrRect = hpRect(cpHeight);
@@ -169,20 +150,6 @@ public class Tess {
       regionRect.offset(ocrRect.left, ocrRect.top);
     }
 
-    final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
-
-    String text2 = text.replace("l", "1");
-    text2 = text2.replace("S", "5");
-    text2 = text2.replace("O", "0");
-    text2 = text2.replace(" ", "");
-    Matcher matcher = pattern.matcher(text2);
-    if (matcher.matches()) {
-      hp = Integer.parseInt(matcher.group(1));
-    }
-
-    if (hp <= 0) {
-      throw new Ocr.HpException("Error parsing HP:\n" + text);
-    }
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
@@ -190,7 +157,7 @@ public class Tess {
       canvas.drawRect(regionRect, paint);
     }
 
-    return hp;
+    return text;
   }
 
   private Rect hpRect(int cpHeight) {
@@ -199,8 +166,7 @@ public class Tess {
     return rect;
   }
 
-  String candy(int cpHeight) throws Ocr.CandyException {
-    final String candy;
+  String candy(int cpHeight) {
     final String text;
 
     final Rect ocrRect = candyRect(cpHeight);
@@ -214,18 +180,6 @@ public class Tess {
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
 
-    String text2 = text.replace(" ", "");
-    text2 = text2.replace("NIDORANo", "NIDORAN♂");
-    text2 = text2.replace("NIDORANU", "NIDORAN♂");
-    text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
-    text2 = text2.replace("NIDORANQ", "NIDORAN♀");
-
-    candy = Candy.candyType(text2);
-
-    if (candy == null) {
-      throw new Ocr.CandyException("Error parsing candy: " + text);
-    }
-
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
@@ -233,7 +187,7 @@ public class Tess {
       canvas.drawRect(regionRect, paint);
     }
 
-    return candy;
+    return text;
   }
 
   private Rect candyRect(int cpHeight) {
@@ -242,8 +196,7 @@ public class Tess {
     return rect;
   }
 
-  int stardust(int cpHeight) throws Ocr.StardustException {
-    int stardust = -1;
+  String stardust(int cpHeight) {
     final String text;
 
     final Rect ocrRect = stardustRect(cpHeight);
@@ -266,19 +219,6 @@ public class Tess {
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
 
-    final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
-
-    Matcher matcher = pattern.matcher(text);
-    if (matcher.matches()) {
-      stardust = Integer.parseInt(matcher.group(1));
-      if (!Stardust.isStardustCorrect(stardust)) {
-        stardust = -1;
-      }
-    }
-
-    if (stardust < 0) {
-      throw new Ocr.StardustException("Error parsing stardust:\n" + text);
-    }
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
@@ -290,7 +230,7 @@ public class Tess {
       canvas.drawRect(regionRect2, paint);
     }
 
-    return stardust;
+    return text;
   }
 
   private Rect stardustRect(int cpHeight) {

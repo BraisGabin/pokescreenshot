@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.support.test.InstrumentationRegistry;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -70,7 +69,7 @@ public class TessTest {
 
   private final Screenshot screenshot;
   private TessBaseAPI tessBaseAPI;
-  private Tess tess;
+  private Ocr ocr;
 
   public TessTest(Screenshot screenshot) {
     this.screenshot = screenshot;
@@ -89,7 +88,7 @@ public class TessTest {
     tessBaseAPI.readConfigFile("pokemon");
     tessBaseAPI.setImage(bitmap);
 
-    this.tess = Tess.create(tessBaseAPI, context, bitmap, null);
+    this.ocr = new Ocr(Tess.create(tessBaseAPI, context, bitmap, null));
   }
 
   @After
@@ -99,11 +98,10 @@ public class TessTest {
 
   @Test
   public void testOcr() throws Exception {
-    final Rect region = new Rect();
-    assertThat(tess.cp(region), is(screenshot.getCp()));
-    assertThat(tess.hp(region.bottom), is(screenshot.getHp()));
-    assertThat(tess.stardust(region.bottom), is(screenshot.getStardus()));
-    assertThat(tess.candy(region.bottom), is(screenshot.getCandy()));
-    assertThat(tess.name(region.bottom), is(screenshot.getName()));
+    assertThat(ocr.cp(), is(screenshot.getCp()));
+    assertThat(ocr.hp(), is(screenshot.getHp()));
+    assertThat(ocr.stardust(), is(screenshot.getStardus()));
+    assertThat(ocr.candy(), is(screenshot.getCandy()));
+    assertThat(ocr.name(), is(screenshot.getName()));
   }
 }

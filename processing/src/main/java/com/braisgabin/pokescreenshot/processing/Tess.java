@@ -211,9 +211,9 @@ public class Tess {
       text = tess.getUTF8Text();
 
       String text2 = text.replace(" ", "");
-      text2 = text2.replace("NIDORANQ", "NIDORAN♀");
       text2 = text2.replace("NIDORANo", "NIDORAN♂");
       text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
+      text2 = text2.replace("NIDORANQ", "NIDORAN♀");
 
       candy = Candy.candyType(text2);
 

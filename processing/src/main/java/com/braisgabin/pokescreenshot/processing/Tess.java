@@ -248,14 +248,25 @@ public class Tess {
 
     final Rect ocrRect = stardustRect(cpHeight);
     final Rect regionRect;
+    final Rect ocrRect2;
+    final Rect regionRect2;
     synchronized (tess) {
       tess.setRectangle(ocrRect);
-      text = tess.getUTF8Text();
+      tess.getUTF8Text();
       regionRect = getRegionBox(tess);
       regionRect.offset(ocrRect.left, ocrRect.top);
+      ocrRect2 = new Rect(regionRect);
+      ocrRect2.left = regionRect.left + Math.round(7 * d);
+
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
+      tess.setRectangle(ocrRect2);
+      text = tess.getUTF8Text();
+      regionRect2 = getRegionBox(tess);
+      regionRect2.offset(ocrRect2.left, ocrRect2.top);
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
 
-    final Pattern pattern = Pattern.compile("[HEi@] ?([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
 
     Matcher matcher = pattern.matcher(text);
     if (matcher.matches()) {
@@ -271,8 +282,12 @@ public class Tess {
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
-      paint.setColor(Color.YELLOW);
+      paint.setColor(Color.BLUE);
       canvas.drawRect(regionRect, paint);
+      paint.setColor(Color.RED);
+      canvas.drawRect(ocrRect2, paint);
+      paint.setColor(Color.YELLOW);
+      canvas.drawRect(regionRect2, paint);
     }
 
     return stardust;

@@ -75,14 +75,14 @@ public class Tess {
       regionRect2 = getRegionBox(tess);
       regionRect2.offset(ocrRect2.left, ocrRect2.top);
       cpRegion.set(regionRect2);
-
-      final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
-
-      final Matcher matcher = pattern.matcher(text);
-      if (matcher.find()) {
-        cp = Integer.parseInt(matcher.group(1));
-      }
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
+    }
+
+    final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
+
+    final Matcher matcher = pattern.matcher(text);
+    if (matcher.find()) {
+      cp = Integer.parseInt(matcher.group(1));
     }
 
     if (cp <= 0) {
@@ -167,17 +167,17 @@ public class Tess {
       text = tess.getUTF8Text();
       regionRect = (getRegionBox(tess));
       regionRect.offset(ocrRect.left, ocrRect.top);
+    }
 
-      final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
 
-      String text2 = text.replace("l", "1");
-      text2 = text2.replace("S", "5");
-      text2 = text2.replace("O", "0");
-      text2 = text2.replace(" ", "");
-      Matcher matcher = pattern.matcher(text2);
-      if (matcher.matches()) {
-        hp = Integer.parseInt(matcher.group(1));
-      }
+    String text2 = text.replace("l", "1");
+    text2 = text2.replace("S", "5");
+    text2 = text2.replace("O", "0");
+    text2 = text2.replace(" ", "");
+    Matcher matcher = pattern.matcher(text2);
+    if (matcher.matches()) {
+      hp = Integer.parseInt(matcher.group(1));
     }
 
     if (hp <= 0) {
@@ -209,19 +209,18 @@ public class Tess {
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " '.ABCDEFGHIJKLMNOPQRSTUVWXYZo");
       tess.setRectangle(ocrRect);
       text = tess.getUTF8Text();
-
-      String text2 = text.replace(" ", "");
-      text2 = text2.replace("NIDORANo", "NIDORAN♂");
-      text2 = text2.replace("NIDORANU", "NIDORAN♂");
-      text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
-      text2 = text2.replace("NIDORANQ", "NIDORAN♀");
-
-      candy = Candy.candyType(text2);
-
       regionRect = getRegionBox(tess);
       regionRect.offset(ocrRect.left, ocrRect.top);
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
+
+    String text2 = text.replace(" ", "");
+    text2 = text2.replace("NIDORANo", "NIDORAN♂");
+    text2 = text2.replace("NIDORANU", "NIDORAN♂");
+    text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
+    text2 = text2.replace("NIDORANQ", "NIDORAN♀");
+
+    candy = Candy.candyType(text2);
 
     if (candy == null) {
       throw new Ocr.CandyException("Error parsing candy: " + text);

@@ -254,7 +254,7 @@ public class Tess {
       regionRect = getRegionBox(tess);
       regionRect.offset(ocrRect.left, ocrRect.top);
 
-      final Pattern pattern = Pattern.compile("^[HEi@]([0-9]+) .*$", Pattern.CASE_INSENSITIVE);
+      final Pattern pattern = Pattern.compile("[HEi@] ?([0-9]+)", Pattern.CASE_INSENSITIVE);
 
       Matcher matcher = pattern.matcher(text);
       if (matcher.matches()) {
@@ -279,7 +279,7 @@ public class Tess {
   }
 
   private Rect stardustRect(int cpHeight) {
-    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(28 * d));
+    Rect rect = new Rect(0, 0, Math.round(80 * d), Math.round(28 * d));
     rect.offset(width / 2, cpHeight + Math.round(547 * d));
     return rect;
   }

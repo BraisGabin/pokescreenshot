@@ -41,6 +41,12 @@ class Screenshot {
   @CsvField(pos = 10)
   private String name;
 
+  @CsvField(pos = 11)
+  private BigDecimal weight;
+
+  @CsvField(pos = 12)
+  private BigDecimal height;
+
   public String file() {
     return "screenshots/" + file;
   }
@@ -75,6 +81,14 @@ class Screenshot {
 
   public String getName() {
     return name;
+  }
+
+  public float getWeight() {
+    return weight.floatValue();
+  }
+
+  public float getHeight() {
+    return height.floatValue();
   }
 
   @Override

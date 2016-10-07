@@ -7,6 +7,10 @@ public interface ScreenshotReader {
 
   int hp() throws HpException, CpException;
 
+  float weight() throws WeightException, CpException;
+
+  float height() throws HeightException, CpException;
+
   String candy() throws CandyException, CpException;
 
   int stardust() throws StardustException, CpException;
@@ -25,6 +29,18 @@ public interface ScreenshotReader {
 
   class HpException extends Exception {
     public HpException(String message) {
+      super(message);
+    }
+  }
+
+  class WeightException extends Exception {
+    public WeightException(String message) {
+      super(message);
+    }
+  }
+
+  class HeightException extends Exception {
+    public HeightException(String message) {
       super(message);
     }
   }

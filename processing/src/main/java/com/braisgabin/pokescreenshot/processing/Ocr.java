@@ -14,6 +14,7 @@ public class Ocr implements ScreenshotReader {
   private int cpHeight = -1;
   private String name = null;
   private int hp = -1;
+  private float weight = -1;
   private String candy = null;
   private int stardust = -1;
 
@@ -25,6 +26,7 @@ public class Ocr implements ScreenshotReader {
     Log.d(TAG, "CP: " + cp());
     Log.d(TAG, "Name: " + name());
     Log.d(TAG, "HP: " + hp());
+    Log.d(TAG, "Weight: " + weight());
     Log.d(TAG, "Candy: " + candy());
     Log.d(TAG, "Stardust: " + stardust());
   }
@@ -90,6 +92,33 @@ public class Ocr implements ScreenshotReader {
       }
     }
     return hp;
+  }
+
+  @Override
+  public synchronized float weight() throws WeightException, CpException {
+    if (weight < 0) {
+      if (cpHeight < 0) {
+        cp();
+      }
+      final String text = tess.weight(cpHeight);
+
+      final Pattern pattern = Pattern.compile("([0-9]+(\\.[0-9]{1,2})?) kg", Pattern.CASE_INSENSITIVE);
+
+      final Matcher matcher = pattern.matcher(text);
+      if (matcher.find()) {
+        weight = Float.parseFloat(matcher.group(1));
+      }
+
+      if (weight <= 0) {
+        throw new Ocr.WeightException("Error parsing weight:\n" + text);
+      }
+    }
+    return weight;
+  }
+
+  @Override
+  public float height() {
+    return 0;
   }
 
   @Override

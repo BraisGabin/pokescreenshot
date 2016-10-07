@@ -100,6 +100,50 @@ public class OcrUnitTest {
   }
 
   @Test
+  public void testWeight_noDecimal() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.weight(anyInt())).thenReturn("Poison 2 kg 1.3 m");
+
+    final Ocr ocr = new Ocr(tess);
+    assertThat(ocr.weight(), is(2f));
+    assertThat(ocr.weight(), is(2f));
+    verify(tess, times(1)).weight(anyInt());
+    verify(tess, times(1)).cp(any(Rect.class));
+  }
+
+  @Test
+  public void testWeight_oneDecimal() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.weight(anyInt())).thenReturn("Poison 2.5 kg 1.3 m");
+
+    assertThat(ocr.weight(), is(2.5f));
+    assertThat(ocr.weight(), is(2.5f));
+    verify(tess, times(1)).weight(anyInt());
+    verify(tess, times(1)).cp(any(Rect.class));
+  }
+
+  @Test
+  public void testWeight_twoDecimals() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.weight(anyInt())).thenReturn("Poison 2.51 kg 1.3 m");
+
+    assertThat(ocr.weight(), is(2.51f));
+    assertThat(ocr.weight(), is(2.51f));
+    verify(tess, times(1)).weight(anyInt());
+    verify(tess, times(1)).cp(any(Rect.class));
+  }
+
+  @Test
+  public void testWeight_error() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.weight(anyInt())).thenReturn("asdf");
+
+    thrown.expect(ScreenshotReader.WeightException.class);
+    thrown.expectMessage("Error parsing weight:\nasdf");
+    ocr.weight();
+  }
+
+  @Test
   public void testCandy() throws Exception {
     when(tess.cp(any(Rect.class))).thenReturn("100");
     when(tess.candy(anyInt())).thenReturn("PIKACHU");

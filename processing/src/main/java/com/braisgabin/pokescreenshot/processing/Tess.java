@@ -10,6 +10,9 @@ import android.graphics.Rect;
 import com.googlecode.leptonica.android.Pixa;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 
 public class Tess {
@@ -163,6 +166,34 @@ public class Tess {
   private Rect hpRect(int cpHeight) {
     Rect rect = new Rect(0, 0, Math.round(180 * d), Math.round(28 * d));
     rect.offset(width / 2 - rect.width() / 2, cpHeight + Math.round(335 * d));
+    return rect;
+  }
+
+  String weight(int cpHeight) {
+    final String text;
+
+    final Rect ocrRect = weightRect(cpHeight);
+    final Rect regionRect;
+    synchronized (tess) {
+      tess.setRectangle(ocrRect);
+      text = tess.getUTF8Text();
+      regionRect = (getRegionBox(tess));
+      regionRect.offset(ocrRect.left, ocrRect.top);
+    }
+
+    if (canvas != null) {
+      paint.setColor(Color.RED);
+      canvas.drawRect(ocrRect, paint);
+      paint.setColor(Color.YELLOW);
+      canvas.drawRect(regionRect, paint);
+    }
+
+    return text;
+  }
+
+  private Rect weightRect(int cpHeight) {
+    Rect rect = new Rect(0, 0, width - 2 * Math.round(12 * d), Math.round(52 * d));
+    rect.offset(width / 2 - rect.width() / 2, cpHeight + Math.round(385 * d));
     return rect;
   }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.braisgabin.pokescreenshot.processing.CP.CPM;
+import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
@@ -24,8 +25,10 @@ public class Guesser {
     return max(10, (int) floor(CPM(lvl) * (pokemon.stam() + stam)));
   }
 
-  public static <T extends CoreStats> T getPokemon(Iterable<T> coreStatsList, int cp, int hp, float lvl) throws UnknownPokemonException, MultiplePokemonException {
+  public static <T extends CoreStats & Measures> T getPokemon(Iterable<T> coreStatsList, ScreenshotReader reader, float lvl) throws UnknownPokemonException, Ocr.CpException, Ocr.HpException, Ocr.WeightException {
     T coreStats = null;
+    final int cp = reader.cp();
+    final int hp = reader.hp();
     for (T cs : coreStatsList) {
       final int minCp = calculateCp(cs, lvl, 0, 0, 0);
       final int maxCp = calculateCp(cs, lvl, 15, 15, 15);
@@ -35,7 +38,10 @@ public class Guesser {
         if (coreStats == null) {
           coreStats = cs;
         } else {
-          throw new MultiplePokemonException(String.format(Locale.US, "%s and %s are possible candidates.", coreStats.toString(), cs.toString()));
+          final float weight = reader.weight();
+          if (abs(cs.weight() - weight) < abs(coreStats.weight() - weight)) {
+            coreStats = cs;
+          }
         }
       }
     }
@@ -70,12 +76,6 @@ public class Guesser {
 
   public static class UnknownPokemonException extends Exception {
     public UnknownPokemonException(String message) {
-      super(message);
-    }
-  }
-
-  public static class MultiplePokemonException extends Exception {
-    public MultiplePokemonException(String message) {
       super(message);
     }
   }

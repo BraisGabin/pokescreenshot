@@ -4,7 +4,9 @@ CREATE TABLE pokemon (
   atk INTEGER AS Integer NOT NULL,
   def INTEGER AS Integer NOT NULL,
   stam INTEGER AS Integer NOT NULL,
-  candy TEXT NOT NULL
+  candy TEXT NOT NULL,
+  weight REAL AS Float NOT NULL,
+  height REAL AS Float NOT NULL
 );
 
 select_by_candy:

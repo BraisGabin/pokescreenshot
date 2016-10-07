@@ -194,7 +194,7 @@ public class ScreenshotService extends Service {
               final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocr.candy());
               final int cp = ocr.cp();
               final int hp = ocr.hp();
-              final Pokemon pokemon = Guesser.getPokemon(pokemonList, cp, hp, pokemonLvl);
+              final Pokemon pokemon = Guesser.getPokemon(pokemonList, ocr, pokemonLvl);
               return Result.create(Guesser.iv(pokemon, cp, hp, pokemonLvl));
             } catch (Exception e) {
               Timber.e(e);
@@ -237,10 +237,6 @@ public class ScreenshotService extends Service {
                   } catch (Ocr.HpException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_hp,
-                        result.file());
-                  } catch (Guesser.MultiplePokemonException e) {
-                    notifyError(R.string.error_guessing_pokemon_title,
-                        R.string.error_guessing_pokemon_multiple,
                         result.file());
                   } catch (Guesser.UnknownPokemonException e) {
                     notifyError(R.string.error_guessing_pokemon_title,

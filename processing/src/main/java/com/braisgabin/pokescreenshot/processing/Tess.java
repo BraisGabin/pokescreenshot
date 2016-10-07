@@ -27,7 +27,7 @@ public class Tess {
 
   public static void preprocessingImage(Context context, Bitmap bitmap, float d) {
     final int valueCp = 245;
-    final int valueNoCp = 219;
+    final int valueNoCp = 205;
     BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), valueCp, valueNoCp);
   }
 
@@ -212,6 +212,7 @@ public class Tess {
 
       String text2 = text.replace(" ", "");
       text2 = text2.replace("NIDORANo", "NIDORAN♂");
+      text2 = text2.replace("NIDORANU", "NIDORAN♂");
       text2 = text2.replace("NIDORANJ'", "NIDORAN♂");
       text2 = text2.replace("NIDORANQ", "NIDORAN♀");
 

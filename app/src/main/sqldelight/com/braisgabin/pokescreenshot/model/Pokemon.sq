@@ -11,3 +11,8 @@ select_by_candy:
 SELECT *
 FROM pokemon
 WHERE candy = ?;
+
+select_by_name:
+SELECT *
+FROM pokemon
+WHERE name = ?;

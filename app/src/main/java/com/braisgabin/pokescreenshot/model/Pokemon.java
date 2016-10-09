@@ -24,4 +24,8 @@ public abstract class Pokemon implements PokemonModel, CoreStats {
   public static List<Pokemon> selectByCandy(SQLiteDatabase database, String candy) {
     return Utils.list(database, MAPPER, SELECT_BY_CANDY, candy);
   }
+
+  public static List<Pokemon> selectByName(SQLiteDatabase database, String name) {
+    return Utils.list(database, MAPPER, SELECT_BY_NAME, name);
+  }
 }

@@ -23,4 +23,5 @@
     <string name="error_ocr_hp">Impossible to read the HP.</string>
     <string name="screenshot_dir_title">Screenshot folder</string>
     <string name="permission_requited">The app needs the permission to work. Exiting…</string>
+    <string name="about">About</string>
 </resources>

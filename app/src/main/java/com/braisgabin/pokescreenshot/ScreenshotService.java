@@ -29,7 +29,6 @@ import com.braisgabin.pokescreenshot.model.Pokemon;
 import com.braisgabin.pokescreenshot.processing.Angle;
 import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
-import com.braisgabin.pokescreenshot.processing.Ocr;
 import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.f2prateek.rx.preferences.Preference;
 import com.google.auto.value.AutoValue;
@@ -191,9 +190,9 @@ public class ScreenshotService extends Service {
             try {
               final float pokemonLvl = CP.radian2Lvl(trainerLvl(), c.angle().radian());
               Timber.d("lvl: %.1f", pokemonLvl);
-              final Ocr ocr = c.ocr();
-              final Pokemon pokemon = getPokemon(ocr, pokemonLvl);
-              return Result.create(Guesser.iv(pokemon, ocr.cp(), ocr.hp(), pokemonLvl));
+              final ScreenshotReader reader = c.screenshotReader();
+              final Pokemon pokemon = getPokemon(reader, pokemonLvl);
+              return Result.create(Guesser.iv(pokemon, reader.cp(), reader.hp(), pokemonLvl));
             } catch (Exception e) {
               Timber.e(e);
               return Result.create(e, fb.file());
@@ -224,15 +223,15 @@ public class ScreenshotService extends Service {
                     notifyError(R.string.error_pokemon_lvl_title,
                         R.string.error_pokemon_lvl_circle,
                         result.file());
-                  } catch (Ocr.CandyException e) {
+                  } catch (ScreenshotReader.CandyException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_candy,
                         result.file());
-                  } catch (Ocr.CpException e) {
+                  } catch (ScreenshotReader.CpException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_cp,
                         result.file());
-                  } catch (Ocr.HpException e) {
+                  } catch (ScreenshotReader.HpException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_hp,
                         result.file());

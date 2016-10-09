@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.braisgabin.pokescreenshot.processing.Angle;
 import com.braisgabin.pokescreenshot.processing.Ocr;
+import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.braisgabin.pokescreenshot.processing.Tess;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -24,7 +25,7 @@ public class ScreenshotModule {
   }
 
   @Provides
-  Ocr ocrProvider(Tess tess) {
+  ScreenshotReader ocrProvider(Tess tess) {
     return new Ocr(tess);
   }
 

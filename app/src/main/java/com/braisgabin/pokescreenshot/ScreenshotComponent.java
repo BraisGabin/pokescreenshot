@@ -1,7 +1,7 @@
 package com.braisgabin.pokescreenshot;
 
 import com.braisgabin.pokescreenshot.processing.Angle;
-import com.braisgabin.pokescreenshot.processing.Ocr;
+import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 
 import javax.inject.Singleton;
 
@@ -14,7 +14,7 @@ import dagger.Subcomponent;
     }
 )
 public interface ScreenshotComponent {
-  Ocr ocr();
+  ScreenshotReader screenshotReader();
 
   Angle angle();
 }

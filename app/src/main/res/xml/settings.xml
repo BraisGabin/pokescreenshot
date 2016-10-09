@@ -9,4 +9,12 @@
     <Preference
         android:key="screenshot_dir"
         android:title="@string/screenshot_dir_title"/>
+    <Preference
+        android:persistent="false"
+        android:title="@string/about">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/BraisGabin/pokescreenshot"/>
+    </Preference>
 </PreferenceScreen>

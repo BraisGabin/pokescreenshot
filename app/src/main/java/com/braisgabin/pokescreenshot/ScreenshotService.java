@@ -30,6 +30,7 @@ import com.braisgabin.pokescreenshot.processing.Angle;
 import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
+import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.f2prateek.rx.preferences.Preference;
 import com.google.auto.value.AutoValue;
 
@@ -191,11 +192,8 @@ public class ScreenshotService extends Service {
               final float pokemonLvl = CP.radian2Lvl(trainerLvl(), c.angle().radian());
               Timber.d("lvl: %.1f", pokemonLvl);
               final Ocr ocr = c.ocr();
-              final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, ocr.candy());
-              final int cp = ocr.cp();
-              final int hp = ocr.hp();
-              final Pokemon pokemon = Guesser.getPokemon(pokemonList, cp, hp, pokemonLvl);
-              return Result.create(Guesser.iv(pokemon, cp, hp, pokemonLvl));
+              final Pokemon pokemon = getPokemon(ocr, pokemonLvl);
+              return Result.create(Guesser.iv(pokemon, ocr.cp(), ocr.hp(), pokemonLvl));
             } catch (Exception e) {
               Timber.e(e);
               return Result.create(e, fb.file());
@@ -254,6 +252,28 @@ public class ScreenshotService extends Service {
                 }
               }
             });
+  }
+
+  private Pokemon getPokemon(ScreenshotReader reader, float pokemonLvl) throws ScreenshotReader.CpException, Guesser.UnknownPokemonException, ScreenshotReader.CandyException, Guesser.MultiplePokemonException, ScreenshotReader.HpException {
+    Pokemon pokemon;
+    try {
+      final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, reader.candy());
+      pokemon = Guesser.getPokemon(pokemonList, reader.cp(), reader.hp(), pokemonLvl);
+    } catch (ScreenshotReader.CandyException | Guesser.UnknownPokemonException | Guesser.MultiplePokemonException e) {
+      try {
+        final List<Pokemon> pokemonList = Pokemon.selectByName(database, reader.name());
+        if (pokemonList.isEmpty()) {
+          throw e;
+        } else {
+          Timber.w(e);
+        }
+        pokemon = pokemonList.get(0);
+      } catch (ScreenshotReader.NameException e1) {
+        Timber.w(e1);
+        throw e;
+      }
+    }
+    return pokemon;
   }
 
   private void noPokemonGoScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {

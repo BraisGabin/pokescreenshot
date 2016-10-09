@@ -19,6 +19,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a', 'x86'
+            universalApk false
+        }
+    }
+}
+
+// map for the version code that gives each ABI a value
+ext.versionCodes = ['armeabi-v7a': 0, 'arm64-v8a': 1, 'x86': 2]
+
+import com.android.build.OutputFile
+
+// For each APK output variant, override versionCode with a combination of
+// ABI APK value * 1000 + defaultConfig.versionCode
+android.applicationVariants.all { variant ->
+    // assign different version code for each output
+    variant.outputs.each { output ->
+        output.versionCodeOverride = project.versionCodes.get(output.getFilter(OutputFile.ABI)) * 1000 + android.defaultConfig.versionCode
+    }
 }
 
 dependencies {

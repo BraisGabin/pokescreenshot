@@ -8,7 +8,5 @@
         android:title="@string/trainer_lvl"/>
     <Preference
         android:key="screenshot_dir"
-        android:title="@string/screenshot_dir_title">
-
-    </Preference>
+        android:title="@string/screenshot_dir_title"/>
 </PreferenceScreen>

@@ -49,6 +49,7 @@ public class Candy {
       "EXEGGCUTE",
       "CUBONE",
       "HITMONLEE",
+      "HITMONCHAN",
       "LICKITUNG",
       "KOFFING",
       "RHYHORN",

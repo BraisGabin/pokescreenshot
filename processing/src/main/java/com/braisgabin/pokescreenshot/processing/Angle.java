@@ -85,10 +85,18 @@ public class Angle {
   Point initialPoint() throws InitialPointException {
     final Rect area = initialPointArea(width, height, navBarHeight);
     for (int y = area.bottom, countY = area.top; y >= countY; y--) {
+      int a = -1;
+      int b = -1;
       for (int x = area.left, countX = area.right; x < countX; x++) {
         if (bitmap.getPixel(x, y) == Color.WHITE) {
-          return new Point(x + Math.round(1.5f * d), y + Math.round(2.6f * d));
+          if (a < 0) {
+            a = x;
+          }
+          b = x;
         }
+      }
+      if (a >= 0) {
+        return new Point(a + 1 + Math.round((b - a) / 2f), y + Math.round(2.6f * d));
       }
     }
     throw new InitialPointException("Impossible to detect the initial point of the circumference.");

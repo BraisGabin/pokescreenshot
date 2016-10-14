@@ -1,4 +1,5 @@
 File name;arcX;arcY;Trainer lvl;lvl;PC;PS;Stardust;Candy type;Name
+en/69_bellsprout.png;138;915;23;17;538;62;2200;BELLSPROUT;BeHsprout
 en/70_weepinbell.png;69;457;19;16;771;76;1900;BELLSPROUT;Weepinbell
 en/140_kabuto.png;135;635;20;19;584;42;2500;KABUTO;Kabuto
 es/1_bulbasaur.png;136;635;22;17;436;51;2200;BULBASAUR;Bulbasaur
@@ -14,7 +15,7 @@ es/33_nidorino.png;131;642;24;19;695;79;2500;NIDORAN♂;O. Nidorino
 es/35_clefairy.png;135;635;22;21;661;90;3000;CLEFAIRY;Clefairy
 es/36_clefable.png;131;642;24;15;987;106;1900;CLEFAIRY;O. Clefable
 es/42_golbat.png;131;642;24;20;1081;96;2500;ZUBAT;Mr.Go|bat
-es/46_paras.png;133;630;21;1;20;11;200;PARAS;Pa rasOOO
+es/46_paras.png;135;630;21;1;20;11;200;PARAS;Pa rasOOO
 es/55_golduck.png;135;635;22;16;951;87;1900;PSYDUCK;Golduck
 es/72_tentacool.png;135;635;22;8;176;33;800;TENTACOOL;Tentacool
 es/84_doduo.png;135;635;22;22;453;45;3000;DODUO;Doduo
@@ -26,6 +27,6 @@ es/126_magmar.png;135;635;22;20;1218;83;2500;MAGMAR;Magmar
 es/127_pinsir.png;131;642;24;22;1251;86;3000;PINSIR;Pinsir
 es/134_vaporeon.png;135;635;22;20;1533;155;2500;EEVEE;Rainer
 es/135_jolteon.png;135;635;22;15.5;917;75;1900;EEVEE;Sparky
-es/136_flareon.png;175;855;22;19;1415;82;2500;EEVEE;Flareon
-es/140_kabuto.png;175;855;22;4;98;15;400;KABUTO;Kabuto
+es/136_flareon.png;174;855;22;19;1415;82;2500;EEVEE;Flareon
+es/140_kabuto.png;174;855;22;4;98;15;400;KABUTO;Kabuto
 es/142_aerodactyl.png;136;635;22;10;576;67;1000;AERODACTYL;Aeroda 46/55

@@ -96,7 +96,7 @@ public class Angle {
         }
       }
       if (a >= 0) {
-        return new Point(a + 1 + Math.round((b - a) / 2f), y + Math.round(2.6f * d));
+        return new Point(a + Math.round(0.3f * d + (b - a) / 2f), y + Math.round(2.6f * d));
       }
     }
     throw new InitialPointException("Impossible to detect the initial point of the circumference.");

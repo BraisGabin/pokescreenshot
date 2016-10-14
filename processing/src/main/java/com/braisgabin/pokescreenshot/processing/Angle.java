@@ -86,7 +86,7 @@ public class Angle {
     final Rect area = initialPointArea(width, height, navBarHeight);
     for (int y = area.bottom, countY = area.top; y >= countY; y--) {
       for (int x = area.left, countX = area.right; x < countX; x++) {
-        if (bitmap.getPixel(x, y) == -1) {
+        if (bitmap.getPixel(x, y) == Color.WHITE) {
           return new Point(x + Math.round(1.5f * d), y + Math.round(2.6f * d));
         }
       }

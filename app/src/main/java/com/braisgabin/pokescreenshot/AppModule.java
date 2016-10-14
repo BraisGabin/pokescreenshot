@@ -83,7 +83,7 @@ class AppModule {
   @Singleton
   @Provides
   SQLiteDatabase sqLiteDatabaseProvider(SQLiteOpenHelper sqLiteOpenHelper) {
-    return sqLiteOpenHelper.getReadableDatabase();
+    return sqLiteOpenHelper.getWritableDatabase();
   }
 
   @Singleton

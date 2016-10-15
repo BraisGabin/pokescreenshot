@@ -44,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
     final Angle angle = new Angle(bitmap);
     final Ocr ocr = tess(bitmap, canvas);
+    double radian = -1;
     try {
-      angle.radian();
+      radian = angle.radian();
     } catch (Angle.InitialPointException | Angle.RadianException e) {
       e.printStackTrace();
     }
-    angle.debug(canvas);
+    angle.debug(canvas, radian);
 
     try {
       ocr.debug();

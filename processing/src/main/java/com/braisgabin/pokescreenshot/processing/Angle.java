@@ -32,7 +32,6 @@ public class Angle {
   private Point initialPoint;
   private Point center;
   private int radius = -1;
-  private double radian = -1;
 
   public Angle(Bitmap bitmap) {
     this.bitmap = bitmap;
@@ -46,8 +45,7 @@ public class Angle {
   @Deprecated
   public double radian() throws InitialPointException, RadianException {
     calculateCenterAndRadiusIfNecessary();
-    this.radian = radian(center, radius);
-    return radian;
+    return radian(center, radius);
   }
 
   public boolean isBall(double radian) throws InitialPointException {
@@ -58,11 +56,7 @@ public class Angle {
   boolean isBall(double radian, Point center, int radius) {
     final int x = (int) round(cos(radian) * radius);
     final int y = (int) round(sin(radian) * radius);
-    final boolean isCircle = isCircle(center.x + x, center.y - y, round(2.8f * d));
-    if (isCircle) {
-      this.radian = radian;
-    }
-    return isCircle;
+    return isCircle(center.x + x, center.y - y, round(2.8f * d));
   }
 
   private void calculateCenterAndRadiusIfNecessary() throws InitialPointException {
@@ -81,7 +75,7 @@ public class Angle {
     this.radius = radius(initialPoint, center);
   }
 
-  public void debug(Canvas canvas) {
+  public void debug(Canvas canvas, double radian) {
     final Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setStrokeWidth(3 * d);

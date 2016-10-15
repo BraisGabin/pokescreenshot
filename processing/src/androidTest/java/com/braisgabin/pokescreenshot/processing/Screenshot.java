@@ -33,7 +33,7 @@ class Screenshot {
   private int hp;
 
   @CsvField(pos = 8)
-  private int stardus;
+  private int stardust;
 
   @CsvField(pos = 9)
   private String candyType;
@@ -65,8 +65,8 @@ class Screenshot {
     return hp;
   }
 
-  public int getStardus() {
-    return stardus;
+  public int getStardust() {
+    return stardust;
   }
 
   public String getCandy() {

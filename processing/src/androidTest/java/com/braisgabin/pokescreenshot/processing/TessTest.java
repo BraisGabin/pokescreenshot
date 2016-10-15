@@ -100,7 +100,7 @@ public class TessTest {
   public void testOcr() throws Exception {
     assertThat(ocr.cp(), is(screenshot.getCp()));
     assertThat(ocr.hp(), is(screenshot.getHp()));
-    assertThat(ocr.stardust(), is(screenshot.getStardus()));
+    assertThat(ocr.stardust(), is(screenshot.getStardust()));
     assertThat(ocr.candy(), is(screenshot.getCandy()));
     assertThat(ocr.name(), is(screenshot.getName()));
   }

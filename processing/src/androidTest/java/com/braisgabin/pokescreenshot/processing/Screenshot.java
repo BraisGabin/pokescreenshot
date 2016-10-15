@@ -53,7 +53,7 @@ class Screenshot {
     return lvl2Radian(trainerLvl, lvl.floatValue());
   }
 
-  public float lvl() {
+  public float getLvl() {
     return lvl.floatValue();
   }
 

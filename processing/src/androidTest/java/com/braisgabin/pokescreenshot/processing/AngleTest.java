@@ -12,6 +12,7 @@ import net.sf.jsefa.csv.CsvDeserializer;
 import net.sf.jsefa.csv.CsvIOFactory;
 import net.sf.jsefa.csv.config.CsvConfiguration;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,6 +58,7 @@ public class AngleTest {
     this.screenshot = screenshot;
   }
 
+  @Before
   public void setUp() throws IOException {
     final AssetManager assets = InstrumentationRegistry.getContext().getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open(screenshot.file()));
@@ -66,14 +68,12 @@ public class AngleTest {
 
   @Test
   public void testInitialTest() throws Exception {
-    setUp();
     Point point = angle.initialPoint();
     assertThat(point, is(screenshot.initialPoint()));
   }
 
   @Test
   public void testRadian() throws Exception {
-    setUp();
     final Point initialPoint = screenshot.initialPoint();
     final Point center = Angle.center(screenshot.initialPoint(), width);
     final int radius = Angle.radius(initialPoint, center);

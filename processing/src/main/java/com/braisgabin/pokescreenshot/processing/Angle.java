@@ -13,6 +13,10 @@ import java.util.Locale;
 import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 import static java.lang.Math.PI;
+import static java.lang.Math.cos;
+import static java.lang.Math.round;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 
 public class Angle {
   private static final int X_PERCENTAGE_MIN = 8;
@@ -70,8 +74,8 @@ public class Angle {
     canvas.drawArc(new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius), 180, 180, false, paint);
 
     // Radian
-    final int x = (int) Math.round(Math.cos(radian) * radius);
-    final int y = (int) Math.round(Math.sin(radian) * radius);
+    final int x = (int) round(cos(radian) * radius);
+    final int y = (int) round(sin(radian) * radius);
     canvas.drawCircle(center.x + x, center.y - y, 6 * d, paint);
   }
 
@@ -96,7 +100,7 @@ public class Angle {
         }
       }
       if (a >= 0) {
-        return new Point(a + Math.round(0.3f * d + (b - a) / 2f), y + Math.round(2.6f * d));
+        return new Point(a + round(0.3f * d + (b - a) / 2f), y + round(2.6f * d));
       }
     }
     throw new InitialPointException("Impossible to detect the initial point of the circumference.");
@@ -114,9 +118,9 @@ public class Angle {
     final int max = radius * 5;
     for (int i = 0; i <= max; i++) {
       final double radians = i * PI / max;
-      final int x = (int) Math.round(Math.cos(radians) * radius);
-      final int y = (int) Math.round(Math.sin(radians) * radius);
-      if (isCircle(center.x + x, center.y - y, Math.round(3.1f * d))) {
+      final int x = (int) round(cos(radians) * radius);
+      final int y = (int) round(sin(radians) * radius);
+      if (isCircle(center.x + x, center.y - y, round(3.1f * d))) {
         return radians;
       }
     }
@@ -124,9 +128,9 @@ public class Angle {
   }
 
   private boolean isCircle(int x, int y, int range) {
-    final double sin45 = Math.sqrt(2) / 2;
+    final double sin45 = sqrt(2) / 2;
     for (int i = 0; i <= range; i++) {
-      int j = (int) Math.round(i * sin45);
+      int j = (int) round(i * sin45);
       if (bitmap.getPixel(x + i, y) != Color.WHITE ||
           bitmap.getPixel(x - i, y) != Color.WHITE ||
           bitmap.getPixel(x, y + i) != Color.WHITE ||

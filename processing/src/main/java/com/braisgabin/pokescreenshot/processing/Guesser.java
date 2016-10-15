@@ -7,6 +7,7 @@ import java.util.Locale;
 import static com.braisgabin.pokescreenshot.processing.CP.CPM;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
@@ -61,25 +62,43 @@ public class Guesser {
     return ivs;
   }
 
+  // FIXME this method doesn't have tests.
   public static float lvl(Angle angle, ScreenshotReader screenshotReader, int trainerLvl) throws ScreenshotReader.CpException, Angle.InitialPointException, UnknownPokemonLvl {
+    float[] lvls;
     try {
-      final int stardust = screenshotReader.stardust();
-      final float[] lvls = Stardust.stardust2Lvl(stardust);
-      for (float lvl : lvls) {
-        if (lvl <= trainerLvl + 1.5f) {
-          final double radian = CP.lvl2Radian(trainerLvl, lvl);
-          if (angle.isBall(radian)) {
-            return lvl;
-          }
-        }
-      }
+      lvls = Stardust.stardust2Lvl(screenshotReader.stardust());
     } catch (ScreenshotReader.StardustException e) {
-      for (float lvl = 1, maxLvl = trainerLvl + 1.5f; lvl <= maxLvl; lvl += 0.5f) {
+      lvls = possiblePokemonLvl(trainerLvl);
+    }
+    return lvl(angle, trainerLvl, lvls);
+  }
+
+  static float[] possiblePokemonLvl(int trainerLvl) {
+    final float[] lvls = new float[min((trainerLvl + 1) * 2, 40 * 2 - 1)];
+    for (int i = 0; i < lvls.length; i++) {
+      lvls[i] = 0.5f * i + 1f;
+    }
+    return lvls;
+  }
+
+  static float lvl(Angle angle, int trainerLvl, float[] lvls) throws Angle.InitialPointException, UnknownPokemonLvl {
+    float pokemonLvl = 0;
+    double perfectionLvl = 0;
+    for (float lvl : lvls) {
+      if (lvl <= trainerLvl + 1.5f) {
         final double radian = CP.lvl2Radian(trainerLvl, lvl);
-        if (angle.isBall(radian)) {
+        final double perfection = angle.isBall(radian);
+        if (perfection == 1) {
           return lvl;
         }
+        if (perfection > perfectionLvl) {
+          pokemonLvl = lvl;
+          perfectionLvl = perfection;
+        }
       }
+    }
+    if (perfectionLvl >= 0.5) {
+      return pokemonLvl;
     }
     throw new UnknownPokemonLvl("Impossible to detect the level bubble.");
   }

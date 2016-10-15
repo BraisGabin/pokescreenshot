@@ -14,6 +14,7 @@ import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
+import static java.lang.Math.max;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
@@ -48,15 +49,15 @@ public class Angle {
     return radian(center, radius);
   }
 
-  public boolean isBall(double radian) throws InitialPointException {
+  public double isBall(double radian) throws InitialPointException {
     calculateCenterAndRadiusIfNecessary();
     return isBall(radian, center, radius);
   }
 
-  boolean isBall(double radian, Point center, int radius) {
+  double isBall(double radian, Point center, int radius) {
     final int x = (int) round(cos(radian) * radius);
     final int y = (int) round(sin(radian) * radius);
-    return isCircle(center.x + x, center.y - y, round(2.8f * d));
+    return isCircle(center.x + x, center.y - y, round(3.1f * d));
   }
 
   private void calculateCenterAndRadiusIfNecessary() throws InitialPointException {
@@ -146,29 +147,28 @@ public class Angle {
       final double radians = i * PI / max;
       final int x = (int) round(cos(radians) * radius);
       final int y = (int) round(sin(radians) * radius);
-      if (isCircle(center.x + x, center.y - y, round(3.1f * d))) {
+      if (isCircle(center.x + x, center.y - y, round(3.1f * d)) == 1) {
         return radians;
       }
     }
     throw new RadianException(String.format(Locale.US, "Impossible to detect the bubble. Center: %s, radius: %d", center.toString(), radius));
   }
 
-  private boolean isCircle(int x, int y, int range) {
+  private double isCircle(int x, int y, int range) {
     final double sin45 = sqrt(2) / 2;
-    for (int i = 0; i <= range; i++) {
-      int j = (int) round(i * sin45);
-      if (bitmap.getPixel(x + i, y) != Color.WHITE ||
-          bitmap.getPixel(x - i, y) != Color.WHITE ||
-          bitmap.getPixel(x, y + i) != Color.WHITE ||
-          bitmap.getPixel(x, y - i) != Color.WHITE ||
-          bitmap.getPixel(x + j, y + j) != Color.WHITE ||
-          bitmap.getPixel(x + j, y - j) != Color.WHITE ||
-          bitmap.getPixel(x - j, y + j) != Color.WHITE ||
-          bitmap.getPixel(x - j, y - j) != Color.WHITE) {
-        return false;
-      }
+    int count = 0;
+    for (int i = max(range - 2, 0); i <= range; i++) {
+      final int j = (int) round(i * sin45);
+      if (bitmap.getPixel(x + i, y) == Color.WHITE) count++;
+      if (bitmap.getPixel(x - i, y) == Color.WHITE) count++;
+      if (bitmap.getPixel(x, y + i) == Color.WHITE) count++;
+      if (bitmap.getPixel(x, y - i) == Color.WHITE) count++;
+      if (bitmap.getPixel(x + j, y + j) == Color.WHITE) count++;
+      if (bitmap.getPixel(x + j, y - j) == Color.WHITE) count++;
+      if (bitmap.getPixel(x - j, y + j) == Color.WHITE) count++;
+      if (bitmap.getPixel(x - j, y - j) == Color.WHITE) count++;
     }
-    return true;
+    return count / (double) (8 * 3);
   }
 
   public static abstract class Exception extends ProcessingException {

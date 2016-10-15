@@ -12,7 +12,9 @@ import net.sf.jsefa.csv.CsvDeserializer;
 import net.sf.jsefa.csv.CsvIOFactory;
 import net.sf.jsefa.csv.config.CsvConfiguration;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -27,6 +29,8 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 
 @RunWith(value = Parameterized.class)
 public class AngleTest {
@@ -74,6 +78,7 @@ public class AngleTest {
 
   @Test
   @Deprecated
+  @Ignore("Deprecated")
   public void testRadian() throws Exception {
     final Point initialPoint = screenshot.initialPoint();
     final Point center = Angle.center(screenshot.initialPoint(), width);
@@ -92,7 +97,9 @@ public class AngleTest {
     final float[] lvls = Stardust.stardust2Lvl(screenshot.getStardust());
     for (float lvl : lvls) {
       final double radian = CP.lvl2Radian(trainerLvl, lvl);
-      assertThat(angle.isBall(radian, center, radius), is(lvl == pokemonLvl));
+      final Matcher<Double> matcher = lvl == pokemonLvl ? greaterThan(0.5) : lessThan(0.4);
+      final double perfection = angle.isBall(radian, center, radius);
+      assertThat(perfection, is(matcher));
     }
   }
 }

@@ -103,9 +103,11 @@ public class Angle {
     canvas.drawArc(new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius), 180, 180, false, paint);
 
     // Radian
-    final int x = (int) round(cos(radian) * radius);
-    final int y = (int) round(sin(radian) * radius);
-    canvas.drawCircle(center.x + x, center.y - y, 6 * d, paint);
+    if (radian >= 0) {
+      final int x = (int) round(cos(radian) * radius);
+      final int y = (int) round(sin(radian) * radius);
+      canvas.drawCircle(center.x + x, center.y - y, 6 * d, paint);
+    }
   }
 
   static Rect initialPointArea(int width, int height, int navBarHeight) {

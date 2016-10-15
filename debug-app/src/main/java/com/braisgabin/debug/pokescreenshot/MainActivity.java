@@ -43,21 +43,24 @@ public class MainActivity extends AppCompatActivity {
     Canvas canvas = new Canvas(bitmap2);
 
     final Angle angle = new Angle(bitmap);
+    final Ocr ocr = tess(bitmap, canvas);
     try {
       angle.radian();
-      angle.debug(canvas);
-      tess(bitmap, canvas);
-    } catch (Angle.Exception e) {
+    } catch (Angle.InitialPointException | Angle.RadianException e) {
       e.printStackTrace();
+    }
+    angle.debug(canvas);
+
+    try {
+      ocr.debug();
     } catch (Ocr.Exception e) {
       e.printStackTrace();
     }
 
-
     ((ImageView) findViewById(R.id.imageView)).setImageBitmap(bitmap2);
   }
 
-  private void tess(Bitmap bitmap, Canvas canvas) throws Ocr.Exception {
+  private Ocr tess(Bitmap bitmap, Canvas canvas) {
     final File root = getCacheDir();
     try {
       copyRecursive(getAssets(), "tesseract", root);
@@ -68,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
     final String absolutePath = root.getAbsolutePath() + "/tesseract/";
     tessBaseAPI.init(absolutePath, "eng");
     tessBaseAPI.readConfigFile("pokemon");
-    final Ocr ocr = new Ocr(Tess.create(tessBaseAPI, this, bitmap, canvas));
-    ocr.debug();
+    return new Ocr(Tess.create(tessBaseAPI, this, bitmap, canvas));
   }
 
   private Bitmap bitmap(String s) {

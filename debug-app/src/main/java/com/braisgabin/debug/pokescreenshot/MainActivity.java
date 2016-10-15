@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     final Angle angle = new Angle(bitmap);
     try {
-      angle.radian(canvas);
+      angle.radian();
+      angle.debug(canvas);
       tess(bitmap, canvas);
     } catch (Angle.Exception e) {
       e.printStackTrace();

@@ -29,6 +29,11 @@ public class Angle {
   private final int navBarHeight;
   private final float d;
 
+  private Point initialPoint;
+  private Point center;
+  private int radius = -1;
+  private double radian = -1;
+
   public Angle(Bitmap bitmap) {
     this.bitmap = bitmap;
     this.width = bitmap.getWidth();
@@ -37,22 +42,46 @@ public class Angle {
     this.d = proportion(bitmap, navBarHeight);
   }
 
-  public double radian() throws RadianException, InitialPointException {
-    return radian(null);
-  }
-
-  public double radian(Canvas canvas) throws InitialPointException, RadianException {
-    final Point initialPoint = initialPoint();
-    final Point center = center(initialPoint, width);
-    final int radius = radius(initialPoint, center);
-    final double radian = radian(center, radius);
-    if (canvas != null) {
-      debug(initialPoint, center, radius, radian, canvas);
-    }
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public double radian() throws InitialPointException, RadianException {
+    calculateCenterAndRadiusIfNecessary();
+    this.radian = radian(center, radius);
     return radian;
   }
 
-  private void debug(Point initialPoint, Point center, int radius, double radian, Canvas canvas) {
+  public boolean isBall(double radian) throws InitialPointException {
+    calculateCenterAndRadiusIfNecessary();
+    return isBall(radian, center, radius);
+  }
+
+  boolean isBall(double radian, Point center, int radius) {
+    final int x = (int) round(cos(radian) * radius);
+    final int y = (int) round(sin(radian) * radius);
+    final boolean isCircle = isCircle(center.x + x, center.y - y, round(2.8f * d));
+    if (isCircle) {
+      this.radian = radian;
+    }
+    return isCircle;
+  }
+
+  private void calculateCenterAndRadiusIfNecessary() throws InitialPointException {
+    if (center == null || radius < 0) {
+      synchronized (this) {
+        if (center == null || radius < 0) {
+          calculateCenterAndRadius();
+        }
+      }
+    }
+  }
+
+  private void calculateCenterAndRadius() throws InitialPointException {
+    this.initialPoint = initialPoint();
+    this.center = center(initialPoint, width);
+    this.radius = radius(initialPoint, center);
+  }
+
+  public void debug(Canvas canvas) {
     final Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setStrokeWidth(3 * d);
@@ -114,6 +143,7 @@ public class Angle {
     return center.x - initialPoint.x;
   }
 
+  @Deprecated
   double radian(Point center, int radius) throws RadianException {
     final int max = radius * 5;
     for (int i = 0; i <= max; i++) {
@@ -157,6 +187,7 @@ public class Angle {
     }
   }
 
+  @Deprecated
   public static class RadianException extends Exception {
     public RadianException(String message) {
       super(message);

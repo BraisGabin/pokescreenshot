@@ -107,6 +107,7 @@ public class CP {
     return (index + 2) / 2f;
   }
 
+  @Deprecated
   public static float radian2Lvl(int trainerLvl, double radian) {
     // Formula extracted from:
     // https://www.reddit.com/r/pokemongodev/comments/50z4sx/arc_angle_to_pokemon_level_formula_used_by/

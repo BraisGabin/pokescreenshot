@@ -7,7 +7,7 @@ import net.sf.jsefa.csv.annotation.CsvField;
 
 import java.math.BigDecimal;
 
-import static com.braisgabin.pokescreenshot.processing.CP.*;
+import static com.braisgabin.pokescreenshot.processing.CP.lvl2Radian;
 
 @CsvDataType
 class Screenshot {
@@ -49,8 +49,13 @@ class Screenshot {
     return new Point(initPointX, initPointY);
   }
 
+  @Deprecated
   public double radian() {
     return lvl2Radian(trainerLvl, lvl.floatValue());
+  }
+
+  public int getTrainerLvl() {
+    return trainerLvl;
   }
 
   public float getLvl() {

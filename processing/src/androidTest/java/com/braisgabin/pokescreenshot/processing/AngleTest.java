@@ -73,11 +73,26 @@ public class AngleTest {
   }
 
   @Test
+  @Deprecated
   public void testRadian() throws Exception {
     final Point initialPoint = screenshot.initialPoint();
     final Point center = Angle.center(screenshot.initialPoint(), width);
     final int radius = Angle.radius(initialPoint, center);
     final double radian = angle.radian(center, radius);
     assertThat(radian, is(closeTo(screenshot.radian(), Math.toRadians(0.24))));
+  }
+
+  @Test
+  public void testIsBall() throws Exception {
+    final Point initialPoint = screenshot.initialPoint();
+    final Point center = Angle.center(screenshot.initialPoint(), width);
+    final int radius = Angle.radius(initialPoint, center);
+    final int trainerLvl = screenshot.getTrainerLvl();
+    final float pokemonLvl = screenshot.getLvl();
+    final float[] lvls = Stardust.stardust2Lvl(screenshot.getStardust());
+    for (float lvl : lvls) {
+      final double radian = CP.lvl2Radian(trainerLvl, lvl);
+      assertThat(angle.isBall(radian, center, radius), is(lvl == pokemonLvl));
+    }
   }
 }

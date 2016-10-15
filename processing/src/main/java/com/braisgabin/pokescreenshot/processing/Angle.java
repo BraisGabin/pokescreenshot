@@ -124,11 +124,17 @@ public class Angle {
   }
 
   private boolean isCircle(int x, int y, int range) {
+    final double sin45 = Math.sqrt(2) / 2;
     for (int i = 0; i <= range; i++) {
+      int j = (int) Math.round(i * sin45);
       if (bitmap.getPixel(x + i, y) != Color.WHITE ||
           bitmap.getPixel(x - i, y) != Color.WHITE ||
           bitmap.getPixel(x, y + i) != Color.WHITE ||
-          bitmap.getPixel(x, y - i) != Color.WHITE) {
+          bitmap.getPixel(x, y - i) != Color.WHITE ||
+          bitmap.getPixel(x + j, y + j) != Color.WHITE ||
+          bitmap.getPixel(x + j, y - j) != Color.WHITE ||
+          bitmap.getPixel(x - j, y + j) != Color.WHITE ||
+          bitmap.getPixel(x - j, y - j) != Color.WHITE) {
         return false;
       }
     }

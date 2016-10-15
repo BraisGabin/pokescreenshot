@@ -1,4 +1,5 @@
 File name;arcX;arcY;Trainer lvl;lvl;PC;PS;Stardust;Candy type;Name
+de/138_omanyte.png;68;457;28;4;113;21;400;OMANYTE;Amonitas
 de/147_dratini.png;68;457;28;9;247;37;1000;DRATINI;93.3
 en/69_bellsprout.png;137;915;23;17;538;62;2200;BELLSPROUT;BeHsprout
 en/70_weepinbell.png;68;457;19;16;771;76;1900;BELLSPROUT;Weepinbell
@@ -32,3 +33,6 @@ es/135_jolteon.png;135;635;22;15.5;917;75;1900;EEVEE;Sparky
 es/136_flareon.png;174;855;22;19;1415;82;2500;EEVEE;Flareon
 es/140_kabuto.png;174;855;22;4;98;15;400;KABUTO;Kabuto
 es/142_aerodactyl.png;136;635;22;10;576;67;1000;AERODACTYL;Aeroda 46/55
+fr/35_clefairy.png;174;855;23;20;642;89;2500;CLEFAIRY;Mélofée
+fr/56_mankey.png;174;855;23;20;492;56;2500;MANKEY;Mankey 91/93
+fr/118_goldeen.png;174;855;23;17;453;55;2200;GOLDEEN;Goldeen82/86

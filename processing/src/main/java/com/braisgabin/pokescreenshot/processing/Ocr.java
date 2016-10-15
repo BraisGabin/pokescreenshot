@@ -102,9 +102,8 @@ public class Ocr implements ScreenshotReader {
 
       final String text2 = text
           .replace(" ", "")
-          .replace("NIDORANo", "NIDORAN♂")
           .replace("NIDORANU", "NIDORAN♂")
-          .replace("NIDORANJ'", "NIDORAN♂")
+          .replace("NIDORANJ", "NIDORAN♂")
           .replace("NIDORANQ", "NIDORAN♀");
 
       candy = Candy.candyType(text2);

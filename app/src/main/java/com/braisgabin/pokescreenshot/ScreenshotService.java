@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.braisgabin.fileobservable.FileObservable;
 import com.braisgabin.pokescreenshot.model.Pokemon;
 import com.braisgabin.pokescreenshot.processing.Angle;
-import com.braisgabin.pokescreenshot.processing.CP;
 import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.f2prateek.rx.preferences.Preference;
@@ -188,9 +187,11 @@ public class ScreenshotService extends Service {
           public Result call(FileBitmap fb) {
             final ScreenshotComponent c = component.plus(new ScreenshotModule(fb.bitmap()));
             try {
-              final float pokemonLvl = CP.radian2Lvl(trainerLvl(), c.angle().radian());
-              Timber.d("lvl: %.1f", pokemonLvl);
+              final Angle angle = c.angle();
               final ScreenshotReader reader = c.screenshotReader();
+              final int trainerLvl = trainerLvl();
+              final float pokemonLvl = Guesser.lvl(angle, reader, trainerLvl);
+              Timber.d("lvl: %.1f", pokemonLvl);
               final Pokemon pokemon = getPokemon(reader, pokemonLvl);
               return Result.create(Guesser.iv(pokemon, reader.cp(), reader.hp(), pokemonLvl));
             } catch (Exception e) {
@@ -219,10 +220,6 @@ public class ScreenshotService extends Service {
                     notifyError(R.string.error_pokemon_lvl_title,
                         R.string.error_pokemon_lvl_arc,
                         result.file());
-                  } catch (Angle.RadianException e) {
-                    notifyError(R.string.error_pokemon_lvl_title,
-                        R.string.error_pokemon_lvl_circle,
-                        result.file());
                   } catch (ScreenshotReader.CandyException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_candy,
@@ -242,6 +239,10 @@ public class ScreenshotService extends Service {
                   } catch (Guesser.UnknownPokemonException e) {
                     notifyError(R.string.error_guessing_pokemon_title,
                         R.string.error_guessing_pokemon_none,
+                        result.file());
+                  } catch (Guesser.UnknownPokemonLvl e) {
+                    notifyError(R.string.error_pokemon_lvl_title,
+                        R.string.error_pokemon_lvl_circle,
                         result.file());
                   } catch (Exception e) {
                     notifyError(getString(R.string.error_unknown_title),

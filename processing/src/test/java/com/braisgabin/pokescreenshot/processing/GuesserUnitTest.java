@@ -13,6 +13,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GuesserUnitTest {
   @Rule
@@ -171,6 +174,77 @@ public class GuesserUnitTest {
     assertThat(Guesser.iv(coreStats, 321, 45, 10.5f), contains(new int[][]{
         {15, 15, 15},
     }));
+  }
+
+  @Test
+  public void testLvl_1() throws Exception {
+    final int trainerLvl = 10;
+    final Angle angle = mock(Angle.class);
+    when(angle.isBall(anyDouble())).thenReturn(false);
+    when(angle.isBall(CP.lvl2Radian(trainerLvl, 1))).thenReturn(true);
+
+    final ScreenshotReader reader = mock(ScreenshotReader.class);
+    when(reader.stardust()).thenReturn(200);
+
+    assertThat(Guesser.lvl(angle, reader, trainerLvl), is(1f));
+  }
+
+  @Test
+  public void testLvl_1NoStardust() throws Exception {
+    final int trainerLvl = 10;
+    final Angle angle = mock(Angle.class);
+    when(angle.isBall(anyDouble())).thenReturn(false);
+    when(angle.isBall(CP.lvl2Radian(trainerLvl, 1))).thenReturn(true);
+
+    final ScreenshotReader reader = mock(ScreenshotReader.class);
+    when(reader.stardust()).thenThrow(ScreenshotReader.StardustException.class);
+
+    assertThat(Guesser.lvl(angle, reader, trainerLvl), is(1f));
+  }
+
+  @Test
+  public void testLvl_lvlNotAllowed() throws Exception {
+    final int trainerLvl = 2;
+    final Angle angle = mock(Angle.class);
+    when(angle.isBall(anyDouble())).thenReturn(false);
+    when(angle.isBall(CP.lvl2Radian(trainerLvl, 4))).thenReturn(true);
+
+    final ScreenshotReader reader = mock(ScreenshotReader.class);
+    when(reader.stardust()).thenReturn(400);
+
+    thrown.expect(Guesser.UnknownPokemonLvl.class);
+    thrown.expectMessage("Impossible to detect the level bubble.");
+    Guesser.lvl(angle, reader, trainerLvl);
+  }
+
+  @Test
+  public void testLvl_lvlNotAllowedNoStardust() throws Exception {
+    final int trainerLvl = 2;
+    final Angle angle = mock(Angle.class);
+    when(angle.isBall(anyDouble())).thenReturn(false);
+    when(angle.isBall(CP.lvl2Radian(trainerLvl, 4))).thenReturn(true);
+
+    final ScreenshotReader reader = mock(ScreenshotReader.class);
+    when(reader.stardust()).thenThrow(ScreenshotReader.StardustException.class);
+
+    thrown.expect(Guesser.UnknownPokemonLvl.class);
+    thrown.expectMessage("Impossible to detect the level bubble.");
+    Guesser.lvl(angle, reader, trainerLvl);
+  }
+
+  @Test
+  public void testLvl_lvlOutOfRange() throws Exception {
+    final int trainerLvl = 2;
+    final Angle angle = mock(Angle.class);
+    when(angle.isBall(anyDouble())).thenReturn(false);
+    when(angle.isBall(CP.lvl2Radian(trainerLvl, 3))).thenReturn(true);
+
+    final ScreenshotReader reader = mock(ScreenshotReader.class);
+    when(reader.stardust()).thenReturn(200);
+
+    thrown.expect(Guesser.UnknownPokemonLvl.class);
+    thrown.expectMessage("Impossible to detect the level bubble.");
+    Guesser.lvl(angle, reader, trainerLvl);
   }
 
   @AutoValue

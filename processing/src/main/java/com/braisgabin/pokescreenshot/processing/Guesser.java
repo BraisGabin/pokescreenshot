@@ -61,6 +61,29 @@ public class Guesser {
     return ivs;
   }
 
+  public static float lvl(Angle angle, ScreenshotReader screenshotReader, int trainerLvl) throws ScreenshotReader.CpException, Angle.InitialPointException, UnknownPokemonLvl {
+    try {
+      final int stardust = screenshotReader.stardust();
+      final float[] lvls = Stardust.stardust2Lvl(stardust);
+      for (float lvl : lvls) {
+        if (lvl <= trainerLvl + 1.5f) {
+          final double radian = CP.lvl2Radian(trainerLvl, lvl);
+          if (angle.isBall(radian)) {
+            return lvl;
+          }
+        }
+      }
+    } catch (ScreenshotReader.StardustException e) {
+      for (float lvl = 1, maxLvl = trainerLvl + 1.5f; lvl <= maxLvl; lvl += 0.5f) {
+        final double radian = CP.lvl2Radian(trainerLvl, lvl);
+        if (angle.isBall(radian)) {
+          return lvl;
+        }
+      }
+    }
+    throw new UnknownPokemonLvl("Impossible to detect the level bubble.");
+  }
+
   public static abstract class Exception extends ProcessingException {
 
     public Exception(String message) {
@@ -76,6 +99,12 @@ public class Guesser {
 
   public static class MultiplePokemonException extends Exception {
     public MultiplePokemonException(String message) {
+      super(message);
+    }
+  }
+
+  public static class UnknownPokemonLvl extends Exception {
+    public UnknownPokemonLvl(String message) {
       super(message);
     }
   }

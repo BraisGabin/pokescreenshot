@@ -2,6 +2,7 @@ package com.braisgabin.pokescreenshot.processing;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.min;
+import static java.lang.Math.toRadians;
 
 public class CP {
   // Generated with: https://gist.github.com/BraisGabin/42ed1f2be736831323eb3cafcd4cdafd
@@ -116,6 +117,10 @@ public class CP {
   public static double lvl2Radian(int trainerLvl, float pokemonLvl) {
     // Formula extracted from:
     // https://www.reddit.com/r/pokemongodev/comments/50z4sx/arc_angle_to_pokemon_level_formula_used_by/
+    if (pokemonLvl == 1) {
+      // This is a hack. We can't calculate the correct initial point of lvl 1.
+      return toRadians(180 - 2.1);
+    }
     final double v = (CPM(pokemonLvl) - (double) CPM(1)) / (CPM(min(40, trainerLvl + 2)) - (double) CPM(1));
     return PI - v * PI;
   }

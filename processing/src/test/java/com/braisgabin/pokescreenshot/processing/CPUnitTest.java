@@ -51,6 +51,11 @@ public class CPUnitTest {
   }
 
   @Test
+  public void testLvl2Radian_2_1() {
+    assertThat(lvl2Radian(2, 1f), is(Math.toRadians(180 - 2.1)));
+  }
+
+  @Test
   public void testLvl2Radian_2_2() {
     assertThat(lvl2Radian(2, 2f), is(closeTo(Math.toRadians(180 - 80.6), Math.toRadians(0.1))));
   }

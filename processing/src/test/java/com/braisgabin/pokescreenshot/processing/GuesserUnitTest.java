@@ -133,7 +133,7 @@ public class GuesserUnitTest {
         IvImplementation.create(238, 178, 130),
     };
     thrown.expect(Guesser.MultiplePokemonException.class);
-    thrown.expectMessage("IvImplementation{atk=238, def=178, stam=130} and IvImplementation{atk=238, def=178, stam=130} are possible candidates.");
+    thrown.expectMessage(coreStats[0].toString() + " and " + coreStats[1] + " are possible candidates.");
     Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19);
   }
 

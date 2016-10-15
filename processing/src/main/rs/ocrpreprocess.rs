@@ -12,8 +12,8 @@ void root(const uchar4* in, uchar4* out, uint32_t x, uint32_t y) {
   uint32_t g;
   int value;
   if (y <= HEIGHT_CP) {
-    g = (in->r + 4 * in->g + 2 * in->b) / 7;
-    value = VALUE_CP;
+    g = 255 - ((in->r + 4 * in->g + 2 * in->b) / 7);
+    value = 255 - VALUE_CP;
   } else if (y <= HEIGHT_ARC) {
     g = (in->r == 255 && in->g == 255 && in->b == 255) ? 255 : 0;
     value = 128;

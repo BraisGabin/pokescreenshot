@@ -63,19 +63,22 @@ public class BitmapOperationsTest {
     assertThat(bitmap1.getPixel(0, 2), is(bitmap2.getPixel(0, 2)));
   }
 
-  static void filter(Bitmap bitmap, int heightCP, int heightArc, int valueCp, int valueNoCp) {
+  static void filter(Bitmap bitmap, int heightCP, int heightArc, int valueCp, int valueData) {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-        if (y <= heightCP || y > heightArc) {
-          final int g = range(grey(bitmap.getPixel(x, y)), y <= heightCP ? valueCp : valueNoCp);
+        if (y <= heightCP) {
+          final int g = range(255 - grey(bitmap.getPixel(x, y)), 255 - valueCp);
           bitmap.setPixel(x, y, Color.rgb(g, g, g));
-        } else {
+        } else if (y <= heightArc) {
           int color = bitmap.getPixel(x, y);
           if (color != Color.WHITE) {
             bitmap.setPixel(x, y, Color.BLACK);
           }
+        } else {
+          final int g = range(grey(bitmap.getPixel(x, y)), valueData);
+          bitmap.setPixel(x, y, Color.rgb(g, g, g));
         }
       }
     }

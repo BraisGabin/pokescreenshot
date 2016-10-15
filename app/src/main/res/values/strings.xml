@@ -21,6 +21,7 @@
     <string name="error_ocr_candy">Impossible to read the candy name.</string>
     <string name="error_ocr_cp">Impossible to read the CP.</string>
     <string name="error_ocr_hp">Impossible to read the HP.</string>
+    <string name="error_no_iv">Probably the pokémon hides important data behind it.</string>
     <string name="screenshot_dir_title">Screenshot folder</string>
     <string name="permission_requited">The app needs the permission to work. Exiting…</string>
     <string name="about">About</string>

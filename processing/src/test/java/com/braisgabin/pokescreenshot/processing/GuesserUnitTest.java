@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.mock;
@@ -138,7 +137,7 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testIv_eevee() {
+  public void testIv_eevee() throws Exception {
     final CoreStats coreStats = IvImplementation.create(114, 128, 110);
     assertThat(Guesser.iv(coreStats, 482, 63, 17), contains(new int[][]{
         {10, 15, 5},
@@ -153,13 +152,15 @@ public class GuesserUnitTest {
   }
 
   @Test
-  public void testIv_eevee_wrong() {
+  public void testIv_eeveeWrong() throws Exception {
     final CoreStats coreStats = IvImplementation.create(114, 128, 110);
-    assertThat(Guesser.iv(coreStats, 482, 63, 15), empty());
+    thrown.expect(Guesser.NoIvPossibilities.class);
+    thrown.expectMessage("There is not any IV combination for " + coreStats + " with cp = 482, hp = 63 and lvl = 15");
+    Guesser.iv(coreStats, 482, 63, 15);
   }
 
   @Test
-  public void testIv_ponyta() {
+  public void testIv_ponyta() throws Exception {
     final CoreStats coreStats = IvImplementation.create(168, 138, 100);
     assertThat(Guesser.iv(coreStats, 732, 63, 17), contains(new int[][]{
         {14, 15, 15},
@@ -169,7 +170,7 @@ public class GuesserUnitTest {
   // Confirm we don't have this bug:
   // https://www.reddit.com/r/PokemonGOIVs/comments/4x2f6v/some_iv_range_calculators_have_been_using_the/
   @Test
-  public void testIv_bulbasur() {
+  public void testIv_bulbasur() throws Exception {
     final CoreStats coreStats = IvImplementation.create(126, 126, 90);
     assertThat(Guesser.iv(coreStats, 321, 45, 10.5f), contains(new int[][]{
         {15, 15, 15},

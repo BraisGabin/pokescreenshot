@@ -240,6 +240,10 @@ public class ScreenshotService extends Service {
                     notifyError(R.string.error_guessing_pokemon_title,
                         R.string.error_guessing_pokemon_none,
                         result.file());
+                  } catch (Guesser.NoIvPossibilities e) {
+                    notifyError(R.string.error_ocr_title,
+                        R.string.error_no_iv,
+                        result.file());
                   } catch (Guesser.UnknownPokemonLvl e) {
                     notifyError(R.string.error_pokemon_lvl_title,
                         R.string.error_pokemon_lvl_circle,

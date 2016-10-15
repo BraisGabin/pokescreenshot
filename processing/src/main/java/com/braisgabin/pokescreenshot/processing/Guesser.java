@@ -46,7 +46,7 @@ public class Guesser {
     return coreStats;
   }
 
-  public static List<int[]> iv(CoreStats coreStats, int cp, int hp, float lvl) {
+  public static List<int[]> iv(CoreStats coreStats, int cp, int hp, float lvl) throws NoIvPossibilities {
     final List<int[]> ivs = new ArrayList<>();
     for (int stam = 0; stam < 16; stam++) {
       if (hp == calculateHp(coreStats, lvl, stam)) {
@@ -58,6 +58,9 @@ public class Guesser {
           }
         }
       }
+    }
+    if (ivs.isEmpty()) {
+      throw new NoIvPossibilities("There is not any IV combination for " + coreStats + " with cp = " + cp + ", hp = " + hp + " and lvl = " + lvl);
     }
     return ivs;
   }
@@ -118,6 +121,12 @@ public class Guesser {
 
   public static class MultiplePokemonException extends Exception {
     public MultiplePokemonException(String message) {
+      super(message);
+    }
+  }
+
+  public static class NoIvPossibilities extends Exception {
+    public NoIvPossibilities(String message) {
       super(message);
     }
   }

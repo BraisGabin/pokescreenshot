@@ -24,7 +24,7 @@ public class Tess {
   }
 
   public static void preprocessingImage(Context context, Bitmap bitmap, float d) {
-    final int valueCp = 245;
+    final int valueCp = 255;
     final int valueNoCp = 205;
     BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), Math.round(HEIGHT_ARC * d), valueCp, valueNoCp);
   }

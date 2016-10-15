@@ -65,6 +65,7 @@ public class Tess {
 
       regionRect = getRegionBox(tess);
       regionRect.offset(ocrRect.left, ocrRect.top);
+      cpRegion.set(regionRect);
       final int rectWidth = -(width / 2 - regionRect.right) * 2 + Math.round(2 * d);
       ocrRect2 = new Rect(regionRect);
       ocrRect2.left = regionRect.right - rectWidth;
@@ -74,7 +75,6 @@ public class Tess {
       text = tess.getUTF8Text();
       regionRect2 = getRegionBox(tess);
       regionRect2.offset(ocrRect2.left, ocrRect2.top);
-      cpRegion.set(regionRect2);
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
 

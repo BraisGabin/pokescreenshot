@@ -5,11 +5,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.braisgabin.pokescreenshot.processing.Angle;
+import com.braisgabin.pokescreenshot.processing.CP;
+import com.braisgabin.pokescreenshot.processing.Guesser;
 import com.braisgabin.pokescreenshot.processing.Ocr;
+import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.braisgabin.pokescreenshot.processing.Tess;
 import com.braisgabin.pokescreenshot.processing.Utils;
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     setContentView(R.layout.activity_main);
     final String image = "screenshots/es/46_paras.png";
+    final int trainerLvl = 21;
 
     final Bitmap bitmap = bitmap(image);
     final Bitmap bitmap2 = bitmap.copy(bitmap.getConfig(), true);
@@ -44,13 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
     final Angle angle = new Angle(bitmap);
     final Ocr ocr = tess(bitmap, canvas);
-    double radian = -1;
+    float pokemonLvl = -1;
     try {
-      radian = angle.radian();
-    } catch (Angle.InitialPointException | Angle.RadianException e) {
+      pokemonLvl = Guesser.lvl(angle, ocr, trainerLvl);
+      Log.d("LVL", "lvl: " + pokemonLvl);
+    } catch (ScreenshotReader.CpException | Guesser.UnknownPokemonLvl | Angle.InitialPointException e) {
       e.printStackTrace();
     }
-    angle.debug(canvas, radian);
+    angle.debug(canvas, pokemonLvl < 0 ? -1 : CP.lvl2Radian(trainerLvl, pokemonLvl));
 
     try {
       ocr.debug();

@@ -14,7 +14,6 @@ import net.sf.jsefa.csv.config.CsvConfiguration;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 
@@ -74,17 +72,6 @@ public class AngleTest {
   public void testInitialTest() throws Exception {
     Point point = angle.initialPoint();
     assertThat(point, is(screenshot.initialPoint()));
-  }
-
-  @Test
-  @Deprecated
-  @Ignore("Deprecated")
-  public void testRadian() throws Exception {
-    final Point initialPoint = screenshot.initialPoint();
-    final Point center = Angle.center(screenshot.initialPoint(), width);
-    final int radius = Angle.radius(initialPoint, center);
-    final double radian = angle.radian(center, radius);
-    assertThat(radian, is(closeTo(screenshot.radian(), Math.toRadians(0.24))));
   }
 
   @Test

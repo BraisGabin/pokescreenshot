@@ -3,7 +3,6 @@ package com.braisgabin.pokescreenshot.processing;
 import org.junit.Test;
 
 import static com.braisgabin.pokescreenshot.processing.CP.lvl2Radian;
-import static com.braisgabin.pokescreenshot.processing.CP.radian2Lvl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
@@ -28,30 +27,6 @@ public class CPUnitTest {
   @Test
   public void testCPM2Lvl_3_5() {
     assertThat(CP.CPM2Lvl(CP.CPM[5] + 0.001f), is(3.5f));
-  }
-
-  @Test
-  @Deprecated
-  public void testRadian2Lvl_2_2() {
-    assertThat(radian2Lvl(2, Math.toRadians(180 - 80.6)), is(2f));
-  }
-
-  @Test
-  @Deprecated
-  public void testRadian2Lvl_2_2_5() {
-    assertThat(radian2Lvl(2, Math.toRadians(180 - 109.8)), is(2.5f));
-  }
-
-  @Test
-  @Deprecated
-  public void testRadian2Lvl_2_3() {
-    assertThat(radian2Lvl(2, Math.toRadians(180 - 135.5)), is(3f));
-  }
-
-  @Test
-  @Deprecated
-  public void testRadian2Lvl_22_1_5() {
-    assertThat(radian2Lvl(22, Math.toRadians(180 - 13.3)), is(1.5f));
   }
 
   @Test

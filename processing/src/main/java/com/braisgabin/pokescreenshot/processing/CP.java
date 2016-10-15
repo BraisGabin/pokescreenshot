@@ -107,14 +107,6 @@ public class CP {
     return (index + 2) / 2f;
   }
 
-  @Deprecated
-  public static float radian2Lvl(int trainerLvl, double radian) {
-    // Formula extracted from:
-    // https://www.reddit.com/r/pokemongodev/comments/50z4sx/arc_angle_to_pokemon_level_formula_used_by/
-    final double cpm = ((CPM(min(40, trainerLvl + 2)) - (double) CPM(1)) * (PI - radian)) / PI + CPM(1);
-    return CPM2Lvl(cpm);
-  }
-
   public static double lvl2Radian(int trainerLvl, float pokemonLvl) {
     // Formula extracted from:
     // https://www.reddit.com/r/pokemongodev/comments/50z4sx/arc_angle_to_pokemon_level_formula_used_by/

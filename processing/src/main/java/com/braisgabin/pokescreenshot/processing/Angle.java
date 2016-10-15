@@ -8,11 +8,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import java.util.Locale;
-
 import static com.braisgabin.pokescreenshot.processing.Utils.navBarHeight;
 import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
-import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
@@ -40,13 +37,6 @@ public class Angle {
     this.height = bitmap.getHeight();
     this.navBarHeight = navBarHeight(bitmap);
     this.d = proportion(bitmap, navBarHeight);
-  }
-
-  @SuppressWarnings("deprecation")
-  @Deprecated
-  public double radian() throws InitialPointException, RadianException {
-    calculateCenterAndRadiusIfNecessary();
-    return radian(center, radius);
   }
 
   public double isBall(double radian) throws InitialPointException {
@@ -140,20 +130,6 @@ public class Angle {
     return center.x - initialPoint.x;
   }
 
-  @Deprecated
-  double radian(Point center, int radius) throws RadianException {
-    final int max = radius * 5;
-    for (int i = 0; i <= max; i++) {
-      final double radians = i * PI / max;
-      final int x = (int) round(cos(radians) * radius);
-      final int y = (int) round(sin(radians) * radius);
-      if (isCircle(center.x + x, center.y - y, round(3.1f * d)) == 1) {
-        return radians;
-      }
-    }
-    throw new RadianException(String.format(Locale.US, "Impossible to detect the bubble. Center: %s, radius: %d", center.toString(), radius));
-  }
-
   private double isCircle(int x, int y, int range) {
     final double sin45 = sqrt(2) / 2;
     int count = 0;
@@ -179,13 +155,6 @@ public class Angle {
 
   public static class InitialPointException extends Exception {
     public InitialPointException(String message) {
-      super(message);
-    }
-  }
-
-  @Deprecated
-  public static class RadianException extends Exception {
-    public RadianException(String message) {
       super(message);
     }
   }

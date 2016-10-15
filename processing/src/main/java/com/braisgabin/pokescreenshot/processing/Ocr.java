@@ -33,7 +33,12 @@ public class Ocr implements ScreenshotReader {
   public synchronized int cp() throws CpException {
     if (cp < 0) {
       final Rect rect = new Rect();
-      final String text = tess.cp(rect);
+      final String text;
+      try {
+        text = tess.cp(rect);
+      } catch (Tess.TessException e) {
+        throw new CpException("Error from Tesseract", e);
+      }
 
       final Pattern pattern = Pattern.compile("([0-9]+)");
 
@@ -56,7 +61,12 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      final String text = tess.name(cpHeight);
+      final String text;
+      try {
+        text = tess.name(cpHeight);
+      } catch (Tess.TessException e) {
+        throw new NameException("Error from Tesseract", e);
+      }
       if (text.equals("")) {
         throw new NameException("Error parsing name: No name founded");
       }
@@ -71,7 +81,12 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      final String text = tess.hp(cpHeight);
+      final String text;
+      try {
+        text = tess.hp(cpHeight);
+      } catch (Tess.TessException e) {
+        throw new HpException("Error from Tesseract", e);
+      }
 
       final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
 
@@ -98,7 +113,12 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      final String text = tess.candy(cpHeight);
+      final String text;
+      try {
+        text = tess.candy(cpHeight);
+      } catch (Tess.TessException e) {
+        throw new CandyException("Error from Tesseract", e);
+      }
 
       final String text2 = text
           .replace(" ", "")
@@ -121,7 +141,12 @@ public class Ocr implements ScreenshotReader {
       if (cpHeight < 0) {
         cp();
       }
-      final String text  = tess.stardust(cpHeight);
+      final String text;
+      try {
+        text = tess.stardust(cpHeight);
+      } catch (Tess.TessException e) {
+        throw new StardustException("Error from Tesseract", e);
+      }
 
       final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
 

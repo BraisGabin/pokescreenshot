@@ -15,11 +15,19 @@ public interface ScreenshotReader {
     public Exception(String message) {
       super(message);
     }
+
+    public Exception(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 
   class CpException extends Exception {
     public CpException(String message) {
       super(message);
+    }
+
+    public CpException(String message, Throwable cause) {
+      super(message, cause);
     }
   }
 
@@ -27,11 +35,19 @@ public interface ScreenshotReader {
     public HpException(String message) {
       super(message);
     }
+
+    public HpException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 
   class NameException extends Exception {
     public NameException(String message) {
       super(message);
+    }
+
+    public NameException(String message, Throwable cause) {
+      super(message, cause);
     }
   }
 
@@ -39,11 +55,19 @@ public interface ScreenshotReader {
     public CandyException(String message) {
       super(message);
     }
+
+    public CandyException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 
   class StardustException extends Exception {
     public StardustException(String message) {
       super(message);
+    }
+
+    public StardustException(String message, Throwable cause) {
+      super(message, cause);
     }
   }
 }

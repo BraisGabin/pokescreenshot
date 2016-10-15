@@ -52,7 +52,7 @@ public class Tess {
     }
   }
 
-  String cp(Rect cpRegion) {
+  String cp(Rect cpRegion) throws TessException {
     final String text;
 
     final Rect ocrRect = cpRect();
@@ -64,11 +64,17 @@ public class Tess {
       tess.getUTF8Text();
 
       regionRect = getRegionBox(tess);
+      if (regionRect == null) {
+        throw new TessException("Text not found");
+      }
       regionRect.offset(ocrRect.left, ocrRect.top);
       cpRegion.set(regionRect);
       final int rectWidth = -(width / 2 - regionRect.right) * 2 + Math.round(2 * d);
       ocrRect2 = new Rect(regionRect);
       ocrRect2.left = regionRect.right - rectWidth;
+      if (ocrRect2.left >= ocrRect2.right) {
+        throw new TessException("No correct CP found");
+      }
 
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
       tess.setRectangle(ocrRect2);
@@ -99,7 +105,7 @@ public class Tess {
     return rect;
   }
 
-  String name(int cpHeight) {
+  String name(int cpHeight) throws TessException {
     final String name;
 
     final Rect ocrRect = nameRect(cpHeight);
@@ -111,10 +117,16 @@ public class Tess {
       tess.getUTF8Text();
 
       regionRect = getRegionBox(tess);
+      if (regionRect == null) {
+        throw new TessException("Text not found");
+      }
       regionRect.offset(ocrRect.left, ocrRect.top);
       final int rectWidth = (width / 2 - regionRect.left) * 2 + Math.round(2 * d);
       ocrRect2 = new Rect(regionRect);
       ocrRect2.right = regionRect.left + rectWidth;
+      if (ocrRect2.left >= ocrRect2.right) {
+        throw new TessException("No correct HP found");
+      }
 
       tess.setRectangle(ocrRect2);
       name = tess.getUTF8Text();
@@ -142,7 +154,7 @@ public class Tess {
     return rect;
   }
 
-  String hp(int cpHeight) {
+  String hp(int cpHeight) throws TessException {
     final String text;
 
     final Rect ocrRect = hpRect(cpHeight);
@@ -152,6 +164,9 @@ public class Tess {
       tess.setRectangle(ocrRect);
       text = tess.getUTF8Text();
       regionRect = (getRegionBox(tess));
+      if (regionRect == null) {
+        throw new TessException("Text not found");
+      }
       regionRect.offset(ocrRect.left, ocrRect.top);
       tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "");
     }
@@ -172,7 +187,7 @@ public class Tess {
     return rect;
   }
 
-  String candy(int cpHeight) {
+  String candy(int cpHeight) throws TessException {
     final String text;
 
     final Rect ocrRect = candyRect(cpHeight);
@@ -182,6 +197,9 @@ public class Tess {
       tess.setRectangle(ocrRect);
       text = tess.getUTF8Text();
       regionRect = getRegionBox(tess);
+      if (regionRect == null) {
+        throw new TessException("Text not found");
+      }
       regionRect.offset(ocrRect.left, ocrRect.top);
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
@@ -202,7 +220,7 @@ public class Tess {
     return rect;
   }
 
-  String stardust(int cpHeight) {
+  String stardust(int cpHeight) throws TessException {
     final String text;
 
     final Rect ocrRect = stardustRect(cpHeight);
@@ -213,9 +231,15 @@ public class Tess {
       tess.setRectangle(ocrRect);
       tess.getUTF8Text();
       regionRect = getRegionBox(tess);
+      if (regionRect == null) {
+        throw new TessException("Text not found");
+      }
       regionRect.offset(ocrRect.left, ocrRect.top);
       ocrRect2 = new Rect(regionRect);
       ocrRect2.left = regionRect.left + Math.round(7 * d);
+      if (ocrRect2.left >= ocrRect2.right) {
+        throw new TessException("No correct stardust found");
+      }
 
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
       tess.setRectangle(ocrRect2);
@@ -250,5 +274,11 @@ public class Tess {
     final Rect regionRect = regions.getBoxRect(0);
     regions.recycle();
     return regionRect;
+  }
+
+  public class TessException extends Exception {
+    public TessException(String message) {
+      super(message);
+    }
   }
 }

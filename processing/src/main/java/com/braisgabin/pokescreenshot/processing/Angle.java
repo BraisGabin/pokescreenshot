@@ -69,16 +69,16 @@ public class Angle {
   public void debug(Canvas canvas, double radian) {
     final Paint paint = new Paint();
     paint.setAntiAlias(true);
-    paint.setStrokeWidth(3 * d);
+    paint.setStrokeWidth(1.5f * d);
     paint.setStyle(Paint.Style.STROKE);
-    paint.setColor(0xb0ff0000);
+    paint.setColor(0x90ff0000);
 
     // Initial Point
     canvas.drawLine(initialPoint.x - 4 * d, initialPoint.y, initialPoint.x + 4 * d, initialPoint.y, paint);
 
-    paint.setColor(0xb000ff00);
+    paint.setColor(0x9000ff00);
     canvas.drawRect(initialPointArea(width, height, navBarHeight), paint);
-    paint.setColor(0xb0ff0000);
+    paint.setColor(0x90ff0000);
 
     // Center
     canvas.drawLine(center.x - 4 * d, center.y, center.x + 4 * d, center.y, paint);

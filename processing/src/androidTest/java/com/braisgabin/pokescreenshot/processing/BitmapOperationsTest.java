@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(value = Parameterized.class)
 public class BitmapOperationsTest {
-  @Parameterized.Parameters(name="{0}[{index}")
+  @Parameterized.Parameters(name = "{0}[{index}")
   public static Collection<Integer> data() throws IOException {
     return Arrays.asList(
         Color.WHITE,
@@ -45,29 +45,38 @@ public class BitmapOperationsTest {
 
   @Before
   public void setUp() {
-    this.bitmap1 = Bitmap.createBitmap(1, 2, Bitmap.Config.ARGB_8888);
+    this.bitmap1 = Bitmap.createBitmap(1, 3, Bitmap.Config.ARGB_8888);
     bitmap1.setPixel(0, 0, color);
     bitmap1.setPixel(0, 1, color);
+    bitmap1.setPixel(0, 2, color);
     this.bitmap2 = bitmap1.copy(bitmap1.getConfig(), true);
     this.context = InstrumentationRegistry.getContext();
   }
 
   @Test
   public void testFilter_black() throws Exception {
-    BitmapOperations.filter(context, bitmap1, 0, 150, 200);
-    filter(bitmap2, 0, 150, 200);
+    BitmapOperations.filter(context, bitmap1, 0, 1, 150, 200);
+    filter(bitmap2, 0, 1, 150, 200);
 
     assertThat(bitmap1.getPixel(0, 0), is(bitmap2.getPixel(0, 0)));
     assertThat(bitmap1.getPixel(0, 1), is(bitmap2.getPixel(0, 1)));
+    assertThat(bitmap1.getPixel(0, 2), is(bitmap2.getPixel(0, 2)));
   }
 
-  static void filter(Bitmap bitmap, int heightCP, int valueCp, int valueNoCp) {
+  static void filter(Bitmap bitmap, int heightCP, int heightArc, int valueCp, int valueNoCp) {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-        final int g = range(grey(bitmap.getPixel(x, y)), y <= heightCP ? valueCp : valueNoCp);
-        bitmap.setPixel(x, y, Color.rgb(g, g, g));
+        if (y <= heightCP || y > heightArc) {
+          final int g = range(grey(bitmap.getPixel(x, y)), y <= heightCP ? valueCp : valueNoCp);
+          bitmap.setPixel(x, y, Color.rgb(g, g, g));
+        } else {
+          int color = bitmap.getPixel(x, y);
+          if (color != Color.WHITE) {
+            bitmap.setPixel(x, y, Color.BLACK);
+          }
+        }
       }
     }
   }
@@ -76,7 +85,7 @@ public class BitmapOperationsTest {
     final int g;
     if (grey <= value) {
       g = 0;
-    } else  {
+    } else {
       g = 255;
     }
     return g;

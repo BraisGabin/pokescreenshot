@@ -14,6 +14,7 @@ import static com.braisgabin.pokescreenshot.processing.Utils.proportion;
 
 public class Tess {
   private static final int HEIGHT_CP = 85;
+  private static final int HEIGHT_ARC = HEIGHT_CP + 220;
 
   public static Tess create(TessBaseAPI tess, Context context, Bitmap bitmap, Canvas canvas) {
     final float d = proportion(bitmap);
@@ -25,7 +26,7 @@ public class Tess {
   public static void preprocessingImage(Context context, Bitmap bitmap, float d) {
     final int valueCp = 245;
     final int valueNoCp = 205;
-    BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), valueCp, valueNoCp);
+    BitmapOperations.filter(context, bitmap, Math.round(HEIGHT_CP * d), Math.round(HEIGHT_ARC * d), valueCp, valueNoCp);
   }
 
   private final TessBaseAPI tess;
@@ -43,6 +44,9 @@ public class Tess {
       this.paint = new Paint();
       paint.setStyle(Paint.Style.STROKE);
       paint.setStrokeWidth(2 * d);
+      paint.setColor(Color.MAGENTA);
+      canvas.drawLine(0, Math.round(HEIGHT_CP * d), canvas.getWidth(), Math.round(HEIGHT_CP * d), paint);
+      canvas.drawLine(0, Math.round(HEIGHT_ARC * d), canvas.getWidth(), Math.round(HEIGHT_ARC * d), paint);
     } else {
       paint = null;
     }

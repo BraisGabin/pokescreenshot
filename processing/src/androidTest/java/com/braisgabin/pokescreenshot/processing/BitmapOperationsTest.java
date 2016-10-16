@@ -55,22 +55,26 @@ public class BitmapOperationsTest {
 
   @Test
   public void testFilter_black() throws Exception {
-    BitmapOperations.filter(context, bitmap1, 0, 1, 150, 200);
-    filter(bitmap2, 0, 1, 150, 200);
+    BitmapOperations.filter(context, bitmap1, 0, 1, 200);
+    filter(bitmap2, 0, 1, 200);
 
     assertThat(bitmap1.getPixel(0, 0), is(bitmap2.getPixel(0, 0)));
     assertThat(bitmap1.getPixel(0, 1), is(bitmap2.getPixel(0, 1)));
     assertThat(bitmap1.getPixel(0, 2), is(bitmap2.getPixel(0, 2)));
   }
 
-  static void filter(Bitmap bitmap, int heightCP, int heightArc, int valueCp, int valueData) {
+  static void filter(Bitmap bitmap, int heightCP, int heightArc, int valueData) {
     final int width = bitmap.getWidth();
     final int height = bitmap.getHeight();
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
         if (y <= heightCP) {
-          final int g = range(255 - grey(bitmap.getPixel(x, y)), 255 - valueCp);
-          bitmap.setPixel(x, y, Color.rgb(g, g, g));
+          int color = bitmap.getPixel(x, y);
+          if (color == Color.WHITE) {
+            bitmap.setPixel(x, y, Color.BLACK);
+          } else {
+            bitmap.setPixel(x, y, Color.WHITE);
+          }
         } else if (y <= heightArc) {
           int color = bitmap.getPixel(x, y);
           if (color != Color.WHITE) {

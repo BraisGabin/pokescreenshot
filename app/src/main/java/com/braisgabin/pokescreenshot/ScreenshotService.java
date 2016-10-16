@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.braisgabin.pokescreenshot.model.Pokemon;
 import com.braisgabin.pokescreenshot.processing.Angle;
 import com.braisgabin.pokescreenshot.processing.Guesser;
+import com.braisgabin.pokescreenshot.processing.ScreenshotChecker;
 import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.f2prateek.rx.preferences.Preference;
 import com.google.auto.value.AutoValue;
@@ -59,7 +60,7 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 import static com.braisgabin.pokescreenshot.Utils.isSystemAlertPermissionGranted;
-import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.isPokemonGoScreenshot;
+import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.getScreenshotType;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -169,20 +170,28 @@ public class ScreenshotService extends Service {
                   });
             }
           })
-          .groupBy(new Func1<FileBitmap, Boolean>() {
+          .groupBy(new Func1<FileBitmap, ScreenshotChecker.Type>() {
             @Override
-            public Boolean call(FileBitmap fb) {
-              return isPokemonGoScreenshot(fb.bitmap());
+            public ScreenshotChecker.Type call(FileBitmap fb) {
+              return getScreenshotType(fb.bitmap());
             }
           })
           .subscribe(
-              new Action1<GroupedObservable<Boolean, FileBitmap>>() {
+              new Action1<GroupedObservable<ScreenshotChecker.Type, FileBitmap>>() {
                 @Override
-                public void call(GroupedObservable<Boolean, FileBitmap> observable) {
-                  if (observable.getKey()) {
-                    pokemonGoScreenshot(observable, ref);
-                  } else {
-                    noPokemonGoScreenshot(observable, ref);
+                public void call(GroupedObservable<ScreenshotChecker.Type, FileBitmap> observable) {
+                  switch (observable.getKey()) {
+                    case pokemon:
+                      pokemonScreenshot(observable, ref);
+                      break;
+                    case pokemon_with_alert:
+                      pokemonScreenshotWithAlert(observable, ref);
+                      break;
+                    case no_pokemon:
+                      noPokemonScreenshot(observable, ref);
+                      break;
+                    default:
+                      throw new IllegalArgumentException("I don't know how to handle the type: " + observable.getKey());
                   }
                 }
               },
@@ -199,7 +208,7 @@ public class ScreenshotService extends Service {
     return Service.START_STICKY;
   }
 
-  private Subscription pokemonGoScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+  private Subscription pokemonScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
     return observable
         .map(new Func1<FileBitmap, Result>() {
           @Override
@@ -306,14 +315,27 @@ public class ScreenshotService extends Service {
     return pokemon;
   }
 
-  private void noPokemonGoScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+  private void pokemonScreenshotWithAlert(Observable<FileBitmap> observable, final AtomicInteger ref) {
     observable
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Action1<FileBitmap>() {
           @Override
           public void call(FileBitmap fileBitmap) {
             startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
-            final String text = getString(R.string.no_pokemon_go_screenshot);
+            final String text = getString(R.string.pokemon_screenshot_with_alert);
+            Toast.makeText(ScreenshotService.this, text, Toast.LENGTH_LONG).show();
+          }
+        });
+  }
+
+  private void noPokemonScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+    observable
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<FileBitmap>() {
+          @Override
+          public void call(FileBitmap fileBitmap) {
+            startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
+            final String text = getString(R.string.no_pokemon_screenshot);
             Toast.makeText(ScreenshotService.this, text, Toast.LENGTH_LONG).show();
           }
         });

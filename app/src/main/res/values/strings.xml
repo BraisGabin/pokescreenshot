@@ -7,7 +7,8 @@
     <string name="trainer_lvl_d">Trainer lvl %d</string>
     <string name="idle">Idle</string>
     <string name="working">Working</string>
-    <string name="no_pokemon_go_screenshot">This screenshot isn\'t from Pokémon Go</string>
+    <string name="no_pokemon_screenshot">This screenshot isn\'t a pokémon info page.</string>
+    <string name="pokemon_screenshot_with_alert">Impossible to scan the screenshot with the red alert.</string>
     <string name="action_report">Report</string>
     <string name="error_pokemon_lvl_title">Error detecting the pokémon\'s level</string>
     <string name="error_pokemon_lvl_arc">Unable to find the level arc.</string>

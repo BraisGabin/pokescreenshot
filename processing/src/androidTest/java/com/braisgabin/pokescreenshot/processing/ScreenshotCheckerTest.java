@@ -18,7 +18,7 @@ public class ScreenshotCheckerTest {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/es/140_kabuto.png"));
-    assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(true));
+    assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.pokemon));
   }
 
   @Test
@@ -26,7 +26,7 @@ public class ScreenshotCheckerTest {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/es/123_scyther.png"));
-    assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(true));
+    assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.pokemon));
   }
 
   @Test
@@ -34,7 +34,7 @@ public class ScreenshotCheckerTest {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/settings.png"));
-    assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(false));
+    assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.no_pokemon));
   }
 
   @Test
@@ -42,6 +42,22 @@ public class ScreenshotCheckerTest {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
     final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/google_now.png"));
-    assertThat(ScreenshotChecker.isPokemonGoScreenshot(bitmap), is(false));
+    assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.no_pokemon));
+  }
+
+  @Test
+  public void testIsPokemonGoScreenshot_snackbar() throws Exception {
+    final Context context = InstrumentationRegistry.getContext();
+    final AssetManager assets = context.getAssets();
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/pokemon_with_snackbar.png"));
+    assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.pokemon));
+  }
+
+  @Test
+  public void testIsPokemonGoScreenshot_noInternet() throws Exception {
+    final Context context = InstrumentationRegistry.getContext();
+    final AssetManager assets = context.getAssets();
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/no_internet.png"));
+    assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.pokemon_with_alert));
   }
 }

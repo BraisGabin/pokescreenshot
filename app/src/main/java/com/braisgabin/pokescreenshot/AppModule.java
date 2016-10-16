@@ -1,11 +1,13 @@
 package com.braisgabin.pokescreenshot;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
+import android.view.WindowManager;
 
 import com.braisgabin.pokescreenshot.model.MySQLiteOpenHelper;
 import com.f2prateek.rx.preferences.Preference;
@@ -51,6 +53,11 @@ class AppModule {
   @Provides
   SharedPreferences sharedPreferencesProvider() {
     return PreferenceManager.getDefaultSharedPreferences(app);
+  }
+
+  @Provides
+  WindowManager windowManagerProvider() {
+    return (WindowManager) app.getSystemService(Context.WINDOW_SERVICE);
   }
 
   @Singleton

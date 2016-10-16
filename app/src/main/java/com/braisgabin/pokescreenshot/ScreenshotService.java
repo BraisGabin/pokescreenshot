@@ -13,13 +13,19 @@ import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -79,6 +85,9 @@ public class ScreenshotService extends Service {
   SQLiteDatabase database;
 
   @Inject
+  WindowManager windowManager;
+
+  @Inject
   @Named(TRAINER_LVL)
   Preference<String> trainerLvl;
 
@@ -87,6 +96,7 @@ public class ScreenshotService extends Service {
 
   private Subscription subscription;
   private BroadcastReceiver broadcastReceiver;
+  private ViewGroup viewGroup;
 
   @Override
   public IBinder onBind(Intent intent) {
@@ -107,6 +117,19 @@ public class ScreenshotService extends Service {
         stopSelf();
       }
     };
+
+    final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        PixelFormat.TRANSLUCENT);
+    params.gravity = Gravity.BOTTOM;
+
+    this.viewGroup = new CoordinatorLayout(new ContextThemeWrapper(this, R.style.AppTheme));
+
+    // Add layout to window manager
+    windowManager.addView(viewGroup, params);
   }
 
   @Override
@@ -208,7 +231,8 @@ public class ScreenshotService extends Service {
                   final String s = String.format(Locale.getDefault(),
                       "(%.1f%%, %.1f%%) %.1f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
                   Timber.d(s);
-                  Toast.makeText(ScreenshotService.this, s, Toast.LENGTH_LONG).show();
+                  final Snackbar snackbar = Snackbar.make(viewGroup, s, Snackbar.LENGTH_INDEFINITE);
+                  snackbar.show();
                 } else {
                   try {
                     throw exception;
@@ -377,6 +401,7 @@ public class ScreenshotService extends Service {
       subscription = null;
     }
     unregisterReceiver(broadcastReceiver);
+    windowManager.removeView(viewGroup);
   }
 
   private Notification notification(int trainerLvl, boolean working) {

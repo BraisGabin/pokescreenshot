@@ -227,9 +227,15 @@ public class ScreenshotService extends Service {
                 startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
                 final Exception exception = result.exception();
                 if (exception == null) {
-                  final float[] ivRange = calculateIvRange(result.ivs());
-                  final String s = String.format(Locale.getDefault(),
-                      "(%.1f%%, %.1f%%) %.1f%%", ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
+                  final List<int[]> ivs = result.ivs();
+                  final String s;
+                  if (ivs.size() == 1) {
+                    final int[] iv = ivs.get(0);
+                    s = getString(R.string.snackbar_just_one_iv, iv[0], iv[1], iv[2], (iv[0] + iv[1] + iv[2]) * 100 / 45.);
+                  } else {
+                    final float[] ivRange = calculateIvRange(ivs);
+                    s = getString(R.string.snackbar_multiple_iv, ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
+                  }
                   Timber.d(s);
                   final Snackbar snackbar = Snackbar.make(viewGroup, s, Snackbar.LENGTH_INDEFINITE);
                   snackbar.show();

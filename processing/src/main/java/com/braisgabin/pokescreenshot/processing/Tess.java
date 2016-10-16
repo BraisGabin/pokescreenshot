@@ -105,46 +105,29 @@ public class Tess {
   }
 
   String name(int cpHeight) throws TessException {
-    final String name;
+    final String text;
 
     final Rect ocrRect = nameRect(cpHeight);
     final Rect regionRect;
-    final Rect ocrRect2;
-    final Rect regionRect2;
     synchronized (tess) {
       tess.setRectangle(ocrRect);
-      tess.getUTF8Text();
+      text = tess.getUTF8Text();
 
       regionRect = getRegionBox(tess);
       if (regionRect == null) {
         throw new TessException("Text not found");
       }
       regionRect.offset(ocrRect.left, ocrRect.top);
-      final int rectWidth = (width / 2 - regionRect.left) * 2 + Math.round(2 * d);
-      ocrRect2 = new Rect(regionRect);
-      ocrRect2.right = regionRect.left + rectWidth;
-      if (ocrRect2.left >= ocrRect2.right) {
-        throw new TessException("No correct HP found");
-      }
-
-      tess.setRectangle(ocrRect2);
-      name = tess.getUTF8Text();
-      regionRect2 = getRegionBox(tess);
-      regionRect2.offset(ocrRect2.left, ocrRect2.top);
     }
 
     if (canvas != null) {
       paint.setColor(Color.RED);
       canvas.drawRect(ocrRect, paint);
-      paint.setColor(Color.BLUE);
-      canvas.drawRect(regionRect, paint);
-      paint.setColor(Color.RED);
-      canvas.drawRect(ocrRect2, paint);
       paint.setColor(Color.YELLOW);
-      canvas.drawRect(regionRect2, paint);
+      canvas.drawRect(regionRect, paint);
     }
 
-    return name;
+    return text;
   }
 
   private Rect nameRect(int cpHeight) {

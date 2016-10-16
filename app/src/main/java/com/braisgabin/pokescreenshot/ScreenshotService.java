@@ -14,7 +14,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
@@ -24,7 +23,6 @@ import android.support.v7.app.NotificationCompat;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.braisgabin.fileobservable.FileObservable;
 import com.braisgabin.pokescreenshot.model.Pokemon;
 import com.braisgabin.pokescreenshot.processing.Angle;
 import com.braisgabin.pokescreenshot.processing.Guesser;
@@ -43,7 +41,6 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -54,7 +51,6 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static com.braisgabin.pokescreenshot.SettingsActivity.SCREENSHOT_DIR;
 import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 import static com.braisgabin.pokescreenshot.Utils.isSystemAlertPermissionGranted;
 import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.isPokemonGoScreenshot;
@@ -87,13 +83,8 @@ public class ScreenshotService extends Service {
   Preference<String> trainerLvl;
 
   @Inject
-  @Named(SCREENSHOT_DIR)
-  Preference<String> screenshotDir;
-
-  @Inject
   NotificationManagerCompat notificationManager;
 
-  private File externalStorage;
   private Subscription subscription;
   private BroadcastReceiver broadcastReceiver;
 
@@ -105,7 +96,6 @@ public class ScreenshotService extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
-    this.externalStorage = Environment.getExternalStorageDirectory();
 
     App.component(this)
         .inject(this);
@@ -127,12 +117,13 @@ public class ScreenshotService extends Service {
     registerReceiver(broadcastReceiver, new IntentFilter(ACTION_STOP));
 
     if (subscription == null) {
-      subscription = FileObservable.newFiles(new File(externalStorage, screenshotDir.get()), new Action1<Object>() {
-        @Override
-        public void call(Object object) {
-          startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
-        }
-      })
+      subscription = ScreenshotObservable.newScreenshot(getContentResolver())
+          .doOnNext(new Action1<Object>() {
+            @Override
+            public void call(Object object) {
+              startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
+            }
+          })
           .publish(new Func1<Observable<File>, Observable<FileBitmap>>() {
             @Override
             public Observable<FileBitmap> call(Observable<File> fileObservable) {
@@ -141,7 +132,12 @@ public class ScreenshotService extends Service {
               return Observable.zip(
                   fileObservable,
                   fileObservable
-                      .map(toBitmap(options, 5, 100)),
+                      .map(new Func1<File, Bitmap>() {
+                        @Override
+                        public Bitmap call(File file) {
+                          return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                        }
+                      }),
                   new Func2<File, Bitmap, FileBitmap>() {
                     @Override
                     public FileBitmap call(File file, Bitmap bitmap) {
@@ -295,29 +291,6 @@ public class ScreenshotService extends Service {
 
   private int trainerLvl() {
     return Integer.parseInt(trainerLvl.get());
-  }
-
-  private Func1<? super File, Bitmap> toBitmap(final BitmapFactory.Options options, final int retryTimes, final long initialWait) {
-    return new Func1<File, Bitmap>() {
-      @Override
-      public Bitmap call(File file) {
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-        for (int i = 0; i < retryTimes && bitmap == null; i++) {
-          try {
-            final long wait = initialWait << i;
-            Timber.d("Error decoding image, waiting to retry %dms", wait);
-            Thread.sleep(wait);
-            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-          } catch (InterruptedException e) {
-            throw Exceptions.propagate(e);
-          }
-        }
-        if (bitmap == null) {
-          throw new IllegalStateException("Impossible to decode the file.");
-        }
-        return bitmap;
-      }
-    };
   }
 
   private void notifyError(int title, int message, File file) {

@@ -193,7 +193,7 @@ public class Tess {
     final Rect ocrRect = candyRect(cpHeight);
     final Rect regionRect;
     synchronized (tess) {
-      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " .ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, " -.ABCDEFGHIJKLMNOPQRSTUVWXYZ");
       tess.setRectangle(ocrRect);
       text = tess.getUTF8Text();
       regionRect = getRegionBox(tess);

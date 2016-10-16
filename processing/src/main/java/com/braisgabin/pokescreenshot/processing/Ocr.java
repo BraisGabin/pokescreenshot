@@ -88,7 +88,7 @@ public class Ocr implements ScreenshotReader {
         throw new HpException("Error from Tesseract", e);
       }
 
-      final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)", Pattern.CASE_INSENSITIVE);
+      final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)");
 
       final String text2 = text
           .replace("l", "1")
@@ -148,7 +148,7 @@ public class Ocr implements ScreenshotReader {
         throw new StardustException("Error from Tesseract", e);
       }
 
-      final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.CASE_INSENSITIVE);
+      final Pattern pattern = Pattern.compile("([0-9]+)");
 
       Matcher matcher = pattern.matcher(text);
       if (matcher.matches()) {

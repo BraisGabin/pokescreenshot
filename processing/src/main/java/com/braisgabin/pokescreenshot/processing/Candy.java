@@ -2,7 +2,7 @@ package com.braisgabin.pokescreenshot.processing;
 
 public class Candy {
   private static String[][] CANDY_TYPES = {
-      {"BULBASAUR", "BISAKNOSP", "HERBIZARRE"},
+      {"BULBASAUR", "BISASAM", "BULBIZARRE"},
       {"CHARMANDER", "GLUMANDA", "SALAMÈCHE"},
       {"SQUIRTLE", "SCHIGGY", "CARAPUCE"},
       {"CATERPIE", "RAUPY", "CHENIPAN"},

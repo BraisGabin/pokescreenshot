@@ -40,16 +40,12 @@ public class Ocr implements ScreenshotReader {
         throw new CpException("Error from Tesseract", e);
       }
 
-      final Pattern pattern = Pattern.compile("([0-9]+)");
-
-      final Matcher matcher = pattern.matcher(text);
-      if (matcher.find()) {
-        cp = Integer.parseInt(matcher.group(1));
-      }
-
-      if (cp <= 0) {
+      try {
+        cp = Integer.parseInt(text);
+      } catch (NumberFormatException e) {
         throw new CpException("Error parsing CP:\n" + text);
       }
+
       cpHeight = rect.bottom;
     }
     return this.cp;
@@ -148,14 +144,13 @@ public class Ocr implements ScreenshotReader {
         throw new StardustException("Error from Tesseract", e);
       }
 
-      final Pattern pattern = Pattern.compile("([0-9]+)");
-
-      Matcher matcher = pattern.matcher(text);
-      if (matcher.matches()) {
-        stardust = Integer.parseInt(matcher.group(1));
+      try {
+        stardust = Integer.parseInt(text);
         if (!Stardust.isStardustCorrect(stardust)) {
           stardust = -1;
         }
+      } catch (NumberFormatException e) {
+        // no-op
       }
 
       if (stardust < 0) {

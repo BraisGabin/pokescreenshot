@@ -220,7 +220,8 @@ public class ScreenshotService extends Service {
               final int trainerLvl = trainerLvl();
               final float pokemonLvl = Guesser.lvl(angle, reader, trainerLvl);
               Timber.d("lvl: %.1f", pokemonLvl);
-              final Pokemon pokemon = getPokemon(reader, pokemonLvl);
+              final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, reader.candy());
+              final Pokemon pokemon = Guesser.getPokemon(pokemonList, reader, pokemonLvl);
               return Result.create(Guesser.iv(pokemon, reader.cp(), reader.hp(), pokemonLvl));
             } catch (Exception e) {
               Timber.e(e);
@@ -291,28 +292,6 @@ public class ScreenshotService extends Service {
                 }
               }
             });
-  }
-
-  private Pokemon getPokemon(ScreenshotReader reader, float pokemonLvl) throws ScreenshotReader.CpException, Guesser.UnknownPokemonException, ScreenshotReader.CandyException, Guesser.MultiplePokemonException, ScreenshotReader.HpException {
-    Pokemon pokemon;
-    try {
-      final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, reader.candy());
-      pokemon = Guesser.getPokemon(pokemonList, reader.cp(), reader.hp(), pokemonLvl);
-    } catch (ScreenshotReader.CandyException | Guesser.UnknownPokemonException | Guesser.MultiplePokemonException e) {
-      try {
-        final List<Pokemon> pokemonList = Pokemon.selectByName(database, reader.name());
-        if (pokemonList.isEmpty()) {
-          throw e;
-        } else {
-          Timber.w(e);
-        }
-        pokemon = pokemonList.get(0);
-      } catch (ScreenshotReader.NameException e1) {
-        Timber.w(e1);
-        throw e;
-      }
-    }
-    return pokemon;
   }
 
   private void pokemonScreenshotWithAlert(Observable<FileBitmap> observable, final AtomicInteger ref) {

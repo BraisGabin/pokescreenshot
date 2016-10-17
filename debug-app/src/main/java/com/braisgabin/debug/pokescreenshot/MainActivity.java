@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
     setContentView(R.layout.activity_main);
-    final String image = "screenshots/es/136_flareon.png";
+    final String image = "screenshots/en/70_weepinbell.png";
     final int trainerLvl = 22;
 
     final Bitmap bitmap = bitmap(image);

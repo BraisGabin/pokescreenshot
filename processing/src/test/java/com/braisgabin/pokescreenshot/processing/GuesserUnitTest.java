@@ -2,7 +2,6 @@ package com.braisgabin.pokescreenshot.processing;
 
 import com.google.auto.value.AutoValue;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -46,94 +45,93 @@ public class GuesserUnitTest {
 
   @Test
   public void testGetPokemon_eevee() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(114, 128, 110),
-        IvImplementation.create(186, 168, 260),
-        IvImplementation.create(192, 174, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(114, 128, 110, 25),
+        Pokemon.create(186, 168, 260, 0),
+        Pokemon.create(192, 174, 130, 0),
+        Pokemon.create(238, 178, 130, 0),
     };
-    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 482, 63, 17), is(coreStats[0]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(482, 63, 25), 17), is(coreStats[0]));
   }
 
   @Test
   public void testGetPokemon_vaporeon() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(114, 128, 110),
-        IvImplementation.create(186, 168, 260),
-        IvImplementation.create(192, 174, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(114, 128, 110, 25),
+        Pokemon.create(186, 168, 260, 0),
+        Pokemon.create(192, 174, 130, 0),
+        Pokemon.create(238, 178, 130, 0),
     };
-    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 1173, 142, 15), is(coreStats[1]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(1173, 142, 0), 15), is(coreStats[1]));
   }
 
   @Test
   public void testGetPokemon_jolteon() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(114, 128, 110),
-        IvImplementation.create(186, 168, 260),
-        IvImplementation.create(192, 174, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(114, 128, 110, 25),
+        Pokemon.create(186, 168, 260, 0),
+        Pokemon.create(192, 174, 130, 0),
+        Pokemon.create(238, 178, 130, 0),
     };
-    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 736, 64, 13), is(coreStats[2]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(736, 64, 0), 13), is(coreStats[2]));
   }
 
   @Test
   public void testGetPokemon_flareon() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(114, 128, 110),
-        IvImplementation.create(186, 168, 260),
-        IvImplementation.create(192, 174, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(114, 128, 110, 25),
+        Pokemon.create(186, 168, 260, 0),
+        Pokemon.create(192, 174, 130, 0),
+        Pokemon.create(238, 178, 130, 0),
     };
-    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19), is(coreStats[3]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(1415, 82, 0), 19), is(coreStats[3]));
   }
 
   @Test
-  @Ignore("I must find a solution")
   public void testGetPokemon_caterpie() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(62, 66, 90),
-        IvImplementation.create(56, 86, 100),
-        IvImplementation.create(144, 144, 120),
+    final Pokemon[] coreStats = {
+        Pokemon.create(62, 66, 90, 12),
+        Pokemon.create(56, 86, 100, 50),
+        Pokemon.create(144, 144, 120, 0),
     };
-    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), 150, 54, 16), is(coreStats[0]));
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(150, 54, 12), 16), is(coreStats[0]));
   }
 
   @Test
   public void testGetPokemon_none() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(114, 128, 110),
-        IvImplementation.create(186, 168, 260),
-        IvImplementation.create(192, 174, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(114, 128, 110, 25),
+        Pokemon.create(186, 168, 260, 0),
+        Pokemon.create(192, 174, 130, 0),
+        Pokemon.create(238, 178, 130, 0),
     };
     thrown.expect(Guesser.UnknownPokemonException.class);
     thrown.expectMessage("Unknown Pókemon with CP: 50, HP: 82, lvl: 19");
-    Guesser.getPokemon(Arrays.asList(coreStats), 50, 82, 19);
+    Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(50, 82, 25), 19);
   }
 
   @Test
   public void testGetPokemon_none2() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(114, 128, 110),
-        IvImplementation.create(186, 168, 260),
-        IvImplementation.create(192, 174, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(114, 128, 110, 25),
+        Pokemon.create(186, 168, 260, 0),
+        Pokemon.create(192, 174, 130, 0),
+        Pokemon.create(238, 178, 130, 0),
     };
     thrown.expect(Guesser.UnknownPokemonException.class);
     thrown.expectMessage("Unknown Pókemon with CP: 50, HP: 82, lvl: 19.5");
-    Guesser.getPokemon(Arrays.asList(coreStats), 50, 82, 19.5f);
+    Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(50, 82, 25), 19.5f);
   }
 
   @Test
   public void testGetPokemon_tooMuch() throws Exception {
-    final CoreStats[] coreStats = {
-        IvImplementation.create(238, 178, 130),
-        IvImplementation.create(238, 178, 130),
+    final Pokemon[] coreStats = {
+        Pokemon.create(238, 178, 130, 12),
+        Pokemon.create(238, 178, 130, 12),
     };
     thrown.expect(Guesser.MultiplePokemonException.class);
     thrown.expectMessage(coreStats[0].toString() + " and " + coreStats[1] + " are possible candidates.");
-    Guesser.getPokemon(Arrays.asList(coreStats), 1415, 82, 19);
+    Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(1415, 82, 12), 19);
   }
 
   @Test
@@ -234,14 +232,37 @@ public class GuesserUnitTest {
     static CoreStats create(int atk, int def, int stam) {
       return new AutoValue_GuesserUnitTest_IvImplementation(atk, def, stam);
     }
+  }
+
+  @AutoValue
+  abstract static class Reader implements ScreenshotReader {
+    static Reader create(int cp, int hp, int evolveCandy) {
+      return new AutoValue_GuesserUnitTest_Reader(cp, "", hp, "", 0, evolveCandy);
+    }
 
     @Override
-    public abstract int atk();
+    public abstract int cp();
 
     @Override
-    public abstract int def();
+    public abstract String name();
 
     @Override
-    public abstract int stam();
+    public abstract int hp();
+
+    @Override
+    public abstract String candy();
+
+    @Override
+    public abstract int stardust();
+
+    @Override
+    public abstract int evolveCandy();
+  }
+
+  @AutoValue
+  abstract static class Pokemon implements CoreStats, EvolveCandy {
+    static Pokemon create(int atk, int def, int stam, int evolveCandy) {
+      return new AutoValue_GuesserUnitTest_Pokemon(atk, def, stam, evolveCandy);
+    }
   }
 }

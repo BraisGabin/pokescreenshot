@@ -25,8 +25,10 @@ public class Guesser {
     return max(10, (int) floor(CPM(lvl) * (pokemon.stam() + stam)));
   }
 
-  public static <T extends CoreStats> T getPokemon(Iterable<T> coreStatsList, int cp, int hp, float lvl) throws UnknownPokemonException, MultiplePokemonException {
+  public static <T extends CoreStats & EvolveCandy> T getPokemon(Iterable<T> coreStatsList, ScreenshotReader reader, float lvl) throws UnknownPokemonException, MultiplePokemonException, ScreenshotReader.CpException, ScreenshotReader.HpException, ScreenshotReader.EvolveCandyException {
     T coreStats = null;
+    final int cp = reader.cp();
+    final int hp = reader.hp();
     for (T cs : coreStatsList) {
       final int minCp = calculateCp(cs, lvl, 0, 0, 0);
       final int maxCp = calculateCp(cs, lvl, 15, 15, 15);
@@ -36,7 +38,16 @@ public class Guesser {
         if (coreStats == null) {
           coreStats = cs;
         } else {
-          throw new MultiplePokemonException(String.format(Locale.US, "%s and %s are possible candidates.", coreStats.toString(), cs.toString()));
+          final int value = reader.evolveCandy();
+          final int a = coreStats.evolveCandy();
+          final int b = cs.evolveCandy();
+          if (a == value && b != value) {
+            // no-op
+          } else if (a != value && b == value) {
+            coreStats = cs;
+          } else {
+            throw new MultiplePokemonException(String.format(Locale.US, "%s and %s are possible candidates.", coreStats.toString(), cs.toString()));
+          }
         }
       }
     }

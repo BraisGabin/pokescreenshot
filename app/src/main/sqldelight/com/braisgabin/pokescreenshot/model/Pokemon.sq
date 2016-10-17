@@ -4,7 +4,8 @@ CREATE TABLE pokemon (
   atk INTEGER AS Integer NOT NULL,
   def INTEGER AS Integer NOT NULL,
   stam INTEGER AS Integer NOT NULL,
-  candy TEXT NOT NULL
+  candy TEXT NOT NULL,
+  evolveCandy INTEGER AS Integer NOT NULL
 );
 
 select_by_candy:

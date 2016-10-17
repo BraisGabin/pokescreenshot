@@ -14,8 +14,8 @@ import java.util.List;
 public abstract class Pokemon implements PokemonModel, CoreStats {
   public static final Factory<Pokemon> FACTORY = new Factory<>(new Creator<Pokemon>() {
     @Override
-    public Pokemon create(long id, @NonNull String name, int atk, int def, int stam, @NonNull String candy) {
-      return new AutoValue_Pokemon(id, name, atk, def, stam, candy);
+    public Pokemon create(long id, @NonNull String name, int atk, int def, int stam, @NonNull String candy, int evolveCandy) {
+      return new AutoValue_Pokemon(id, name, atk, def, stam, candy, evolveCandy);
     }
   });
 

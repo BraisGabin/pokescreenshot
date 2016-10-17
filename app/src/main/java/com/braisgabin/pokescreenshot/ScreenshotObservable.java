@@ -28,14 +28,18 @@ public class ScreenshotObservable {
           @Override
           public Observable<Uri> call(Changes changes) {
             final Set<Uri> uris = changes.affectedUris();
-            return Observable.from(uris);
+            if (uris.contains(MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
+              return Observable.just(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            else {
+              return Observable.empty();
+            }
           }
         })
         .flatMap(new Func1<Uri, Observable<File>>() {
           @Override
           public Observable<File> call(Uri uri) {
             final String path = getLastImageTaken(contentResolver, uri);
-            if (path != null) {
+            if (path != null && path.contains("reenshot")) {
               return Observable.just(new File(path));
             } else {
               return Observable.empty();

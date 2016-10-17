@@ -3,6 +3,7 @@ package com.braisgabin.pokescreenshot.processing;
 import android.graphics.Rect;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +17,7 @@ public class Ocr implements ScreenshotReader {
   private int hp = -1;
   private String candy = null;
   private int stardust = -1;
+  private int evolveCandy = -1;
 
   public Ocr(Tess tess) {
     this.tess = tess;
@@ -27,6 +29,7 @@ public class Ocr implements ScreenshotReader {
     Log.d(TAG, "HP: " + hp());
     Log.d(TAG, "Candy: " + candy());
     Log.d(TAG, "Stardust: " + stardust());
+    Log.d(TAG, "Evolve candy: " + evolveCandy());
   }
 
   @Override
@@ -158,5 +161,53 @@ public class Ocr implements ScreenshotReader {
       }
     }
     return stardust;
+  }
+
+  @Override
+  public synchronized int evolveCandy() throws EvolveCandyException, CpException {
+    if (evolveCandy < 0) {
+      if (cpHeight < 0) {
+        cp();
+      }
+      final String text;
+      try {
+        text = tess.evolveCandy(cpHeight);
+
+        if (text.isEmpty()) {
+          evolveCandy = 0;
+        } else {
+          try {
+            evolveCandy = Integer.parseInt(text);
+          } catch (NumberFormatException e) {
+            // no-op
+          }
+
+          if (Arrays.binarySearch(new int[]{12, 25, 50, 100}, evolveCandy) < 0) {
+            if (text.startsWith("2")) {
+              evolveCandy = 25;
+            } else if (text.startsWith("5")) {
+              evolveCandy = 50;
+            } else if (text.startsWith("4")) {
+              evolveCandy = 400;
+            } else if (text.startsWith("10")) {
+              evolveCandy = 100;
+            } else if (text.startsWith("1")) {
+              // This value is normally used to check Caterpie/Metapod or Weedles/Kakuna
+              // So, 12 is the best guess.
+              evolveCandy = 12;
+            } else {
+              evolveCandy = -1;
+            }
+          }
+        }
+
+        if (evolveCandy < 0) {
+          throw new Ocr.EvolveCandyException("Error parsing evolve candy:\n" + text);
+        }
+      } catch (Tess.TessException e) {
+        evolveCandy = 0;
+      }
+    }
+    return evolveCandy;
   }
 }

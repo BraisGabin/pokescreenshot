@@ -11,6 +11,8 @@ public interface ScreenshotReader {
 
   int stardust() throws StardustException, CpException;
 
+  int evolveCandy() throws EvolveCandyException, CpException;
+
   abstract class Exception extends ProcessingException {
     public Exception(String message) {
       super(message);
@@ -67,6 +69,16 @@ public interface ScreenshotReader {
     }
 
     public StardustException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
+
+  class EvolveCandyException extends Exception {
+    public EvolveCandyException(String message) {
+      super(message);
+    }
+
+    public EvolveCandyException(String message, Throwable cause) {
       super(message, cause);
     }
   }

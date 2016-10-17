@@ -102,6 +102,7 @@ public class TessTest {
     assertThat(ocr.hp(), is(screenshot.getHp()));
     assertThat(ocr.stardust(), is(screenshot.getStardust()));
     assertThat(ocr.candy(), is(screenshot.getCandy()));
+    assertThat(ocr.evolveCandy(), is(screenshot.getEvolveCandy()));
     assertThat(ocr.name(), is(screenshot.getName()));
   }
 }

@@ -18,7 +18,9 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.braisgabin.pokescreenshot.processing.Utils.copyRecursive;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
+import static org.junit.Assert.assertThat;
 
 public class Tess2Test {
   private static File root;
@@ -103,6 +105,12 @@ public class Tess2Test {
     thrown.expectCause(isA(Tess.TessException.class));
     thrown.expectMessage("Error from Tesseract");
     ocr.candy();
+  }
+
+  @Test
+  public void testEvolveCandy() throws Exception {
+    setUp("screenshots/just_cp.png");
+    assertThat(ocr.evolveCandy(), is(0));
   }
 
   @Test

@@ -37,6 +37,9 @@ class Screenshot {
   private String candyType;
 
   @CsvField(pos = 10)
+  private Integer evolveCandy;
+
+  @CsvField(pos = 11)
   private String name;
 
   public String file() {
@@ -69,6 +72,10 @@ class Screenshot {
 
   public String getCandy() {
     return candyType;
+  }
+
+  public int getEvolveCandy() {
+    return evolveCandy == null ? 0 : evolveCandy;
   }
 
   public String getName() {

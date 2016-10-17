@@ -150,4 +150,25 @@ public class OcrUnitTest {
     thrown.expectMessage("Error parsing stardust:\n1");
     ocr.stardust();
   }
+
+  @Test
+  public void testEvolveCandy() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.evolveCandy(anyInt())).thenReturn("12");
+
+    assertThat(ocr.evolveCandy(), is(12));
+    assertThat(ocr.evolveCandy(), is(12));
+    verify(tess, times(1)).evolveCandy(anyInt());
+    verify(tess, times(1)).cp(any(Rect.class));
+  }
+
+  @Test
+  public void testEvolveCandy_error() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.evolveCandy(anyInt())).thenReturn("asdf");
+
+    thrown.expect(ScreenshotReader.EvolveCandyException.class);
+    thrown.expectMessage("Error parsing evolve candy:\nasdf");
+    ocr.evolveCandy();
+  }
 }

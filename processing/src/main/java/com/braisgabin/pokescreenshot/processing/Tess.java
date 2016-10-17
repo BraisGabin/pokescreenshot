@@ -251,6 +251,55 @@ public class Tess {
     return rect;
   }
 
+  String evolveCandy(int cpHeight) throws TessException {
+    final String text;
+
+    final Rect ocrRect = evolveCandyRect(cpHeight);
+    final Rect regionRect;
+    final Rect ocrRect2;
+    final Rect regionRect2;
+    synchronized (tess) {
+      tess.setRectangle(ocrRect);
+      tess.getUTF8Text();
+      regionRect = getRegionBox(tess);
+      if (regionRect == null) {
+        throw new TessException("Text not found");
+      }
+      regionRect.offset(ocrRect.left, ocrRect.top);
+      ocrRect2 = new Rect(regionRect);
+      ocrRect2.left = regionRect.left + Math.round(20 * d);
+      if (ocrRect2.left >= ocrRect2.right) {
+        throw new TessException("No correct stardust found");
+      }
+
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
+      tess.setRectangle(ocrRect2);
+      text = tess.getUTF8Text();
+      regionRect2 = getRegionBox(tess);
+      regionRect2.offset(ocrRect2.left, ocrRect2.top);
+      tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
+    }
+
+    if (canvas != null) {
+      paint.setColor(Color.RED);
+      canvas.drawRect(ocrRect, paint);
+      paint.setColor(Color.BLUE);
+      canvas.drawRect(regionRect, paint);
+      paint.setColor(Color.RED);
+      canvas.drawRect(ocrRect2, paint);
+      paint.setColor(Color.YELLOW);
+      canvas.drawRect(regionRect2, paint);
+    }
+
+    return text;
+  }
+
+  private Rect evolveCandyRect(int cpHeight) {
+    Rect rect = new Rect(0, 0, Math.round(58 * d), Math.round(26 * d));
+    rect.offset(Math.round(86 * d) + width / 2, cpHeight + Math.round(613 * d));
+    return rect;
+  }
+
   private Rect getRegionBox(TessBaseAPI tess) {
     final Pixa regions = tess.getRegions();
     final Rect regionRect = regions.getBoxRect(0);

@@ -1,43 +1,43 @@
-File name;arcX;arcY;Trainer lvl;lvl;PC;PS;Stardust;Candy type;Name
-de/20_raticate.png;68;457;28;25;973;82;4000;RATTATA;Rattikarl ii’
-de/97_hypno.png;83;430;24;24;1409;117;3500;DROWZEE;Hypno
-de/138_omanyte.png;68;457;28;4;113;21;400;OMANYTE;Amonitas
-de/147_dratini.png;68;457;28;9;247;37;1000;DRATINI;93.3
-en/69_bellsprout.png;137;915;23;17;538;62;2200;BELLSPROUT;BeHsprout
-en/70_weepinbell.png;68;457;19;16;771;76;1900;BELLSPROUT;Weepinbell
-en/80_slowbro.png;137;915;24;22.5;1661;128;3000;SLOWPOKE;Slow brown b
-en/107_hitmonchan.png;137;915;24;20;851;66;2500;HITMONCHAN;Hit Monahana
-en/130_gyarados.png;137;914;23;18;1366;116;2200;MAGIKARP;Gya rados
-en/140_kabuto.png;135;635;20;19;584;42;2500;KABUTO;Kabuto
-en/143_snorlax.png;137;915;23;18;1554;187;2200;SNORLAX;Snoﬂax
-es/1_bulbasaur.png;136;635;22;17;436;51;2200;BULBASAUR;Bulbasaur
-es/7_squirtle.png;135;635;22;2.5;55;18;200;SQUIRTLE;Squirtle
-es/7_squirtle_2.png;131;642;24;20;500;60;2500;SQUIRTLE;Squirtle
-es/10_caterpie.png;135;635;22;16;150;54;1900;CATERPIE;Caterpie
-es/14_kakuna.png;131;642;25;4;46;26;400;WEEDLE;Kakuna
-es/16_pidgey.png;135;635;22;18;292;46;2200;PIDGEY;Pidgey
-es/17_pidgeotto.png;135;635;21;9;284;55;1000;PIDGEY;Pidgeotto
-es/29_nidoran.png;135;635;22;21;458;70;3000;NIDORAN♀;NidoranQ
-es/32_nidoran.png;135;635;22;19;399;59;2500;NIDORAN♂;Nidorand
-es/33_nidorino.png;131;642;24;19;695;79;2500;NIDORAN♂;O. Nidorino
-es/35_clefairy.png;135;635;22;21;661;90;3000;CLEFAIRY;Clefairy
-es/36_clefable.png;131;642;24;15;987;106;1900;CLEFAIRY;O. Clefable
-es/42_golbat.png;131;642;24;20;1081;96;2500;ZUBAT;Mr.Go|bat
-es/46_paras.png;135;630;21;1;20;11;200;PARAS;Pa rasOOO
-es/55_golduck.png;135;635;22;16;951;87;1900;PSYDUCK;Golduck
-es/72_tentacool.png;135;635;22;8;176;33;800;TENTACOOL;Tentacool
-es/84_doduo.png;135;635;22;22;453;45;3000;DODUO;Doduo
-es/102_exeggcute.png;135;635;21;11;323;57;1300;EXEGGCUTE;Exeggcute
-es/122_mr_mime.png;135;635;22;15;591;43;1900;MR. MIME;Mr. Mime
-es/123_scyther.png;135;635;22;21;1201;93;3000;SCYTHER;Scyther
-es/123_scyther_2.png;135;635;21;12;684;70;1300;SCYTHER;Mantis
-es/126_magmar.png;135;635;22;20;1218;83;2500;MAGMAR;Magmar
-es/127_pinsir.png;131;642;24;22;1251;86;3000;PINSIR;Pinsir
-es/134_vaporeon.png;135;635;22;20;1533;155;2500;EEVEE;Rainer
-es/135_jolteon.png;135;635;22;15.5;917;75;1900;EEVEE;Sparky
-es/136_flareon.png;174;855;22;19;1415;82;2500;EEVEE;Flareon
-es/140_kabuto.png;174;855;22;4;98;15;400;KABUTO;Kabuto
-es/142_aerodactyl.png;136;635;22;10;576;67;1000;AERODACTYL;Aeroda 46/55
-fr/35_clefairy.png;174;855;23;20;642;89;2500;CLEFAIRY;Mélofée
-fr/56_mankey.png;174;855;23;20;492;56;2500;MANKEY;Mankey 91/93
-fr/118_goldeen.png;174;855;23;17;453;55;2200;GOLDEEN;Goldeen82/86
+File name;arcX;arcY;Trainer lvl;lvl;PC;PS;Stardust;Candy type;Candy evolve;Name
+de/20_raticate.png;68;457;28;25;973;82;4000;RATTATA;;Rattikarl ii’
+de/97_hypno.png;83;430;24;24;1409;117;3500;DROWZEE;;Hypno
+de/138_omanyte.png;68;457;28;4;113;21;400;OMANYTE;50;Amonitas
+de/147_dratini.png;68;457;28;9;247;37;1000;DRATINI;25;93.3
+en/69_bellsprout.png;137;915;23;17;538;62;2200;BELLSPROUT;25;BeHsprout
+en/70_weepinbell.png;68;457;19;16;771;76;1900;BELLSPROUT;12;Weepinbell
+en/80_slowbro.png;137;915;24;22.5;1661;128;3000;SLOWPOKE;;Slow brown b
+en/107_hitmonchan.png;137;915;24;20;851;66;2500;HITMONCHAN;;Hit Monahana
+en/130_gyarados.png;137;914;23;18;1366;116;2200;MAGIKARP;;Gya rados
+en/140_kabuto.png;135;635;20;19;584;42;2500;KABUTO;50;Kabuto
+en/143_snorlax.png;137;915;23;18;1554;187;2200;SNORLAX;;Snoﬂax
+es/1_bulbasaur.png;136;635;22;17;436;51;2200;BULBASAUR;25;Bulbasaur
+es/7_squirtle.png;135;635;22;2.5;55;18;200;SQUIRTLE;25;Squirtle
+es/7_squirtle_2.png;131;642;24;20;500;60;2500;SQUIRTLE;25;Squirtle
+es/10_caterpie.png;135;635;22;16;150;54;1900;CATERPIE;12;Caterpie
+es/14_kakuna.png;131;642;25;4;46;26;400;WEEDLE;50;Kakuna
+es/16_pidgey.png;135;635;22;18;292;46;2200;PIDGEY;12;Pidgey
+es/17_pidgeotto.png;135;635;21;9;284;55;1000;PIDGEY;50;Pidgeotto
+es/29_nidoran.png;135;635;22;21;458;70;3000;NIDORAN♀;25;NidoranQ
+es/32_nidoran.png;135;635;22;19;399;59;2500;NIDORAN♂;25;Nidorand
+es/33_nidorino.png;131;642;24;19;695;79;2500;NIDORAN♂;100;O. Nidorino
+es/35_clefairy.png;135;635;22;21;661;90;3000;CLEFAIRY;50;Clefairy
+es/36_clefable.png;131;642;24;15;987;106;1900;CLEFAIRY;;O. Clefable
+es/42_golbat.png;131;642;24;20;1081;96;2500;ZUBAT;;Mr.Go|bat
+es/46_paras.png;135;630;21;1;20;11;200;PARAS;;Pa rasOOO
+es/55_golduck.png;135;635;22;16;951;87;1900;PSYDUCK;;Golduck
+es/72_tentacool.png;135;635;22;8;176;33;800;TENTACOOL;50;Tentacool
+es/84_doduo.png;135;635;22;22;453;45;3000;DODUO;50;Doduo
+es/102_exeggcute.png;135;635;21;11;323;57;1300;EXEGGCUTE;50;Exeggcute
+es/122_mr_mime.png;135;635;22;15;591;43;1900;MR. MIME;;Mr. Mime
+es/123_scyther.png;135;635;22;21;1201;93;3000;SCYTHER;;Scyther
+es/123_scyther_2.png;135;635;21;12;684;70;1300;SCYTHER;;Mantis
+es/126_magmar.png;135;635;22;20;1218;83;2500;MAGMAR;;Magmar
+es/127_pinsir.png;131;642;24;22;1251;86;3000;PINSIR;;Pinsir
+es/134_vaporeon.png;135;635;22;20;1533;155;2500;EEVEE;;Rainer
+es/135_jolteon.png;135;635;22;15.5;917;75;1900;EEVEE;;Sparky
+es/136_flareon.png;174;855;22;19;1415;82;2500;EEVEE;;Flareon
+es/140_kabuto.png;174;855;22;4;98;15;400;KABUTO;50;Kabuto
+es/142_aerodactyl.png;136;635;22;10;576;67;1000;AERODACTYL;;Aeroda 46/55
+fr/35_clefairy.png;174;855;23;20;642;89;2500;CLEFAIRY;50;Mélofée
+fr/56_mankey.png;174;855;23;20;492;56;2500;MANKEY;50;Mankey 91/93
+fr/118_goldeen.png;174;855;23;17;453;55;2200;GOLDEEN;50;Goldeen82/86

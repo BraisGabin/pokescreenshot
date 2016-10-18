@@ -14,7 +14,7 @@ breaking the [Pokémon Go's policy][pokemon go policy] using it.
 
 ## Download
 
-The app is still in beta. You can download it from the [Google Play](google play).
+The app is still in beta. You can download it from the [Google Play][google play].
 
 We don't have access to all the devices and we don't catch yet all the pokémon.
 So, please report any problem you spot. The app usually detect this errors and

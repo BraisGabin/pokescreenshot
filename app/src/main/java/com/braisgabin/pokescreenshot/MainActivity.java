@@ -14,7 +14,7 @@ import com.f2prateek.rx.preferences.Preference;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 
@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void checkPermissions() {
-    if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+    if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
     } else {
       checkTrainerLevel();
     }

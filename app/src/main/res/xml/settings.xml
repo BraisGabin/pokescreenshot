@@ -6,6 +6,12 @@
         android:entryValues="@array/trainer_lvl_value"
         android:key="trainer_lvl"
         android:title="@string/trainer_lvl"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="remove_screenshots"
+        android:title="@string/remove_screenshot"/>
+
     <Preference
         android:persistent="false"
         android:title="@string/about">

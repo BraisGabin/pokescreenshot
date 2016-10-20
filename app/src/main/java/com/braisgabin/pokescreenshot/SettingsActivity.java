@@ -16,6 +16,7 @@ public class SettingsActivity extends AppCompatActivity {
   private static final String FINISH_ON_UPDATE_TRAINER_LVL = "FINISH_ON_UPDATE_TRAINER_LVL";
 
   public static final String TRAINER_LVL = "trainer_lvl";
+  public static final String REMOVE_SCREENSHOTS = "remove_screenshots";
 
   public static Intent getCallingIntent(Context context, boolean finishOnUpdateTrainerLvl) {
     final Intent intent = new Intent(context, SettingsActivity.class);

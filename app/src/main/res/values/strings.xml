@@ -28,4 +28,5 @@
     <string name="about">About</string>
     <string name="snackbar_just_one_iv">atk: %1$d, def: %2$d, stam: %3$d (%4$.1f%%)</string>
     <string name="snackbar_multiple_iv">(%1$.1f%%, %2$.1f%%) %3$.1f%%</string>
+    <string name="remove_screenshot">Remove screenshots after detection</string>
 </resources>

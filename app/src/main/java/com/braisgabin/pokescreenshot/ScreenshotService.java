@@ -58,6 +58,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.braisgabin.pokescreenshot.SettingsActivity.REMOVE_SCREENSHOTS;
 import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 import static com.braisgabin.pokescreenshot.Utils.isSystemAlertPermissionGranted;
 import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.getScreenshotType;
@@ -92,6 +93,10 @@ public class ScreenshotService extends Service {
   @Inject
   @Named(TRAINER_LVL)
   Preference<String> trainerLvl;
+
+  @Inject
+  @Named(REMOVE_SCREENSHOTS)
+  Preference<Boolean> removeScreenshots;
 
   @Inject
   NotificationManagerCompat notificationManager;
@@ -231,6 +236,14 @@ public class ScreenshotService extends Service {
             } catch (Exception e) {
               Timber.e(e);
               return Result.create(e, ub.uri());
+            }
+          }
+        })
+        .doOnNext(new Action1<Result>() {
+          @Override
+          public void call(Result result) {
+            if (removeScreenshots.get() && result.exception() == null) {
+              getContentResolver().delete(result.uri(), null, null);
             }
           }
         })

@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.braisgabin.pokescreenshot.SettingsActivity.REMOVE_SCREENSHOTS;
 import static com.braisgabin.pokescreenshot.SettingsActivity.TRAINER_LVL;
 import static com.braisgabin.pokescreenshot.processing.Utils.copyRecursive;
 
@@ -102,5 +103,12 @@ class AppModule {
   @Named(TRAINER_LVL)
   Preference<String> trainerLvlProvider(RxSharedPreferences rxSharedPreferences) {
     return rxSharedPreferences.getString(TRAINER_LVL, "1");
+  }
+
+  @Singleton
+  @Provides
+  @Named(REMOVE_SCREENSHOTS)
+  Preference<Boolean> removeScreenshotsPreferenceProvider(RxSharedPreferences rxSharedPreferences) {
+    return rxSharedPreferences.getBoolean(REMOVE_SCREENSHOTS, true);
   }
 }

@@ -247,7 +247,8 @@ public class ScreenshotService extends Service {
                     s = getString(R.string.snackbar_multiple_iv, ivRange[0] * 100, ivRange[2] * 100, ivRange[1] * 100);
                   }
                   Timber.d(s);
-                  final Snackbar snackbar = Snackbar.make(viewGroup, s, Snackbar.LENGTH_INDEFINITE);
+                  @SuppressWarnings("WrongConstant")
+                  final Snackbar snackbar = Snackbar.make(viewGroup, s, 10 * 1000);
                   snackbar.show();
                 } else {
                   try {

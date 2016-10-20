@@ -10,25 +10,23 @@ import com.pushtorefresh.storio.contentresolver.Changes;
 import com.pushtorefresh.storio.contentresolver.StorIOContentResolver;
 import com.pushtorefresh.storio.contentresolver.impl.DefaultStorIOContentResolver;
 
-import java.io.File;
-
 import rx.Observable;
 import rx.functions.Func1;
 
 public class ScreenshotObservable {
-  public static Observable<File> newScreenshot(final ContentResolver contentResolver) {
+  public static Observable<Uri> newScreenshot(final ContentResolver contentResolver) {
     StorIOContentResolver storIOContentResolver = DefaultStorIOContentResolver.builder()
         .contentResolver(contentResolver)
         .build();
 
     return storIOContentResolver
         .observeChangesOfUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        .flatMap(new Func1<Changes, Observable<File>>() {
+        .flatMap(new Func1<Changes, Observable<Uri>>() {
           @Override
-          public Observable<File> call(Changes changes) {
-            final String path = getLastImageTaken(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            if (path != null && path.contains("reenshot")) {
-              return Observable.just(new File(path));
+          public Observable<Uri> call(Changes changes) {
+            final Uri uri = getLastImageTaken(contentResolver);
+            if (uri != null) {
+              return Observable.just(uri);
             } else {
               return Observable.empty();
             }
@@ -37,17 +35,17 @@ public class ScreenshotObservable {
   }
 
   // Extracted from: http://stackoverflow.com/a/27103868/842697
-  private static String getLastImageTaken(ContentResolver contentResolver, Uri contentUri) {
+  private static Uri getLastImageTaken(ContentResolver contentResolver) {
     Cursor cursor = null;
     try {
-      final String[] projection = {ImageColumns.DATA};
-      final String selection = ImageColumns.DATE_ADDED + " > ?";
+      final String[] projection = {ImageColumns._ID};
+      final String selection = ImageColumns.DATE_ADDED + " > ? AND " + ImageColumns.DATA + " LIKE '%reenshot%'";
       final String[] selectionArgs = {"" + (-2 + System.currentTimeMillis() / 1000)};
       final String order = ImageColumns.DATE_ADDED + " DESC";
-      cursor = contentResolver.query(contentUri, projection, selection, selectionArgs, order);
-      final int columnIndex = cursor.getColumnIndexOrThrow(ImageColumns.DATA);
+      cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, order);
+      final int columnIndex = cursor.getColumnIndexOrThrow(ImageColumns._ID);
       if (cursor.moveToFirst()) {
-        return cursor.getString(columnIndex);
+        return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + cursor.getLong(columnIndex));
       } else {
         return null;
       }

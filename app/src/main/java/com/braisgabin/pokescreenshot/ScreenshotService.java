@@ -37,7 +37,7 @@ import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.f2prateek.rx.preferences.Preference;
 import com.google.auto.value.AutoValue;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -63,6 +63,7 @@ import static com.braisgabin.pokescreenshot.Utils.isSystemAlertPermissionGranted
 import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.getScreenshotType;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static rx.exceptions.Exceptions.propagate;
 
 public class ScreenshotService extends Service {
   private final static String ACTION_STOP = "com.braisgabin.pokescreenshot.ACTION_STOP";
@@ -148,38 +149,42 @@ public class ScreenshotService extends Service {
               startForeground(1, notification(trainerLvl(), ref.incrementAndGet() > 0));
             }
           })
-          .publish(new Func1<Observable<File>, Observable<FileBitmap>>() {
+          .publish(new Func1<Observable<Uri>, Observable<UriBitmap>>() {
             @Override
-            public Observable<FileBitmap> call(Observable<File> fileObservable) {
+            public Observable<UriBitmap> call(Observable<Uri> uriObservable) {
               final BitmapFactory.Options options = new BitmapFactory.Options();
               options.inMutable = true;
               return Observable.zip(
-                  fileObservable,
-                  fileObservable
-                      .map(new Func1<File, Bitmap>() {
+                  uriObservable,
+                  uriObservable
+                      .map(new Func1<Uri, Bitmap>() {
                         @Override
-                        public Bitmap call(File file) {
-                          return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                        public Bitmap call(Uri uri) {
+                          try {
+                            return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
+                          } catch (FileNotFoundException e) {
+                            throw propagate(e);
+                          }
                         }
                       }),
-                  new Func2<File, Bitmap, FileBitmap>() {
+                  new Func2<Uri, Bitmap, UriBitmap>() {
                     @Override
-                    public FileBitmap call(File file, Bitmap bitmap) {
-                      return FileBitmap.create(file, bitmap);
+                    public UriBitmap call(Uri uri, Bitmap bitmap) {
+                      return UriBitmap.create(uri, bitmap);
                     }
                   });
             }
           })
-          .groupBy(new Func1<FileBitmap, ScreenshotChecker.Type>() {
+          .groupBy(new Func1<UriBitmap, ScreenshotChecker.Type>() {
             @Override
-            public ScreenshotChecker.Type call(FileBitmap fb) {
-              return getScreenshotType(fb.bitmap());
+            public ScreenshotChecker.Type call(UriBitmap ub) {
+              return getScreenshotType(ub.bitmap());
             }
           })
           .subscribe(
-              new Action1<GroupedObservable<ScreenshotChecker.Type, FileBitmap>>() {
+              new Action1<GroupedObservable<ScreenshotChecker.Type, UriBitmap>>() {
                 @Override
-                public void call(GroupedObservable<ScreenshotChecker.Type, FileBitmap> observable) {
+                public void call(GroupedObservable<ScreenshotChecker.Type, UriBitmap> observable) {
                   switch (observable.getKey()) {
                     case pokemon:
                       pokemonScreenshot(observable, ref);
@@ -208,12 +213,12 @@ public class ScreenshotService extends Service {
     return Service.START_STICKY;
   }
 
-  private Subscription pokemonScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+  private Subscription pokemonScreenshot(Observable<UriBitmap> observable, final AtomicInteger ref) {
     return observable
-        .map(new Func1<FileBitmap, Result>() {
+        .map(new Func1<UriBitmap, Result>() {
           @Override
-          public Result call(FileBitmap fb) {
-            final ScreenshotComponent c = component.plus(new ScreenshotModule(fb.bitmap()));
+          public Result call(UriBitmap ub) {
+            final ScreenshotComponent c = component.plus(new ScreenshotModule(ub.bitmap()));
             try {
               final Angle angle = c.angle();
               final ScreenshotReader reader = c.screenshotReader();
@@ -222,10 +227,10 @@ public class ScreenshotService extends Service {
               Timber.d("lvl: %.1f", pokemonLvl);
               final List<Pokemon> pokemonList = Pokemon.selectByCandy(database, reader.candy());
               final Pokemon pokemon = Guesser.getPokemon(pokemonList, reader, pokemonLvl);
-              return Result.create(Guesser.iv(pokemon, reader.cp(), reader.hp(), pokemonLvl));
+              return Result.create(Guesser.iv(pokemon, reader.cp(), reader.hp(), pokemonLvl), ub.uri());
             } catch (Exception e) {
               Timber.e(e);
-              return Result.create(e, fb.file());
+              return Result.create(e, ub.uri());
             }
           }
         })
@@ -256,51 +261,51 @@ public class ScreenshotService extends Service {
                   } catch (Angle.InitialPointException e) {
                     notifyError(R.string.error_pokemon_lvl_title,
                         R.string.error_pokemon_lvl_arc,
-                        result.file());
+                        result.uri());
                   } catch (ScreenshotReader.CandyException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_candy,
-                        result.file());
+                        result.uri());
                   } catch (ScreenshotReader.CpException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_cp,
-                        result.file());
+                        result.uri());
                   } catch (ScreenshotReader.HpException e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_ocr_hp,
-                        result.file());
+                        result.uri());
                   } catch (Guesser.MultiplePokemonException e) {
                     notifyError(R.string.error_guessing_pokemon_title,
                         R.string.error_guessing_pokemon_multiple,
-                        result.file());
+                        result.uri());
                   } catch (Guesser.UnknownPokemonException e) {
                     notifyError(R.string.error_guessing_pokemon_title,
                         R.string.error_guessing_pokemon_none,
-                        result.file());
+                        result.uri());
                   } catch (Guesser.NoIvPossibilities e) {
                     notifyError(R.string.error_ocr_title,
                         R.string.error_no_iv,
-                        result.file());
+                        result.uri());
                   } catch (Guesser.UnknownPokemonLvl e) {
                     notifyError(R.string.error_pokemon_lvl_title,
                         R.string.error_pokemon_lvl_circle,
-                        result.file());
+                        result.uri());
                   } catch (Exception e) {
                     notifyError(getString(R.string.error_unknown_title),
                         e.getMessage() + ".",
-                        result.file());
+                        result.uri());
                   }
                 }
               }
             });
   }
 
-  private void pokemonScreenshotWithAlert(Observable<FileBitmap> observable, final AtomicInteger ref) {
+  private void pokemonScreenshotWithAlert(Observable<UriBitmap> observable, final AtomicInteger ref) {
     observable
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Action1<FileBitmap>() {
+        .subscribe(new Action1<UriBitmap>() {
           @Override
-          public void call(FileBitmap fileBitmap) {
+          public void call(UriBitmap uriBitmap) {
             startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
             final String text = getString(R.string.pokemon_screenshot_with_alert);
             Toast.makeText(ScreenshotService.this, text, Toast.LENGTH_LONG).show();
@@ -308,12 +313,12 @@ public class ScreenshotService extends Service {
         });
   }
 
-  private void noPokemonScreenshot(Observable<FileBitmap> observable, final AtomicInteger ref) {
+  private void noPokemonScreenshot(Observable<UriBitmap> observable, final AtomicInteger ref) {
     observable
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Action1<FileBitmap>() {
+        .subscribe(new Action1<UriBitmap>() {
           @Override
-          public void call(FileBitmap fileBitmap) {
+          public void call(UriBitmap uriBitmap) {
             startForeground(1, notification(trainerLvl(), ref.decrementAndGet() > 0));
             final String text = getString(R.string.no_pokemon_screenshot);
             Toast.makeText(ScreenshotService.this, text, Toast.LENGTH_LONG).show();
@@ -325,14 +330,14 @@ public class ScreenshotService extends Service {
     return Integer.parseInt(trainerLvl.get());
   }
 
-  private void notifyError(int title, int message, File file) {
-    notifyError(getString(title), getString(message), file);
+  private void notifyError(int title, int message, Uri uri) {
+    notifyError(getString(title), getString(message), uri);
   }
 
-  private void notifyError(final String title, final String message, final File file) {
+  private void notifyError(final String title, final String message, final Uri uri) {
     if (!isSystemAlertPermissionGranted(this)) {
       final Intent cancelNotificationIntent = NotificationActivity.getCallingIntent(this, 2);
-      final Intent notifyErrorIntent = notifyErrorIntent(title, message, file);
+      final Intent notifyErrorIntent = notifyErrorIntent(title, message, uri);
       final Intent[] intents = {
           cancelNotificationIntent,
           notifyErrorIntent,
@@ -361,7 +366,7 @@ public class ScreenshotService extends Service {
           .setPositiveButton(R.string.action_report, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
-              startActivity(notifyErrorIntent(title, message, file));
+              startActivity(notifyErrorIntent(title, message, uri));
             }
           })
           .create());
@@ -375,13 +380,13 @@ public class ScreenshotService extends Service {
 
   @SuppressWarnings("deprecation")
   @TargetApi(LOLLIPOP)
-  private Intent notifyErrorIntent(final String title, final String message, final File file) {
+  private Intent notifyErrorIntent(final String title, final String message, final Uri uri) {
     final Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("message/rfc822");
     intent.putExtra(Intent.EXTRA_SUBJECT, "[Pokescreenshot] " + title);
     intent.putExtra(Intent.EXTRA_TEXT, message + "\nLocale: " + Locale.getDefault() + "\nTrainer lvl: " + trainerLvl() + "\nPokeScreenshot version: " + App.get(this).versionName());
     intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"pokescreenshotreport@braisgabin.com"});
-    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+    intent.putExtra(Intent.EXTRA_STREAM, uri);
     intent.addFlags(SDK_INT < LOLLIPOP ? FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET : FLAG_ACTIVITY_NEW_DOCUMENT);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     return intent;
@@ -435,24 +440,24 @@ public class ScreenshotService extends Service {
   }
 
   @AutoValue
-  static abstract class FileBitmap {
-    public static FileBitmap create(File file, Bitmap bitmap) {
-      return new AutoValue_ScreenshotService_FileBitmap(file, bitmap);
+  static abstract class UriBitmap {
+    public static UriBitmap create(Uri uri, Bitmap bitmap) {
+      return new AutoValue_ScreenshotService_UriBitmap(uri, bitmap);
     }
 
-    abstract File file();
+    abstract Uri uri();
 
     abstract Bitmap bitmap();
   }
 
   @AutoValue
   abstract static class Result {
-    static Result create(List<int[]> ivs) {
-      return new AutoValue_ScreenshotService_Result(ivs, null, null);
+    static Result create(List<int[]> ivs, Uri uri) {
+      return new AutoValue_ScreenshotService_Result(ivs, null, uri);
     }
 
-    static Result create(Exception exception, File file) {
-      return new AutoValue_ScreenshotService_Result(null, exception, file);
+    static Result create(Exception exception, Uri uri) {
+      return new AutoValue_ScreenshotService_Result(null, exception, uri);
     }
 
     @Nullable
@@ -461,7 +466,6 @@ public class ScreenshotService extends Service {
     @Nullable
     abstract Exception exception();
 
-    @Nullable
-    abstract File file();
+    abstract Uri uri();
   }
 }

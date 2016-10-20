@@ -11,7 +11,6 @@ import com.pushtorefresh.storio.contentresolver.StorIOContentResolver;
 import com.pushtorefresh.storio.contentresolver.impl.DefaultStorIOContentResolver;
 
 import java.io.File;
-import java.util.Set;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -24,21 +23,10 @@ public class ScreenshotObservable {
 
     return storIOContentResolver
         .observeChangesOfUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        .flatMap(new Func1<Changes, Observable<Uri>>() {
+        .flatMap(new Func1<Changes, Observable<File>>() {
           @Override
-          public Observable<Uri> call(Changes changes) {
-            final Set<Uri> uris = changes.affectedUris();
-            if (uris.contains(MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
-              return Observable.just(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            else {
-              return Observable.empty();
-            }
-          }
-        })
-        .flatMap(new Func1<Uri, Observable<File>>() {
-          @Override
-          public Observable<File> call(Uri uri) {
-            final String path = getLastImageTaken(contentResolver, uri);
+          public Observable<File> call(Changes changes) {
+            final String path = getLastImageTaken(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             if (path != null && path.contains("reenshot")) {
               return Observable.just(new File(path));
             } else {

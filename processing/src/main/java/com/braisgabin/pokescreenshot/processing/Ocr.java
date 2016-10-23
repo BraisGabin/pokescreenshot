@@ -121,6 +121,7 @@ public class Ocr implements ScreenshotReader {
 
       final String text2 = text
           .replace(" ", "")
+          .replace("RATFATA", "RATTATA")
           .replace("NIDORANU", "NIDORAN♂")
           .replace("NIDORANJ", "NIDORAN♂")
           .replace("NIDORANQ", "NIDORAN♀");

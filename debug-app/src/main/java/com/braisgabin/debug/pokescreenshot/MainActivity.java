@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
     try {
       pokemonLvl = Guesser.lvl(angle, ocr, trainerLvl);
       Log.d("LVL", "lvl: " + pokemonLvl);
+      angle.debug(canvas, pokemonLvl < 0 ? -1 : CP.lvl2Radian(trainerLvl, pokemonLvl));
     } catch (ScreenshotReader.CpException | Guesser.UnknownPokemonLvl | Angle.InitialPointException e) {
       e.printStackTrace();
     }
-    angle.debug(canvas, pokemonLvl < 0 ? -1 : CP.lvl2Radian(trainerLvl, pokemonLvl));
 
     try {
       ocr.debug();

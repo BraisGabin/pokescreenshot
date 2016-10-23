@@ -131,7 +131,7 @@ public class Tess {
   }
 
   private Rect nameRect(int cpHeight) {
-    Rect rect = new Rect(0, 0, Math.round(400 * d), Math.round(44 * d));
+    Rect rect = new Rect(0, 0, Math.round(302 * d), Math.round(44 * d));
     rect.offset(width / 2 - rect.width() / 2, cpHeight + Math.round(275 * d));
     return rect;
   }
@@ -197,7 +197,7 @@ public class Tess {
   }
 
   private Rect candyRect(int cpHeight) {
-    Rect rect = new Rect(0, 0, width / 2 - Math.round(12 * d), Math.round(24 * d));
+    Rect rect = new Rect(0, 0, Math.round(195 * d), Math.round(24 * d));
     rect.offset(width / 2, cpHeight + Math.round((496) * d));
     return rect;
   }

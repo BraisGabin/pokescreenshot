@@ -87,16 +87,15 @@ public class Ocr implements ScreenshotReader {
         throw new HpException("Error from Tesseract", e);
       }
 
-      final Pattern pattern = Pattern.compile("[^/]+/([0-9]+)");
+      final Pattern pattern = Pattern.compile("[^/]+/([0-9 ]+) [^ ]+");
 
       final String text2 = text
           .replace("l", "1")
           .replace("S", "5")
-          .replace("O", "0")
-          .replace(" ", "");
+          .replace("O", "0");
       final Matcher matcher = pattern.matcher(text2);
       if (matcher.matches()) {
-        hp = Integer.parseInt(matcher.group(1));
+        hp = Integer.parseInt(matcher.group(1).replace(" ", ""));
       }
 
       if (hp <= 0) {

@@ -52,7 +52,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
 
-    releaseCompile 'com.google.firebase:firebase-crash:9.6.1'
+    releaseCompile 'com.google.firebase:firebase-crash:9.8.0'
 
     provided 'com.google.auto.value:auto-value:1.2'
     apt 'com.google.auto.value:auto-value:1.2'

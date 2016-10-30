@@ -1,49 +1,64 @@
 package com.braisgabin.pokescreenshot.processing;
 
+import android.content.res.AssetManager;
 import android.graphics.Point;
 
-import net.sf.jsefa.csv.annotation.CsvDataType;
-import net.sf.jsefa.csv.annotation.CsvField;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
-@CsvDataType
+import static com.braisgabin.pokescreenshot.processing.TestUtils.find;
+
 class Screenshot {
-  @CsvField(pos = 1)
+  static List<Screenshot> loadScreenshots(AssetManager assets) throws IOException {
+    final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    mapper.setVisibility(mapper.getSerializationConfig().getDefaultVisibilityChecker()
+        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+        .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+        .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+
+    final List<String> paths = find(assets, "screenshots", Pattern.compile(".+\\.yml"));
+
+    final List<Screenshot> screenshots = new ArrayList<>(paths.size());
+    for (String path : paths) {
+      final Screenshot screenshot = mapper.readValue(assets.open(path), Screenshot.class);
+      screenshot.setFile(path.replace(".yml", ".png"));
+      screenshots.add(screenshot);
+    }
+
+    return screenshots;
+  }
+
   private String file;
 
-  @CsvField(pos = 2)
   private int initPointX;
 
-  @CsvField(pos = 3)
   private int initPointY;
 
-  @CsvField(pos = 4)
   private int trainerLvl;
 
-  @CsvField(pos = 5)
-  private BigDecimal lvl;
+  private float pokemonLvl;
 
-  @CsvField(pos = 6)
   private int cp;
 
-  @CsvField(pos = 7)
   private int hp;
 
-  @CsvField(pos = 8)
   private int stardust;
 
-  @CsvField(pos = 9)
   private String candyType;
 
-  @CsvField(pos = 10)
-  private Integer evolveCandy;
+  private Integer candyEvolve;
 
-  @CsvField(pos = 11)
   private String name;
 
   public String file() {
-    return "screenshots/" + file;
+    return file;
   }
 
   public Point initialPoint() {
@@ -55,7 +70,7 @@ class Screenshot {
   }
 
   public float getLvl() {
-    return lvl.floatValue();
+    return pokemonLvl;
   }
 
   public int getCp() {
@@ -75,7 +90,7 @@ class Screenshot {
   }
 
   public int getEvolveCandy() {
-    return evolveCandy == null ? 0 : evolveCandy;
+    return candyEvolve == null ? 0 : candyEvolve;
   }
 
   public String getName() {
@@ -85,5 +100,9 @@ class Screenshot {
   @Override
   public String toString() {
     return file().substring("screenshots/".length());
+  }
+
+  public void setFile(String file) {
+    this.file = file;
   }
 }

@@ -21,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
@@ -33,7 +36,8 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'org.mockito:mockito-core:1.10.19'
 
-    androidTestCompile 'net.sf.jsefa:jsefa:1.1.1.RELEASE'
+    androidTestCompile 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
+    androidTestCompile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.4'
 
     compile 'com.rmtheis:tess-two:6.0.4'
 

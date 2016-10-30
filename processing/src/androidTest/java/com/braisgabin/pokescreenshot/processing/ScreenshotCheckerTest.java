@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.test.InstrumentationRegistry;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -17,11 +18,12 @@ public class ScreenshotCheckerTest {
   public void testIsPokemonGoScreenshot_480() throws Exception {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();
-    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/es/140_kabuto.png"));
+    final Bitmap bitmap = BitmapFactory.decodeStream(assets.open("screenshots/es/16_pidgey.png"));
     assertThat(ScreenshotChecker.getScreenshotType(bitmap), is(ScreenshotChecker.Type.pokemon));
   }
 
   @Test
+  @Ignore("No screenshot yet")
   public void testIsPokemonGoScreenshot_360() throws Exception {
     final Context context = InstrumentationRegistry.getContext();
     final AssetManager assets = context.getAssets();

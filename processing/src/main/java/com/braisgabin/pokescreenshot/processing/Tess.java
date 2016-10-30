@@ -142,7 +142,7 @@ public class Tess {
     final Rect ocrRect = hpRect(cpHeight);
     final Rect regionRect;
     synchronized (tess) {
-      tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "é");
+      tess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "éI");
       tess.setRectangle(ocrRect);
       text = tess.getUTF8Text();
       regionRect = (getRegionBox(tess));

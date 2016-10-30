@@ -97,7 +97,7 @@ class Screenshot {
 
   @Override
   public String toString() {
-    return file().substring("screenshots/".length());
+    return file.substring("screenshots/".length(), file.length() - 4);
   }
 
   public void setFile(String file) {

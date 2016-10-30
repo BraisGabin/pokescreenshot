@@ -69,9 +69,20 @@ public class OcrUnitTest {
   }
 
   @Test
-  public void testHp() throws Exception {
+  public void testHp_1() throws Exception {
     when(tess.cp(any(Rect.class))).thenReturn("100");
-    when(tess.hp(anyInt())).thenReturn("1/50");
+    when(tess.hp(anyInt())).thenReturn("1/50 CP");
+
+    assertThat(ocr.hp(), is(50));
+    assertThat(ocr.hp(), is(50));
+    verify(tess, times(1)).hp(anyInt());
+    verify(tess, times(1)).cp(any(Rect.class));
+  }
+
+  @Test
+  public void testHp_2() throws Exception {
+    when(tess.cp(any(Rect.class))).thenReturn("100");
+    when(tess.hp(anyInt())).thenReturn("1/50CP");
 
     assertThat(ocr.hp(), is(50));
     assertThat(ocr.hp(), is(50));

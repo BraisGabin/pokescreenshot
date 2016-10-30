@@ -98,6 +98,15 @@ public class GuesserUnitTest {
   }
 
   @Test
+  public void testGetPokemon_cubone() throws Exception {
+    final Pokemon[] coreStats = {
+        Pokemon.create(102, 150, 100, 50),
+        Pokemon.create(140, 202, 120, 0),
+    };
+    assertThat(Guesser.getPokemon(Arrays.asList(coreStats), Reader.create(36, 16, 50), 2), is(coreStats[0]));
+  }
+
+  @Test
   public void testGetPokemon_none() throws Exception {
     final Pokemon[] coreStats = {
         Pokemon.create(114, 128, 110, 25),

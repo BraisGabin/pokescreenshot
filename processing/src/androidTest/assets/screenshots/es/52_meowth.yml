@@ -1,0 +1,11 @@
+initialPoint:
+  x: 135
+  y: 635
+trainerLvl: 24
+pokemonLvl: 20
+cp: 372
+hp: 54
+stardust: 2500
+candyType: MEOWTH
+candyEvolve: 50
+name: Meowth

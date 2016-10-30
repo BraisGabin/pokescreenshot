@@ -46,9 +46,11 @@ public class Utils {
   }
 
   public static int navBarHeight(Bitmap bitmap) {
+    final int SAVE_BATTERY_RED = 0xfff4511e;
     final int height = bitmap.getHeight();
     for (int y = height - 1; y >= 0; y--) {
-      if (bitmap.getPixel(0, y) != Color.BLACK) {
+      final int color = bitmap.getPixel(0, y);
+      if (color != Color.BLACK && color != SAVE_BATTERY_RED) {
         return height - y - 1;
       }
     }

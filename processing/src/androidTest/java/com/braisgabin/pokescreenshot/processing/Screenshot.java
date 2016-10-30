@@ -37,9 +37,7 @@ class Screenshot {
 
   private String file;
 
-  private int initPointX;
-
-  private int initPointY;
+  private Point initialPoint;
 
   private int trainerLvl;
 
@@ -62,7 +60,7 @@ class Screenshot {
   }
 
   public Point initialPoint() {
-    return new Point(initPointX, initPointY);
+    return initialPoint;
   }
 
   public int getTrainerLvl() {

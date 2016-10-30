@@ -1,5 +1,6 @@
-initPointX: 175
-initPointY: 856
+initialPoint:
+  x: 175
+  y: 856
 trainerLvl: 23
 pokemonLvl: 20
 cp: 642

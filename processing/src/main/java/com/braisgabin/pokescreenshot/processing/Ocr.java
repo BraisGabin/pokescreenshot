@@ -93,9 +93,15 @@ public class Ocr implements ScreenshotReader {
           .replace("l", "1")
           .replace("S", "5")
           .replace("O", "0");
-      final Matcher matcher = pattern.matcher(text2);
+      Matcher matcher = pattern.matcher(text2);
       if (matcher.matches()) {
         hp = Integer.parseInt(matcher.group(1).replace(" ", ""));
+      }
+      if (hp <= 0) {
+        matcher = Pattern.compile("[^/]+/([0-9 ]+).{2}").matcher(text2);
+        if (matcher.matches()) {
+          hp = Integer.parseInt(matcher.group(1).replace(" ", ""));
+        }
       }
 
       if (hp <= 0) {

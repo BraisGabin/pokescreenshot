@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -37,7 +38,7 @@ import com.braisgabin.pokescreenshot.processing.ScreenshotReader;
 import com.f2prateek.rx.preferences.Preference;
 import com.google.auto.value.AutoValue;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -166,8 +167,12 @@ public class ScreenshotService extends Service {
                         @Override
                         public Bitmap call(Uri uri) {
                           try {
-                            return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
-                          } catch (FileNotFoundException e) {
+                            final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                            if (bitmap == null) {
+                              throw new IllegalStateException("Impossible to generate a Bitmap from the uri: " + uri.toString());
+                            }
+                            return bitmap;
+                          } catch (IOException e) {
                             throw propagate(e);
                           }
                         }

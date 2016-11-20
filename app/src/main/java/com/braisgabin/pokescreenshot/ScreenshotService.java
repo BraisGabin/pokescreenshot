@@ -49,6 +49,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -65,7 +66,6 @@ import static com.braisgabin.pokescreenshot.Utils.isSystemAlertPermissionGranted
 import static com.braisgabin.pokescreenshot.processing.ScreenshotChecker.getScreenshotType;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static rx.exceptions.Exceptions.propagate;
 
 public class ScreenshotService extends Service {
   private final static String ACTION_STOP = "com.braisgabin.pokescreenshot.ACTION_STOP";
@@ -166,15 +166,7 @@ public class ScreenshotService extends Service {
                       .map(new Func1<Uri, Bitmap>() {
                         @Override
                         public Bitmap call(Uri uri) {
-                          try {
-                            final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            if (bitmap == null) {
-                              throw new IllegalStateException("Impossible to generate a Bitmap from the uri: " + uri.toString());
-                            }
-                            return bitmap;
-                          } catch (IOException e) {
-                            throw propagate(e);
-                          }
+                          return toBitmap(uri, 5, 130);
                         }
                       }),
                   new Func2<Uri, Bitmap, UriBitmap>() {
@@ -316,6 +308,39 @@ public class ScreenshotService extends Service {
                 }
               }
             });
+  }
+
+  private Bitmap toBitmap(Uri uri, final int retryTimes, final long initialWait) {
+    Bitmap bitmap = null;
+    Exception lastException = null;
+    try {
+      bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+    } catch (IOException e) {
+      lastException = e;
+    }
+    for (int i = 0; i < retryTimes && bitmap == null; i++) {
+      try {
+        final long wait = initialWait << i;
+        Timber.d("Error decoding image, waiting to retry %dms", wait);
+        Thread.sleep(wait);
+        try {
+          bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+          lastException = null;
+        } catch (IOException e) {
+          lastException = e;
+        }
+      } catch (InterruptedException e) {
+        throw Exceptions.propagate(e);
+      }
+    }
+    if (bitmap == null) {
+      if (lastException == null) {
+        throw new IllegalStateException("Impossible to generate a Bitmap from the uri: " + uri.toString());
+      } else {
+        throw new IllegalStateException("Impossible to generate a Bitmap from the uri: " + uri.toString(), lastException);
+      }
+    }
+    return bitmap;
   }
 
   private void pokemonScreenshotWithAlert(Observable<UriBitmap> observable, final AtomicInteger ref) {

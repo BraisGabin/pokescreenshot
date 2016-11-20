@@ -79,6 +79,9 @@ public class Tess {
       tess.setRectangle(ocrRect2);
       text = tess.getUTF8Text();
       regionRect2 = getRegionBox(tess);
+      if (regionRect2 == null) {
+        throw new TessException("Text not found");
+      }
       regionRect2.offset(ocrRect2.left, ocrRect2.top);
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
@@ -227,6 +230,9 @@ public class Tess {
       tess.setRectangle(ocrRect2);
       text = tess.getUTF8Text();
       regionRect2 = getRegionBox(tess);
+      if (regionRect2 == null) {
+        throw new TessException("Text not found");
+      }
       regionRect2.offset(ocrRect2.left, ocrRect2.top);
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
@@ -276,6 +282,9 @@ public class Tess {
       tess.setRectangle(ocrRect2);
       text = tess.getUTF8Text();
       regionRect2 = getRegionBox(tess);
+      if (regionRect2 == null) {
+        throw new TessException("Text not found");
+      }
       regionRect2.offset(ocrRect2.left, ocrRect2.top);
       tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "");
     }
